@@ -6,8 +6,8 @@ services:
       - "6379:6379"
 
   spring:
-    image: influy
-    container_name: influy
+    image: trissss/influy
+    container_name: trissss/influy
     restart: always
     ports:
       - "8080:8080"
