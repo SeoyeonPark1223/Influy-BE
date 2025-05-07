@@ -7,7 +7,7 @@ services:
 
   spring:
     image: trissss/influy
-    container_name: trissss/influy
+    container_name: influy
     restart: always
     ports:
       - "8080:8080"
