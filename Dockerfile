@@ -16,14 +16,11 @@ FROM amazoncorretto:21
 
 WORKDIR /app
 
-# JAR 파일 복사
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-# 필요한 리소스 파일 복사
 COPY src/main/resources/application.yml /app/config/application.yml
 
 EXPOSE 8080
 
-# Spring Boot가 설정 파일을 읽도록 환경 변수 설정
 ENTRYPOINT ["java", "-jar", "app.jar"]
 CMD ["--spring.config.location=file:/app/config/application.yml"]

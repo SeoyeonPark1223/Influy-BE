@@ -6,7 +6,6 @@ services:
       - "6379:6379"
 
   spring:
-    build: .
     image: trissss/influy
     container_name: influy
     restart: always
