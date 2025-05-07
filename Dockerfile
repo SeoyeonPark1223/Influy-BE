@@ -1,5 +1,5 @@
 # build stage
-FROM amazoncorretto:21-alpine AS Builder
+FROM amazoncorretto:21 AS Builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN ./gradlew clean build -x test --no-daemon
 
 # run stage
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:21
 
 WORKDIR /app
 
