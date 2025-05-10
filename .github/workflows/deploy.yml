@@ -20,12 +20,12 @@ jobs:
           cache: 'gradle'
 
       - name: Create application.yml
+        shell: bash
         run: |
           mkdir -p src/main/resources
           cat <<EOF > src/main/resources/application-prod.yml
           ${{ secrets.APPLICATION_PROD_YML }}
           EOF
-          shell: bash
         env:
           DB_password: ${{ secrets.DB_PASSWORD }}
 
