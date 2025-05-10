@@ -57,10 +57,10 @@ jobs:
           echo "${{ env.EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.EC2_USERNAME }}@${{ env.EC2_HOST }} "
-            docker pull ${{ env.DOCKER_USERNAME}}/${{ env.DOCKER_CONTAINER_NAME }}:latest
-            docker stop ${{ env.DOCKER_CONTAINER_NAME }}|| true
-            docker rm ${{ env.DOCKER_CONTAINER_NAME }}|| true
-            docker run -d -p 8080:8081 --name ${{ env.DOCKER_CONTAINER_NAME }}\
+            sudo docker pull ${{ env.DOCKER_USERNAME}}/${{ env.DOCKER_CONTAINER_NAME }}:latest
+            sudo docker stop ${{ env.DOCKER_CONTAINER_NAME }}|| true
+            sudo docker rm ${{ env.DOCKER_CONTAINER_NAME }}|| true
+            sudo docker run -d -p 8080:8081 --name ${{ env.DOCKER_CONTAINER_NAME }}\
               ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_CONTAINER_NAME}}:latest
           "
           rm -f private_key.pem
