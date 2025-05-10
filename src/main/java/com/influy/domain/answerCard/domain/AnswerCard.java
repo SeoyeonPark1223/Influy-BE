@@ -1,8 +1,7 @@
-package com.influy.domain.answerCard;
+package com.influy.domain.answerCard.domain;
 
-import com.influy.domain.image.Image;
-import com.influy.domain.question.Question;
-import com.influy.domain.seller.Seller;
+import com.influy.domain.question.domain.Question;
+import com.influy.domain.seller.domain.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

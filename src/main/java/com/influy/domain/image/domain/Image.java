@@ -1,9 +1,8 @@
-package com.influy.domain.questionCategory;
+package com.influy.domain.image.domain;
 
-import com.influy.domain.item.Item;
+import com.influy.domain.item.domain.Item;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,16 +13,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionCategory extends BaseEntity {
+public class Image extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
-    @NotBlank
-    private String name;
+    private String originalName;
 
-    @Builder.Default
-    private Boolean isFAQCategory = false;
+    @Column(unique = true)
+    private String uuid;
+
+    private String url;
 }

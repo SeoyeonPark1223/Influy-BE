@@ -1,6 +1,6 @@
-package com.influy.domain.itemCategory;
+package com.influy.domain.itemCategory.domain;
 
-import com.influy.domain.item.Item;
+import com.influy.domain.item.domain.Item;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

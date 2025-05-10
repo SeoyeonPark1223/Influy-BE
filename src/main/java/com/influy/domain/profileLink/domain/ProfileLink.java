@@ -1,6 +1,6 @@
-package com.influy.domain.profileLink;
+package com.influy.domain.profileLink.domain;
 
-import com.influy.domain.seller.Seller;
+import com.influy.domain.seller.domain.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

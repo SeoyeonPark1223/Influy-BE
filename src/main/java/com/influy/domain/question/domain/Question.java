@@ -1,9 +1,9 @@
-package com.influy.domain.question;
+package com.influy.domain.question.domain;
 
-import com.influy.domain.answer.Answer;
-import com.influy.domain.questionCategory.QuestionCategory;
-import com.influy.domain.seller.Seller;
-import com.influy.domain.user.User;
+import com.influy.domain.answer.domain.Answer;
+import com.influy.domain.questionCategory.domain.QuestionCategory;
+import com.influy.domain.seller.domain.Seller;
+import com.influy.domain.user.domain.User;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
