@@ -26,14 +26,6 @@ public class Item extends BaseEntity {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @NotNull
-    @OneToMany
-    private List<ItemCategory> itemCategories;
-
-    @NotNull
-    @OneToMany
-    private List<Image> images;
-
     @NotBlank
     private String name;
 
