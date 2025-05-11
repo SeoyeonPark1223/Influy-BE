@@ -1,5 +1,7 @@
 package com.influy.domain.item.domain;
 
+import com.influy.domain.image.domain.Image;
+import com.influy.domain.itemCategory.domain.ItemCategory;
 import com.influy.domain.seller.domain.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -22,6 +25,14 @@ public class Item extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    @NotNull
+    @OneToMany
+    private List<ItemCategory> itemCategories;
+
+    @NotNull
+    @OneToMany
+    private List<Image> images;
 
     @NotBlank
     private String name;
@@ -49,7 +60,7 @@ public class Item extends BaseEntity {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private ItemStatus status = ItemStatus.DEFAULT;  //표기 상태: [기본, 특수, 완판]
+    private ItemStatus currentStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 특수, 완판]
 
     @NotBlank
     private String marketUrl;
