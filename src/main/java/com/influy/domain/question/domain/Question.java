@@ -7,16 +7,13 @@ import com.influy.domain.user.domain.User;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,10 +25,11 @@ public class Question extends BaseEntity {
     private Seller to;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="category_id")
     private QuestionCategory category;
 
     //재고려 필요
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn
     private Answer answer;
 
     @NotBlank

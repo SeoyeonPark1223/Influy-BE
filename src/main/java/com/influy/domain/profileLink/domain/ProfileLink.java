@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileLink extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,7 @@ public class ProfileLink extends BaseEntity {
     private Seller seller;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private ProfileLinkType linkType;
 
     @NotBlank

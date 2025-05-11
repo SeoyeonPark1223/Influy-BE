@@ -5,10 +5,7 @@ import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,13 +13,14 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
     private Seller seller;
 
     @NotBlank
@@ -50,6 +48,7 @@ public class Item extends BaseEntity {
     private Integer reRunNum = 1;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private ItemStatus status = ItemStatus.DEFAULT;  //표기 상태: [기본, 특수, 완판]
 
     @NotBlank
