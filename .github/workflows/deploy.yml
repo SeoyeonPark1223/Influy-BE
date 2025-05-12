@@ -56,19 +56,13 @@ jobs:
     steps:
       - name: Deploy to EC2
         run: |
-          echo "${{ env.EC2_SSH_KEY }}" > private_key.pem
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.EC2_USERNAME }}@${{ env.EC2_HOST }} "
-            sudo docker pull ${{ env.DOCKER_USERNAME}}/${{ env.DOCKER_CONTAINER_NAME }}:latest
-            sudo docker stop ${{ env.DOCKER_CONTAINER_NAME }}|| true
-            sudo docker rm ${{ env.DOCKER_CONTAINER_NAME }}|| true
-            sudo docker run -d -p 8080:8081 --name ${{ env.DOCKER_CONTAINER_NAME }}\
-              ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_CONTAINER_NAME}}:latest
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "
+            sudo docker pull ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_CONTAINER_NAME }}:latest
+            sudo docker stop ${{ vars.DOCKER_CONTAINER_NAME }}|| true
+            sudo docker rm ${{ vars.DOCKER_CONTAINER_NAME }}|| true
+            sudo docker run -d -p 8080:8081 --name ${{ vars.DOCKER_CONTAINER_NAME }}\
+              ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_CONTAINER_NAME}}:latest
           "
           rm -f private_key.pem
-        env:
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_CONTAINER_NAME: ${{ vars.DOCKER_CONTAINER_NAME }}
