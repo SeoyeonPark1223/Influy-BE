@@ -1,4 +1,4 @@
-package com.influy.domain.seller.domain;
+package com.influy.domain.seller.entity;
 
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -11,7 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Seller extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -23,5 +24,9 @@ public class Seller extends BaseEntity {
     private String profileImg;
 
     private String backgroundImg;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ItemSortType itemSortType = ItemSortType.CREATE_DATE;
 
 }

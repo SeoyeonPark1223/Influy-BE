@@ -1,7 +1,7 @@
-package com.influy.domain.answerCard.domain;
+package com.influy.domain.answerCard.entity;
 
-import com.influy.domain.question.domain.Question;
-import com.influy.domain.seller.domain.Seller;
+import com.influy.domain.questionCard.entity.QuestionCard;
+import com.influy.domain.seller.entity.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AnswerCard extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -22,10 +23,10 @@ public class AnswerCard extends BaseEntity {
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="question_id")
-    private Question question;
+    @JoinColumn(name="question_card_id")
+    private QuestionCard questionCard;
 
-    private String backgroundImage; //String으로 저장 or Image FK?
+    private String backgroundImage;
 
     private String content;
 

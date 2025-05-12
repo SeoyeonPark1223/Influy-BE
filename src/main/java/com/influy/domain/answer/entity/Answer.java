@@ -1,23 +1,23 @@
-package com.influy.domain.itemCategory.domain;
+package com.influy.domain.answer.entity;
 
-import com.influy.domain.item.domain.Item;
+import com.influy.domain.seller.entity.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
-@Builder
-@Getter
+@Builder @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ItemCategory extends BaseEntity {
+public class Answer extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
-    @Column(unique = true)
-    private String name;
+    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 }

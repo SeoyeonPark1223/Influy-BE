@@ -1,9 +1,8 @@
-package com.influy.domain.questionCategory.domain;
+package com.influy.domain.image.entity;
 
-import com.influy.domain.item.domain.Item;
+import com.influy.domain.item.entity.Item;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -11,7 +10,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionCategory extends BaseEntity {
+public class Image extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -19,9 +18,13 @@ public class QuestionCategory extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @NotBlank
-    private String name;
+//    private String originalName;
+//
+//    @Column(unique = true)
+//    private String uuid;
+
+    private String imageUrl;
 
     @Builder.Default
-    private Boolean isFAQCategory = false;
+    private Boolean isMainImg = false;
 }
