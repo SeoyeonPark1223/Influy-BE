@@ -1,6 +1,8 @@
 package com.influy.domain.questionCard.entity;
 
 import com.influy.domain.faqCategory.entity.FaqCategory;
+import com.influy.domain.seller.entity.Seller;
+import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +11,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionCard {
+public class QuestionCard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,6 +19,10 @@ public class QuestionCard {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faq_category_id")
     private FaqCategory faqCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 
     private String content;
 

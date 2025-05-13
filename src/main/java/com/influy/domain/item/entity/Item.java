@@ -1,5 +1,7 @@
 package com.influy.domain.item.entity;
 
+import com.influy.domain.faqCategory.entity.FaqCategory;
+import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,6 +10,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -57,5 +61,13 @@ public class Item extends BaseEntity {
 
     @Builder.Default
     private Boolean isArchived = false; //보관 여부
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<FaqCategory> faqCategoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<ItemCategory> itemCategoryList = new ArrayList<>();
 
 }

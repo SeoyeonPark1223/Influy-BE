@@ -20,7 +20,7 @@ public class Question extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="question_category_id")
-    private QuestionCategory category;
+    private QuestionCategory questionCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="seller_id")

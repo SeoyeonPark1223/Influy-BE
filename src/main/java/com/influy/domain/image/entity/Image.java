@@ -18,11 +18,6 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-//    private String originalName;
-//
-//    @Column(unique = true)
-//    private String uuid;
-
     private String imageUrl;
 
     @Builder.Default

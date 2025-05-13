@@ -17,11 +17,6 @@ public class AnswerCard extends BaseEntity {
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
-
-    @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="question_card_id")
     private QuestionCard questionCard;

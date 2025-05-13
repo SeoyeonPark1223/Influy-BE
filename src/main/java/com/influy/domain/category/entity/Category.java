@@ -1,6 +1,6 @@
-package com.influy.domain.user.entity;
+package com.influy.domain.category.entity;
 
-import com.influy.domain.question.entity.Question;
+import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,12 +13,14 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private String category;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<Question> questionList = new ArrayList<>();
+    List<ItemCategory> itemCategoryList = new ArrayList<>();
 }
