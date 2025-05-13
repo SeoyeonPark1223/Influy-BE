@@ -24,4 +24,3 @@ EXPOSE 8081
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
-#CMD ["--spring.profiles.active=docker"]
