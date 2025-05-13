@@ -27,7 +27,7 @@ public class FaqCategory extends BaseEntity {
 
     private Integer order;
 
-    @OneToMany(mappedBy = "faq_category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "faqCategory", cascade = CascadeType.ALL)
     @Builder.Default
     private List<QuestionCard> questionCardList = new ArrayList<>();
 }
