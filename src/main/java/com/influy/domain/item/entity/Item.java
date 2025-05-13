@@ -1,8 +1,8 @@
-package com.influy.domain.item.domain;
+package com.influy.domain.item.entity;
 
-import com.influy.domain.image.domain.Image;
-import com.influy.domain.itemCategory.domain.ItemCategory;
-import com.influy.domain.seller.domain.Seller;
+import com.influy.domain.faqCategory.entity.FaqCategory;
+import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.seller.entity.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,6 @@ public class Item extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
@@ -35,7 +35,7 @@ public class Item extends BaseEntity {
     @NotBlank
     private Integer salePrice;
 
-    private String description;
+    private String tagline;
 
     private LocalDateTime startDate;
 
@@ -48,11 +48,11 @@ public class Item extends BaseEntity {
     private Boolean searchAvailable = true;
 
     @Builder.Default
-    private Integer reRunNum = 1;
+    private Integer itemPeriod = 1;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private ItemStatus currentStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 특수, 완판]
+    private ItemStatus currentStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 완판]
 
     @NotBlank
     private String marketUrl;
@@ -61,5 +61,13 @@ public class Item extends BaseEntity {
 
     @Builder.Default
     private Boolean isArchived = false; //보관 여부
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<FaqCategory> faqCategoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<ItemCategory> itemCategoryList = new ArrayList<>();
 
 }

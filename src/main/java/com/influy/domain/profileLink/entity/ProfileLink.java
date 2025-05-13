@@ -1,9 +1,10 @@
-package com.influy.domain.questionCategory.domain;
+package com.influy.domain.profileLink.entity;
 
-import com.influy.domain.item.domain.Item;
+import com.influy.domain.seller.entity.Seller;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -11,17 +12,22 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionCategory extends BaseEntity {
+public class ProfileLink extends BaseEntity {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ProfileLinkType linkType;
 
     @NotBlank
-    private String name;
+    private String link;
 
-    @Builder.Default
-    private Boolean isFAQCategory = false;
+
 }

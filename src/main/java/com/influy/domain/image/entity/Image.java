@@ -1,6 +1,6 @@
-package com.influy.domain.image.domain;
+package com.influy.domain.image.entity;
 
-import com.influy.domain.item.domain.Item;
+import com.influy.domain.item.entity.Item;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,10 +18,8 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private String originalName;
+    private String imageUrl;
 
-    @Column(unique = true)
-    private String uuid;
-
-    private String url;
+    @Builder.Default
+    private Boolean isMainImg = false;
 }
