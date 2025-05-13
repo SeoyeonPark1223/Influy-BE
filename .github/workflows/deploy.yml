@@ -59,9 +59,9 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "
-              docker rm -f influy || true
-              docker rm -f redis || true
-              docker rm -f nginx || true
+              sudo docker rm -f influy || true
+              sudo docker rm -f redis || true
+              sudo docker rm -f nginx || true
               cd /home/ubuntu
               sudo docker-compose down --remove-orphans
               sudo docker-compose pull
