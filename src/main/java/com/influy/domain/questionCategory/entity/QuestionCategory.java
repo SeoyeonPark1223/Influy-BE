@@ -29,7 +29,7 @@ public class QuestionCategory extends BaseEntity {
 
     private Integer order;
 
-    @OneToMany(mappedBy = "question_category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "questionCategory", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Question> questionList = new ArrayList<>();
 }
