@@ -105,4 +105,9 @@ public class Seller extends BaseEntity {
 
         return this;
     }
+
+    public Seller setItemSortType(ItemSortType type){
+        this.itemSortType = type;
+        return this;
+    }
 }

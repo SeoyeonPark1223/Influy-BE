@@ -3,6 +3,7 @@ package com.influy.domain.seller.controller;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.profileLink.service.ProfileLinkService;
 import com.influy.domain.seller.dto.SellerRequestDTO;
+import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.service.SellerService;
 import com.influy.domain.seller.converter.SellerConverter;
 import com.influy.domain.seller.dto.SellerResponseDTO;
@@ -22,7 +23,7 @@ public class SellerController {
     private final SellerService sellerService;
 
     //가입
-    @PostMapping("/resister")
+    @PostMapping("/register")
     public ApiResponse<SellerResponseDTO.SellerProfile> resisterSeller(@RequestBody SellerRequestDTO.Join requestBody){
         Seller seller = sellerService.join(requestBody);
         SellerResponseDTO.SellerProfile body= SellerConverter.toSellerProfileDTO(seller);
@@ -53,6 +54,16 @@ public class SellerController {
         SellerResponseDTO.SellerProfile body = SellerConverter.toSellerProfileDTO(seller.setProfile(requestBody));
 
         return ApiResponse.onSuccess(body);
+    }
+
+    @PutMapping("/{sellerId}")
+    @Operation(summary = "셀러 마켓 아이템 정렬방식 수정 API")
+    public ApiResponse<String> updateItemSort(@PathVariable("sellerId") Long sellerId, @RequestParam("sortBy") ItemSortType sortBy){
+
+        Seller seller = sellerService.getSeller(sellerId);
+        seller.setItemSortType(sortBy);
+
+        return ApiResponse.onSuccess("sortType : "+seller.getItemSortType());
     }
 
 }
