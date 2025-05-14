@@ -38,10 +38,11 @@ out/
 
 ### yml ###
 application.yml
-docker.yml
+application-docker.yml
+application-local.yml
+application-prod.yml
 
 ### DS_Store ##
 .DS_Store
 ._.DS_Store
 **/.DS_Store
-**/._.DS_햣Store
