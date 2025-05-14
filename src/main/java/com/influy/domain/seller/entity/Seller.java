@@ -35,6 +35,14 @@ public class Seller extends BaseEntity {
 
     private String backgroundImg;
 
+    private String instagram;
+
+    private String tiktok;
+
+    private String youtube;
+
+    private String email;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ItemSortType itemSortType = ItemSortType.CREATE_DATE;
