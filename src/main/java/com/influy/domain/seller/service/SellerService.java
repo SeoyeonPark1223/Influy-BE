@@ -1,5 +1,7 @@
 package com.influy.domain.seller.service;
 
+import com.influy.domain.profileLink.entity.ProfileLink;
+import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SellerService {
 
     private final SellerRepository sellerRepository;
+
+
 
     public Seller getSeller(Long sellerId){
         return sellerRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));

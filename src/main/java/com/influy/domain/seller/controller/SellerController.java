@@ -2,6 +2,7 @@ package com.influy.domain.seller.controller;
 
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.profileLink.service.ProfileLinkService;
+import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.domain.seller.service.SellerService;
 import com.influy.domain.seller.converter.SellerConverter;
 import com.influy.domain.seller.dto.SellerResponseDTO;
@@ -22,6 +23,7 @@ public class SellerController {
 
 
 
+
     @GetMapping("/profile/{sellerId}")//로그인 구현 이후 엔드포인트 변경
     public ApiResponse<SellerResponseDTO.SellerProfile> getSellerProfile(/*로그인 구현 이후 Id 말고 Principal 받기*/ @PathVariable Long sellerId){
 
@@ -29,7 +31,7 @@ public class SellerController {
         Seller seller = sellerService.getSeller(sellerId);
         List<ProfileLink> profileLinks = profileLinkService.getProfileLinksOf(seller);
 
-        SellerResponseDTO.SellerProfile body = SellerConverter.toSellerProfileDTO(seller,profileLinks);
+        SellerResponseDTO.SellerProfile body = SellerConverter.toSellerProfileDTO(seller);
 
         return ApiResponse.onSuccess(body);
     }
