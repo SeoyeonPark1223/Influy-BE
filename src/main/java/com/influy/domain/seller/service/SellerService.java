@@ -1,4 +1,4 @@
-package com.influy.domain.seller.Service;
+package com.influy.domain.seller.service;
 
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
