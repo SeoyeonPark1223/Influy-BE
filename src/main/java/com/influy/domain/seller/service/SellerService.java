@@ -17,7 +17,14 @@ public class SellerService {
 
     private final SellerRepository sellerRepository;
 
-
+    @Transactional
+    public Seller join(SellerRequestDTO.Join requestBody) {
+        Seller seller = Seller.builder()
+                .nickname(requestBody.getNickname())
+                .email(requestBody.getEmail())
+                .build();
+        return sellerRepository.save(seller);
+    }
 
     public Seller getSeller(Long sellerId){
         return sellerRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));

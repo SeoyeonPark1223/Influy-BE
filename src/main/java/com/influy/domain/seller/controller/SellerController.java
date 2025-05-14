@@ -21,7 +21,13 @@ public class SellerController {
     private final SellerService sellerService;
     private final ProfileLinkService profileLinkService;
 
+    @PostMapping("/resister")
+    public ApiResponse<SellerResponseDTO.SellerProfile> resisterSeller(@RequestBody SellerRequestDTO.Join requestBody){
+        Seller seller = sellerService.join(requestBody);
+        SellerResponseDTO.SellerProfile body= SellerConverter.toSellerProfileDTO(seller);
 
+        return ApiResponse.onSuccess(body);
+    }
 
 
     @GetMapping("/profile/{sellerId}")//로그인 구현 이후 엔드포인트 변경
