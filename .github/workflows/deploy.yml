@@ -59,10 +59,12 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "
-            sudo docker pull ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_CONTAINER_NAME }}:latest
-            sudo docker stop ${{ vars.DOCKER_CONTAINER_NAME }}|| true
-            sudo docker rm ${{ vars.DOCKER_CONTAINER_NAME }}|| true
-            sudo docker run -d -p 8080:8081 --name ${{ vars.DOCKER_CONTAINER_NAME }}\
-              ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_CONTAINER_NAME}}:latest
+              sudo docker rm -f influy || true
+              sudo docker rm -f redis || true
+              sudo docker rm -f nginx || true
+              cd /home/ubuntu
+              sudo docker-compose down --remove-orphans
+              sudo docker-compose pull
+              sudo docker-compose up -d     
           "
           rm -f private_key.pem

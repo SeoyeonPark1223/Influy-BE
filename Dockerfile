@@ -19,7 +19,7 @@ FROM amazoncorretto:21
 
 WORKDIR /app
 
-EXPOSE 8081
+EXPOSE 8080
 
 COPY --from=builder /app/build/libs/*.jar app.jar
 
