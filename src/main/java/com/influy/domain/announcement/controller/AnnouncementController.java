@@ -44,4 +44,16 @@ public class AnnouncementController {
         AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
         return ApiResponse.onSuccess(body);
     }
+
+    //공지 수정
+    @PatchMapping("/{announcementId}/{sellerId}") //로그인 구현 후 sellerId 제거
+    @Operation(summary = "공지 수정",description ="셀러가 개별 공지 수정" )
+    public ApiResponse<AnnouncementResponseDTO.General> updateAnnouncement(@PathVariable("announcementId") Long announcementId,
+                                                                           @PathVariable("sellerId") Long sellerId,
+                                                                           @RequestBody AnnouncementRequestDTO requestDTO) {
+
+        Announcement announcement = announcementService.updateAnnouncement(announcementId, requestDTO, sellerId);
+        AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
+        return ApiResponse.onSuccess(body);
+    }
 }
