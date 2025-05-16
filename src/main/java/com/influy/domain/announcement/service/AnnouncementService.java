@@ -18,8 +18,11 @@ public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
 
-    public Page<Announcement> getAnnouncementsOf(Seller seller, Pageable pageable) {
+    public Page<Announcement> getAnnouncementsOf(Long sellerId, Pageable pageable) {
         //seller 관련 pr 머지되면 셀러 리포지토리에서 existBy로 검증
+        Seller seller = new Seller(sellerId,"나",true,null,null,null,null,null,
+                "string",null,null,null,null,null,null,null);
+
         return announcementRepository.findAllBySeller(seller,pageable);
     }
 

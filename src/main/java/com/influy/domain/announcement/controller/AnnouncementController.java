@@ -25,11 +25,10 @@ public class AnnouncementController {
 
     //공지 리스트 조회
     @GetMapping("/{sellerId}")//로그인 구현 후 id 제거
+    @Operation(summary = "공지 리스트 조회",description ="셀러가 본인의 공지 리스트 조회" )
     public ApiResponse<Page<AnnouncementResponseDTO.General>> getAnnouncements(@PathVariable("sellerId") Long sellerId, @ParameterObject Pageable pageable) {
 
-        Seller seller = new Seller(2L,"나",true,null,null,null,null,null,
-                "string",null,null,null,null,null,null,null);
-        Page<Announcement> announcements = announcementService.getAnnouncementsOf(seller,pageable);
+        Page<Announcement> announcements = announcementService.getAnnouncementsOf(sellerId,pageable);
 
         Page<AnnouncementResponseDTO.General> body = announcements.map(AnnouncementConverter::toGeneralDTO);
 
