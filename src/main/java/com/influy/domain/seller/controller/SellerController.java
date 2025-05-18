@@ -49,9 +49,8 @@ public class SellerController {
     @PatchMapping("/profile/{sellerId}")
     @Operation(summary = "셀러가 본인 프로필 수정 API", description = "수정한 필드만 보내면 됨")
     public ApiResponse<SellerResponseDTO.SellerProfile> updateSellerProfile(@PathVariable("sellerId") Long sellerId, @RequestBody SellerRequestDTO.UpdateProfile requestBody){
-        Seller seller = sellerService.getSeller(sellerId);
 
-        SellerResponseDTO.SellerProfile body = SellerConverter.toSellerProfileDTO(seller.setProfile(requestBody));
+        SellerResponseDTO.SellerProfile body = SellerConverter.toSellerProfileDTO(sellerService.updateSeller(sellerId,requestBody));
 
         return ApiResponse.onSuccess(body);
     }
@@ -60,8 +59,7 @@ public class SellerController {
     @Operation(summary = "셀러 마켓 아이템 정렬방식 수정 API")
     public ApiResponse<SellerResponseDTO.SortType> updateItemSort(@PathVariable("sellerId") Long sellerId, @RequestParam("sortBy") ItemSortType sortBy){
 
-        Seller seller = sellerService.getSeller(sellerId);
-        SellerResponseDTO.SortType body  = SellerConverter.toSortTypeDTO(seller.setItemSortType(sortBy));
+        SellerResponseDTO.SortType body  = SellerConverter.toSortTypeDTO(sellerService.updateItemSortType(sellerId,sortBy));
 
         return ApiResponse.onSuccess(body);
     }

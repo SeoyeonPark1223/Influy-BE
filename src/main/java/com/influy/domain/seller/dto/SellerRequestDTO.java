@@ -16,7 +16,6 @@ public class SellerRequestDTO {
         private String backgroundImg;
         private String profileImg;
         private Boolean isPublic;
-        private ItemSortType itemSortType;
         private String email;
         private String instagram;
         private String tiktok;

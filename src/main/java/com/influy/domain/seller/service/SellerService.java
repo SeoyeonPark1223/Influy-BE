@@ -3,6 +3,7 @@ package com.influy.domain.seller.service;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.seller.converter.SellerConverter;
 import com.influy.domain.seller.dto.SellerRequestDTO;
+import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -26,5 +27,17 @@ public class SellerService {
 
     public Seller getSeller(Long sellerId){
         return sellerRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+    }
+
+    @Transactional
+    public Seller updateSeller(Long sellerId, SellerRequestDTO.UpdateProfile requestBody) {
+        Seller seller = getSeller(sellerId);
+        return seller.setProfile(requestBody);
+    }
+
+    @Transactional
+    public Seller updateItemSortType(Long sellerId, ItemSortType sortBy) {
+        Seller seller = getSeller(sellerId);
+        return seller.setItemSortType(sortBy);
     }
 }
