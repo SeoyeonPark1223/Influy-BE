@@ -27,8 +27,6 @@ public class QuestionCategory extends BaseEntity {
     @NotBlank
     private String category;
 
-    private Integer order;
-
     @OneToMany(mappedBy = "questionCategory", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Question> questionList = new ArrayList<>();

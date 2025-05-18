@@ -18,7 +18,7 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private String imageUrl;
+    private String imageLink;
 
     @Builder.Default
     private Boolean isMainImg = false;
