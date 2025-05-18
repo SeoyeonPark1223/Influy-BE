@@ -20,4 +20,11 @@ public class SellerResponseDTO {
         private String youtube;
         private String email;
     }
+
+    @Getter @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SortType{
+        private ItemSortType itemSortType;
+    }
 }

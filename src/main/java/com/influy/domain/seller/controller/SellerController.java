@@ -58,12 +58,12 @@ public class SellerController {
 
     @PutMapping("/{sellerId}")
     @Operation(summary = "셀러 마켓 아이템 정렬방식 수정 API")
-    public ApiResponse<String> updateItemSort(@PathVariable("sellerId") Long sellerId, @RequestParam("sortBy") ItemSortType sortBy){
+    public ApiResponse<SellerResponseDTO.SortType> updateItemSort(@PathVariable("sellerId") Long sellerId, @RequestParam("sortBy") ItemSortType sortBy){
 
         Seller seller = sellerService.getSeller(sellerId);
-        seller.setItemSortType(sortBy);
+        SellerResponseDTO.SortType body  = SellerConverter.toSortTypeDTO(seller.setItemSortType(sortBy));
 
-        return ApiResponse.onSuccess("sortType : "+seller.getItemSortType());
+        return ApiResponse.onSuccess(body);
     }
 
 }

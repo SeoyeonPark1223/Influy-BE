@@ -1,6 +1,7 @@
 package com.influy.domain.seller.converter;
 import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.domain.seller.dto.SellerResponseDTO;
+import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.entity.Seller;
 
 import java.util.List;
@@ -25,5 +26,9 @@ public class SellerConverter {
                 .youtube(seller.getYoutube())
                 .email(seller.getEmail())
                 .build();
+    }
+
+    public static SellerResponseDTO.SortType toSortTypeDTO(Seller seller) {
+        return SellerResponseDTO.SortType.builder().itemSortType(seller.getItemSortType()).build();
     }
 }
