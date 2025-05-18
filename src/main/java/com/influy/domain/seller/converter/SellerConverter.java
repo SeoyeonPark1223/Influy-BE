@@ -8,8 +8,12 @@ import java.util.List;
 
 public class SellerConverter {
 
-    public static Seller toSeller(SellerRequestDTO sellerRequestDTO) {
-        return Seller.builder().build();
+    public static Seller toSeller(SellerRequestDTO.Join requestDTO) {
+        //회원가입 로직 구현 시 수정
+        return Seller.builder()
+                .nickname(requestDTO.getNickname())
+                .email(requestDTO.getEmail())
+                .build();
     }
 
     public static SellerResponseDTO.SellerProfile toSellerProfileDTO(Seller seller) {

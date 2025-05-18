@@ -1,6 +1,7 @@
 package com.influy.domain.seller.service;
 
 import com.influy.domain.profileLink.entity.ProfileLink;
+import com.influy.domain.seller.converter.SellerConverter;
 import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
@@ -19,10 +20,7 @@ public class SellerService {
 
     @Transactional
     public Seller join(SellerRequestDTO.Join requestBody) {
-        Seller seller = Seller.builder()
-                .nickname(requestBody.getNickname())
-                .email(requestBody.getEmail())
-                .build();
+        Seller seller = SellerConverter.toSeller(requestBody);
         return sellerRepository.save(seller);
     }
 
