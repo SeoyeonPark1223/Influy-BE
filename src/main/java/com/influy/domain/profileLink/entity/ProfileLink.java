@@ -22,9 +22,8 @@ public class ProfileLink extends BaseEntity {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private ProfileLinkType linkType;
+    @NotBlank
+    private String linkName;
 
     @NotBlank
     private String link;
