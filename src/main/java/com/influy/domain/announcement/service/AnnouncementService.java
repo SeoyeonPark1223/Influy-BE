@@ -5,6 +5,8 @@ import com.influy.domain.announcement.dto.AnnouncementRequestDTO;
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.announcement.repository.AnnouncementRepository;
 import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.seller.repository.SellerRepository;
+import com.influy.domain.seller.service.SellerService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +23,20 @@ import java.util.Objects;
 public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
+    private final SellerService sellerService;
 
+    //공지 리스트 조회
     public Page<Announcement> getAnnouncementsOf(Long sellerId, Pageable pageable) {
-        //seller 관련 pr 머지되면 셀러 리포지토리에서 existBy로 검증
-        Seller seller = new Seller(sellerId,"나",true,null,null,null,null,null,
-                "string",null,null,null,null,null,null,null);
 
+        Seller seller = sellerService.getSeller(sellerId);
         return announcementRepository.findAllBySeller(seller,pageable);
     }
 
     //공지 추가
     @Transactional
     public Announcement addAnnouncementOf(Long sellerId, AnnouncementRequestDTO requestDTO) {
-        Seller seller = new Seller(sellerId,"나",true,null,null,null,null,null,
-                "string",null,null,null,null,null,null,null);
+
+        Seller seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO);
         return announcementRepository.save(announcement);
@@ -42,11 +44,11 @@ public class AnnouncementService {
     }
 
     //특정 공지 수정
+    @Transactional
     public Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, Long sellerId) {
 
-        //repo에서 seller 찾아오기
-        Seller seller = new Seller(2L,"나",true,null,null,null,null,null,
-                "string",null,null,null,null,null,null,null);
+
+        Seller seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
