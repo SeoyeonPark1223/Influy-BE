@@ -36,6 +36,9 @@ public class Announcement extends BaseEntity {
         if(requestDTO.getContent() != null){
             this.content = requestDTO.getContent();
         }
+        if(requestDTO.getIsPrimary() != null){
+            this.isPrimary = requestDTO.getIsPrimary();
+        }
         return this;
     }
 }

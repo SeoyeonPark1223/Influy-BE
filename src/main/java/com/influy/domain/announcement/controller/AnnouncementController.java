@@ -56,4 +56,6 @@ public class AnnouncementController {
         AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
         return ApiResponse.onSuccess(body);
     }
+
+    //
 }
