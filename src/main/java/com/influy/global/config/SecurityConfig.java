@@ -11,7 +11,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors-> cors.configurationSource(CorsConfig.corsConfigurationSource()));
+                .cors(cors-> cors.configurationSource(CorsConfig.corsConfigurationSource()))
+                .csrf(auth->auth.disable());
+        http
+                .authorizeHttpRequests(auth->auth
+                        .anyRequest().permitAll()); //로그인 기능 구현 전까지 일단 모두 허용
 
         return http.build();
     }
