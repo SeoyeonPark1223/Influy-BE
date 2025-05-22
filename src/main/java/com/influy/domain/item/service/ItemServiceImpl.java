@@ -12,6 +12,7 @@ import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
+import com.influy.domain.seller.service.SellerService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,12 @@ public class ItemServiceImpl implements ItemService {
     private final SellerRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
+    private final SellerService sellerService;
 
     @Override
     @Transactional
     public Item createItem(Long sellerId, ItemRequestDto.DetailDto request) {
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        Seller seller = sellerService.getSeller(sellerId);
 
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
@@ -47,9 +48,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public List<Item> getDetailPreviewList(Long sellerId, Boolean isArchived) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         if (isArchived) return itemRepository.findBySellerIdAndIsArchivedTrueOrderByCreatedAtDesc(sellerId);
         else return itemRepository.findBySellerIdAndIsArchivedFalseOrderByCreatedAtDesc(sellerId);
@@ -58,9 +57,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Item getDetail(Long sellerId, Long itemId) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -69,9 +66,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItem(Long sellerId, Long itemId) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -82,9 +77,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item updateItem(Long sellerId, Long itemId, ItemRequestDto.DetailDto request) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -116,9 +109,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item setAccess(Long sellerId, Long itemId, ItemRequestDto.AccessDto request) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -132,9 +123,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -147,9 +136,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Integer getCount(Long sellerId, Boolean isArchived) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        sellerService.getSeller(sellerId);
 
         if (isArchived) return itemRepository.countBySellerIdAndIsArchivedTrue(sellerId);
         else return itemRepository.countBySellerIdAndIsArchivedFalse(sellerId);
