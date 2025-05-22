@@ -39,6 +39,9 @@ public class AnnouncementService {
         Seller seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
+        if(requestDTO.getIsPrimary()){ //이 공지를 최상단 공지로 등록하는 요청일 경우
+            seller.setPrimaryAnnouncement(announcement); //얘로 등록
+        }
         return announcementRepository.save(announcement);
 
     }
