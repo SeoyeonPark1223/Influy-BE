@@ -38,7 +38,7 @@ public class AnnouncementController {
     }
 
     //최상단 공지 조회
-    @GetMapping("/{sellerId}/primary")
+    @GetMapping("/{sellerId}/primary-announcement")
     @Operation(summary = "최상단 공지 조회", description = "최상단 공지가 없으면 가장 최신 등록된 공지 반환")
     public ApiResponse<AnnouncementResponseDTO.General> getPrimaryAnnouncement(@PathVariable("sellerId") Long sellerId) {
 
