@@ -21,6 +21,7 @@ public enum ErrorStatus implements BaseCode {
     
     //링크 인 바이오 관련 응답
     LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK NOT FOUND", "링크를 찾을 수 없습니다."),
+    LINK_COUNT_LIMIT(HttpStatus.FORBIDDEN, "LINK COUNT LIMIT", "링크 최대 등록 개수를 초과합니다."),
 
     // 카테고리 관련 응답
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY NOT FOUND", "카테고리를 찾을 수 없습니다."),
