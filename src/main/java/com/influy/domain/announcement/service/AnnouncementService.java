@@ -74,4 +74,21 @@ public class AnnouncementService {
 
         return announcement;
     }
+
+    @Transactional
+    public void deleteAnnouncement(Long sellerId, Long announcementId) {
+
+        Seller seller = sellerService.getSeller(sellerId);
+
+        Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
+
+        if(!announcement.getSeller().equals(seller)){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+        //현재 삭제하려는 공지가 최상단 고정 공지라면 해제를 먼저 해준다
+        if(seller.getPrimaryAnnouncement()==announcement){
+            seller.setPrimaryAnnouncement(null);
+        }
+        announcementRepository.delete(announcement);
+    }
 }

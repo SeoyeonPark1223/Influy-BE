@@ -70,6 +70,16 @@ public class AnnouncementController {
         return ApiResponse.onSuccess(body);
     }
 
-    //
+
+    //공지 삭제
+    @DeleteMapping("/{announcementId}/{sellerId}") //로그인 구현 후 sellerId 제거
+    @Operation(summary = "공지 삭제",description ="셀러가 개별 공지 삭제" )
+    public ApiResponse<String> deleteAnnouncement(@PathVariable("announcementId") Long announcementId,
+                                                  @PathVariable("sellerId") Long sellerId) {
+
+        announcementService.deleteAnnouncement(sellerId, announcementId);
+
+        return ApiResponse.onSuccess("삭제에 성공했습니다.");
+    }
 
 }

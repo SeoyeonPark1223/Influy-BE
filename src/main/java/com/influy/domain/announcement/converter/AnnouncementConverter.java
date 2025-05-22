@@ -21,6 +21,7 @@ public class AnnouncementConverter {
                 .title(announcement.getTitle())
                 .content(announcement.getContent())
                 .isPrimary(announcement.getIsPrimary())
+                .createdAt(announcement.getCreatedAt())
                 .build();
     }
 }
