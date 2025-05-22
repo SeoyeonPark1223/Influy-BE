@@ -38,7 +38,7 @@ public class AnnouncementService {
 
         Seller seller = sellerService.getSeller(sellerId);
 
-        Announcement announcement = AnnouncementConverter.toEntity(requestDTO);
+        Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
         return announcementRepository.save(announcement);
 
     }
@@ -58,5 +58,20 @@ public class AnnouncementService {
         }
 
         return announcement.updateAnnouncement(requestDTO);
+    }
+
+    //최상단 공지 조회
+    public Announcement getPrimaryAnnouncementOf(Long sellerId) {
+        Seller seller = sellerService.getSeller(sellerId);
+
+        Announcement announcement = seller.getPrimaryAnnouncement();
+
+        if(announcement == null){//최상단 공지가 없으면 가장 최신 공지 제공
+            announcement = announcementRepository.findFirstBySellerOrderByCreatedAtDesc(seller).orElseThrow(
+                    ()-> new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND)
+            );
+        }
+
+        return announcement;
     }
 }

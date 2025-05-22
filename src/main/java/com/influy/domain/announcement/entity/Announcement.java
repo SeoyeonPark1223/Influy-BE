@@ -37,8 +37,17 @@ public class Announcement extends BaseEntity {
             this.content = requestDTO.getContent();
         }
         if(requestDTO.getIsPrimary() != null){
+
+            if(requestDTO.getIsPrimary()){ //이 공지를 최상단 공지로 등록하는 요청일 경우
+                this.seller.setPrimaryAnnouncement(this); //나로 등록
+            }
             this.isPrimary = requestDTO.getIsPrimary();
         }
+        return this;
+    }
+
+    public Announcement setIsPrimary(Boolean isPrimary) {
+        this.isPrimary = isPrimary;
         return this;
     }
 }

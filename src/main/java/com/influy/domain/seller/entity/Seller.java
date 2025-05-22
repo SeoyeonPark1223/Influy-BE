@@ -51,6 +51,11 @@ public class Seller extends BaseEntity {
     @Builder.Default
     private List<Announcement> announcementList = new ArrayList<>();
 
+    //삭제하기
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "primary_announcement_id", unique = true)
+    private Announcement primaryAnnouncement;
+
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ProfileLink> profileLinkList = new ArrayList<>();
@@ -104,6 +109,17 @@ public class Seller extends BaseEntity {
 
     public Seller setItemSortType(ItemSortType type){
         this.itemSortType = type;
+        return this;
+    }
+
+    public Seller setPrimaryAnnouncement(Announcement announcement){
+        //기존 최상단 공지와 다른 공지를 등록할 시에 기존 공지 삭제
+        if(this.primaryAnnouncement != null && this.primaryAnnouncement!=announcement){
+            this.primaryAnnouncement.setIsPrimary(false);
+        }
+        //새로 등록
+        this.primaryAnnouncement = announcement;
+        
         return this;
     }
 }

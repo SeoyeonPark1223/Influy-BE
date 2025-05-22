@@ -13,12 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "공지")
-@RequestMapping("/seller/announcement")
+@RequestMapping("/seller/announcements")
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
@@ -26,11 +28,22 @@ public class AnnouncementController {
     //공지 리스트 조회
     @GetMapping("/{sellerId}")//로그인 구현 후 id 제거
     @Operation(summary = "공지 리스트 조회",description ="셀러가 본인의 공지 리스트 조회" )
-    public ApiResponse<Page<AnnouncementResponseDTO.General>> getAnnouncements(@PathVariable("sellerId") Long sellerId, @ParameterObject Pageable pageable) {
+    public ApiResponse<Page<AnnouncementResponseDTO.General>> getAnnouncements(@PathVariable("sellerId") Long sellerId, @ParameterObject @PageableDefault(sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Announcement> announcements = announcementService.getAnnouncementsOf(sellerId,pageable);
 
         Page<AnnouncementResponseDTO.General> body = announcements.map(AnnouncementConverter::toGeneralDTO);
+
+        return ApiResponse.onSuccess(body);
+    }
+
+    //최상단 공지 조회
+    @GetMapping("/{sellerId}/primary")
+    @Operation(summary = "최상단 공지 조회", description = "최상단 공지가 없으면 가장 최신 등록된 공지 반환")
+    public ApiResponse<AnnouncementResponseDTO.General> getPrimaryAnnouncement(@PathVariable("sellerId") Long sellerId) {
+
+        Announcement announcement = announcementService.getPrimaryAnnouncementOf(sellerId);
+        AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
 
         return ApiResponse.onSuccess(body);
     }
@@ -58,4 +71,5 @@ public class AnnouncementController {
     }
 
     //
+
 }
