@@ -18,6 +18,7 @@ public class ProfileLinkConverter {
 
     public static ProfileLinkResponseDTO.General toGeneralDTO(ProfileLink profileLink) {
         return ProfileLinkResponseDTO.General.builder()
+                .id(profileLink.getId())
                 .linkName(profileLink.getLinkName())
                 .link(profileLink.getLink())
                 .build();

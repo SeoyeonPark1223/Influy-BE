@@ -29,7 +29,7 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
     public ProfileLink createLinkOf(Long sellerId, ProfileLinkRequestDTO request) {
         Seller seller = sellerService.getSeller(sellerId);
 
-        if(seller.getProfileLinkList().size()==6){
+        if(seller.getProfileLinkList().size()==5){
             throw new GeneralException(ErrorStatus.LINK_COUNT_LIMIT);
         }
         ProfileLink profileLink = ProfileLinkConverter.toEntity(request,seller);

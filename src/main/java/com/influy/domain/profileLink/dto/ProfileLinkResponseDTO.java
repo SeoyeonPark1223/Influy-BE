@@ -11,6 +11,7 @@ public class ProfileLinkResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class General{
+        private Long id;
         private String linkName;
         private String link;
     }
