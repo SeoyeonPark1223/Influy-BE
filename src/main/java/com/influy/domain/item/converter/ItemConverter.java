@@ -5,6 +5,7 @@ import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.seller.entity.Seller;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -51,14 +52,18 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewListDto toDetailPreviewListDto(List<Item> itemList) {
-        List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemList.stream()
+    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage) {
+        List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
                 .map(ItemConverter::toDetailPreviewDto)
                 .toList();
 
-        return ItemResponseDto.DetailPreviewListDto.builder()
+        return ItemResponseDto.DetailPreviewPageDto.builder()
                 .itemPreviewList(itemPreviewList)
-                .totalElements(itemList.size())
+                .listSize(itemPage.getContent().size())
+                .totalPage(itemPage.getTotalPages())
+                .totalElements(itemPage.getTotalElements())
+                .isFirst(itemPage.isFirst())
+                .isLast(itemPage.isLast())
                 .build();
     }
 

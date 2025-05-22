@@ -10,12 +10,17 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.domain.seller.service.SellerService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +29,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final SellerRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final SellerService sellerService;
@@ -43,15 +47,6 @@ public class ItemServiceImpl implements ItemService {
         seller.getItemList().add(item);
 
         return item;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Item> getDetailPreviewList(Long sellerId, Boolean isArchived) {
-        sellerService.getSeller(sellerId);
-
-        if (isArchived) return itemRepository.findBySellerIdAndIsArchivedTrueOrderByCreatedAtDesc(sellerId);
-        else return itemRepository.findBySellerIdAndIsArchivedFalseOrderByCreatedAtDesc(sellerId);
     }
 
     @Override
@@ -140,6 +135,30 @@ public class ItemServiceImpl implements ItemService {
 
         if (isArchived) return itemRepository.countBySellerIdAndIsArchivedTrue(sellerId);
         else return itemRepository.countBySellerIdAndIsArchivedFalse(sellerId);
+    }
+
+    @Override
+    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, Integer pageNumber, ItemSortType sortType) {
+        sellerService.getSeller(sellerId);
+
+        int pageSize = 10;
+        String sortField = switch (sortType) {
+            case CREATE_DATE -> "createdAt";
+            case END_DATE -> "endDate";
+            default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
+        };
+        Sort.Direction direction = switch (sortType) {
+            case CREATE_DATE -> Sort.Direction.DESC; // 등록순
+            case END_DATE -> Sort.Direction.ASC;     // 마감일 빠른순
+        };
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortField));
+
+        if (isArchived) {
+            return itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
+        } else {
+            return itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
+        }
     }
 
     private void createImageList(ItemRequestDto.DetailDto request, Item item) {

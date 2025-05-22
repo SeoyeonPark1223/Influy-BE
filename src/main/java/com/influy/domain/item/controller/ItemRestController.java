@@ -5,14 +5,15 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.service.ItemService;
+import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "셀러 아이템", description = "셀러 아이템 관련 API")
 @RestController
@@ -31,10 +32,13 @@ public class ItemRestController {
 
     @GetMapping
     @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브 여부 선택 가능)")
-    public ApiResponse<ItemResponseDto.DetailPreviewListDto> getDetailPreviewList(@PathVariable("sellerId") Long sellerId,
-                                                                                  @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived) {
-        List<Item> itemList = itemService.getDetailPreviewList(sellerId, isArchived);
-        return ApiResponse.onSuccess(ItemConverter.toDetailPreviewListDto(itemList));
+    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@PathVariable("sellerId") Long sellerId,
+                                                                                  @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
+                                                                                  @CheckPage @RequestParam(name = "page") Integer page,
+                                                                                  @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType) {
+        Integer pageNumber = page - 1;
+        Page<Item> itemPage = itemService.getDetailPreviewPage(sellerId, isArchived, pageNumber, sortType);
+        return ApiResponse.onSuccess(ItemConverter.toDetailPreviewPageDto(itemPage));
     }
 
     @GetMapping("/{itemId}")

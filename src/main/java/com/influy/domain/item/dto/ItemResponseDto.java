@@ -1,8 +1,6 @@
 package com.influy.domain.item.dto;
 
-import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.entity.ItemStatus;
-import com.influy.domain.itemCategory.entity.ItemCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,13 +57,17 @@ public class ItemResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DetailPreviewListDto {
+    public static class DetailPreviewPageDto {
         @Schema(description = "아이템 preview 리스트")
         private List<DetailPreviewDto> itemPreviewList;
 
-        @Schema(description = "아이템 총 개수", example = "15")
-        private Integer totalElements;
+        private Integer listSize;
+        private Integer totalPage;
+        private Long totalElements;
+        private Boolean isFirst;
+        private Boolean isLast;
     }
+
 
     @Getter
     @Builder

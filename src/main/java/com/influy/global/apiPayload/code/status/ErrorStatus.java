@@ -23,7 +23,10 @@ public enum ErrorStatus implements BaseCode {
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY NOT FOUND", "카테고리를 찾을 수 없습니다."),
 
     // 아이템 관련 응답
-    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM NOT FOUND", "아이템을 찾을 수 없습니다.");
+    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM NOT FOUND", "아이템을 찾을 수 없습니다."),
+
+    // 정렬 관련 응답
+    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식은 CREATE_DATE, END_DATE 입니다.");
 
 
     private final HttpStatus httpStatus;
