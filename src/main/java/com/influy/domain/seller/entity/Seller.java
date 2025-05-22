@@ -2,7 +2,6 @@ package com.influy.domain.seller.entity;
 
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.answer.entity.Answer;
-import com.influy.domain.answerCard.entity.AnswerCard;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.question.entity.Question;
@@ -46,7 +45,7 @@ public class Seller extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private ItemSortType itemSortType = ItemSortType.END_DATE;
+    private ItemSortType itemSortType = ItemSortType.CREATE_DATE;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     @Builder.Default
@@ -96,9 +95,6 @@ public class Seller extends BaseEntity {
         if(requestBody.getEmail()!=null){
             this.email = requestBody.getEmail();
         }
-//        if(requestBody.getItemSortType()!=null){
-//            this.itemSortType = requestBody.getItemSortType();
-//        }
         if(requestBody.getIsPublic()!=null){
             this.isPublic = requestBody.getIsPublic();
         }
