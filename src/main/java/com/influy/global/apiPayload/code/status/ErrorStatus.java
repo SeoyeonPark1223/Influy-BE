@@ -20,7 +20,9 @@ public enum ErrorStatus implements BaseCode {
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
 
     // 카테고리 관련 응답
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY NOT FOUND", "카테고리를 찾을 수 없습니다."),
+    ITEM_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM CATEGORY NOT FOUND", "카테고리를 찾을 수 없습니다."),
+    FAQ_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "FAQ CATEGORY NOT FOUND", "FAQ 카테고리를 찾을 수 없습니다."),
+    INVALID_FAQ_ITEM_RELATION(HttpStatus.BAD_REQUEST, "INVALID FAQ ITEM RELATION", "해당 FAQ 카테고리의 아이템을 찾을 수 없습니다."),
 
     // 아이템 관련 응답
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM NOT FOUND", "아이템을 찾을 수 없습니다."),
