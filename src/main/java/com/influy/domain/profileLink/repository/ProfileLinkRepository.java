@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ProfileLinkRepository extends JpaRepository<ProfileLink, Long> {
     List<ProfileLink> findBySeller(Seller seller);
+
+    List<ProfileLink> findAllBySellerOrderByCreatedAt(Seller seller);
 }

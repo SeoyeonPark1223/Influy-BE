@@ -18,6 +18,9 @@ public enum ErrorStatus implements BaseCode {
 
     // 셀러 에러 응답
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
+    
+    //링크 인 바이오 관련 응답
+    LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK NOT FOUND", "링크를 찾을 수 없습니다."),
 
     // 카테고리 관련 응답
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY NOT FOUND", "카테고리를 찾을 수 없습니다."),
