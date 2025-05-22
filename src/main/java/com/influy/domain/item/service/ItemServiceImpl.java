@@ -46,12 +46,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Item> getDetailPreviewList(Long sellerId) {
+    public List<Item> getDetailPreviewList(Long sellerId, Boolean isArchived) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
-        return itemRepository.findBySellerIdOrderByCreatedAtDesc(sellerId);
+        if (isArchived) return itemRepository.findBySellerIdAndIsArchivedTrueOrderByCreatedAtDesc(sellerId);
+        else return itemRepository.findBySellerIdAndIsArchivedFalseOrderByCreatedAtDesc(sellerId);
     }
 
     @Override
@@ -145,12 +146,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Item> getArchivedDetailPreviewList(Long sellerId) {
+    public Integer getCount(Long sellerId, Boolean isArchived) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
-        return itemRepository.findBySellerIdAndIsArchivedTrueOrderByCreatedAtDesc(sellerId);
+        if (isArchived) return itemRepository.countBySellerIdAndIsArchivedTrue(sellerId);
+        else return itemRepository.countBySellerIdAndIsArchivedFalse(sellerId);
     }
 
     private void createImageList(ItemRequestDto.DetailDto request, Item item) {

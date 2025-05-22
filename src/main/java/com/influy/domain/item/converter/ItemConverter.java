@@ -84,4 +84,11 @@ public class ItemConverter {
                 .itemCategoryList(itemCategoryList)
                 .build();
     }
+
+    public static ItemResponseDto.CountDto toCountDto(Long sellerId, Integer count) {
+       return ItemResponseDto.CountDto.builder()
+               .sellerId(sellerId)
+               .count(count)
+               .build();
+    }
 }

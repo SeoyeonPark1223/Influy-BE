@@ -30,9 +30,10 @@ public class ItemRestController {
     }
 
     @GetMapping
-    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회")
-    public ApiResponse<ItemResponseDto.DetailPreviewListDto> getDetailPreviewList(@PathVariable("sellerId") Long sellerId) {
-        List<Item> itemList = itemService.getDetailPreviewList(sellerId);
+    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브 여부 선택 가능)")
+    public ApiResponse<ItemResponseDto.DetailPreviewListDto> getDetailPreviewList(@PathVariable("sellerId") Long sellerId,
+                                                                                  @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived) {
+        List<Item> itemList = itemService.getDetailPreviewList(sellerId, isArchived);
         return ApiResponse.onSuccess(ItemConverter.toDetailPreviewListDto(itemList));
     }
 
@@ -79,10 +80,11 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @GetMapping("/archive")
-    @Operation(summary = "셀러 상품 보관 리스트 조회")
-    public ApiResponse<ItemResponseDto.DetailPreviewListDto> getArchivedDetailPreviewList(@PathVariable("sellerId") Long sellerId) {
-        List<Item> archivedItemList = itemService.getArchivedDetailPreviewList(sellerId);
-        return ApiResponse.onSuccess(ItemConverter.toDetailPreviewListDto(archivedItemList));
+    @GetMapping("/count")
+    @Operation(summary = "상품 공개/보관 개수 조회")
+    public ApiResponse<ItemResponseDto.CountDto> getCount(@PathVariable("sellerId") Long sellerId,
+                                                          @RequestParam(name = "isArchived", defaultValue = "false") Boolean isArchived) {
+        Integer count = itemService.getCount(sellerId, isArchived);
+        return ApiResponse.onSuccess(ItemConverter.toCountDto(sellerId, count));
     }
 }

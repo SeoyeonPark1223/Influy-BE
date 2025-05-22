@@ -105,4 +105,16 @@ public class ItemResponseDto {
         @Schema(description = "아이템 카테고리, 1~3개", example = "[뷰티, 패션, 소품]")
         private List<String> itemCategoryList;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CountDto {
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
+        @Schema(description = "공개/보관 아이템 개수", example = "5")
+        private Integer count;
+    }
 }

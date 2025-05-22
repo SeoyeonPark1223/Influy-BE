@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ItemService {
     Item createItem(Long sellerId, ItemRequestDto.DetailDto request);
-    List<Item> getDetailPreviewList(Long sellerId);
+    List<Item> getDetailPreviewList(Long sellerId, Boolean isArchived);
     Item getDetail(Long sellerId, Long itemId);
     void deleteItem(Long sellerId, Long itemId);
     Item updateItem(Long sellerId, Long itemId, ItemRequestDto.DetailDto request);
     Item setAccess(Long sellerId, Long itemId, ItemRequestDto.AccessDto request);
     Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request);
-    List<Item> getArchivedDetailPreviewList(Long sellerId);
+    Integer getCount(Long sellerId, Boolean isArchived);
 }
