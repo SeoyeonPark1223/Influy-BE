@@ -13,7 +13,7 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class AddResultDto {
+    public static class AddResultDto {
         @Schema(description = "추가된 faq 카테고리 id 리스트", example = "[1, 2]")
         private List<Long> idList;
     }
@@ -22,7 +22,7 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class ViewDto {
+    public static class ViewDto {
         @Schema(description = "faq 카테고리 id", example = "1")
         private Long id;
 
@@ -37,7 +37,7 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class PageDto {
+    public static class PageDto {
         @Schema(description = "faq 카테고리 리스트")
         private List<ViewDto> viewList;
 
@@ -52,7 +52,7 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class ResultDto {
+    public static class ResultDto {
         @Schema(description = "삭제된 faq 카테고리 id 리스트", example = "[1, 2]")
         private List<Long> idList;
     }
@@ -61,7 +61,7 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class UpdateResultDto {
+    public static class UpdateResultDto {
         @Schema(description = "업데이트된 faq 카테고리 리스트", example = "[1, 2]")
         private List<ViewDto> updatedList;
     }

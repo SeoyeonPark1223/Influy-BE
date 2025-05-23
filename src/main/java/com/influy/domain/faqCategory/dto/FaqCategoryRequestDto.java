@@ -11,7 +11,7 @@ public class FaqCategoryRequestDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public class AddDto {
+    public static class AddDto {
         @Schema(description = "faq 카테고리", example = "진행일정")
         private String category;
 
@@ -23,7 +23,7 @@ public class FaqCategoryRequestDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public class DeleteDto {
+    public static class DeleteDto {
         @Schema(description = "faq 카테고리 id", example = "1")
         private Long id;
     }
@@ -32,7 +32,7 @@ public class FaqCategoryRequestDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public class UpdateDto {
+    public static class UpdateDto {
         @Schema(description = "faq 카테고리 id", example = "1")
         private Long id;
 

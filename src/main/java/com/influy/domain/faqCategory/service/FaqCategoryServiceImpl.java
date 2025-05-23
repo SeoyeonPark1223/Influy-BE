@@ -53,7 +53,7 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         if (!itemRepository.existsById(itemId)) throw new GeneralException(ErrorStatus.ITEM_NOT_FOUND);
 
         int pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "categoryOrder"));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "categoryOrder"));
 
         return faqCategoryRepository.findAllByItemId(itemId, pageable);
     }
