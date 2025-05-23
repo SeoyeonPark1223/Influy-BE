@@ -14,9 +14,6 @@ public class FaqCategoryRequestDto {
     public static class AddDto {
         @Schema(description = "faq 카테고리", example = "진행일정")
         private String category;
-
-        @Schema(description = "faq 카테고리 순서", example = "1")
-        private Integer categoryOrder;
     }
 
     @Getter
@@ -38,8 +35,5 @@ public class FaqCategoryRequestDto {
 
         @Schema(description = "faq 카테고리", example = "진행일정")
         private String category;
-
-        @Schema(description = "faq 카테고리 순서", example = "1")
-        private Integer categoryOrder;
     }
 }
