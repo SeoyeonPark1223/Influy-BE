@@ -33,7 +33,7 @@ public class FaqRestController {
     }
 
     @GetMapping
-    @Operation(summary = "개별 상품의 faq 카테고리 리스트 조회 (categoryOrder순 정렬)")
+    @Operation(summary = "개별 상품의 faq 카테고리 리스트 조회 (등록순 정렬)")
     public ApiResponse<FaqCategoryResponseDto.PageDto> getPage (@PathVariable("sellerId") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId,
                                                                 @CheckPage @RequestParam(name = "page") Integer page) {
@@ -52,7 +52,7 @@ public class FaqRestController {
     }
 
     @PatchMapping
-    @Operation(summary = "개별 상품의 faq 카테고리 수정 (순서 변경 포함)")
+    @Operation(summary = "개별 상품의 faq 카테고리 수정")
     public ApiResponse<FaqCategoryResponseDto.UpdateResultDto> updateAll(@PathVariable("sellerId") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId,
                                                                    @RequestBody @Valid List<FaqCategoryRequestDto.UpdateDto> requestList) {

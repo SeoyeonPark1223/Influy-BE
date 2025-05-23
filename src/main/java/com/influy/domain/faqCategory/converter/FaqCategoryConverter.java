@@ -23,7 +23,6 @@ public class FaqCategoryConverter {
         return FaqCategoryResponseDto.ViewDto.builder()
                 .id(faqCategory.getId())
                 .category(faqCategory.getCategory())
-                .categoryOrder(faqCategory.getCategoryOrder())
                 .build();
     }
 
@@ -56,7 +55,6 @@ public class FaqCategoryConverter {
         return FaqCategory.builder()
                 .item(item)
                 .category(request.getCategory())
-                .categoryOrder(request.getCategoryOrder())
                 .build();
     }
 
@@ -65,7 +63,6 @@ public class FaqCategoryConverter {
                 .map(f -> FaqCategoryResponseDto.ViewDto.builder()
                         .id(f.getId())
                         .category(f.getCategory())
-                        .categoryOrder(f.getCategoryOrder())
                         .build())
                 .toList();
 
