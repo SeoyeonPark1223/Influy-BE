@@ -12,4 +12,6 @@ public interface ProfileLinkRepository extends JpaRepository<ProfileLink, Long> 
     List<ProfileLink> findBySeller(Seller seller);
 
     List<ProfileLink> findAllBySellerOrderByCreatedAt(Seller seller);
+
+    Integer countBySeller(Seller seller);
 }

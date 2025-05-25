@@ -53,10 +53,6 @@ public class Seller extends BaseEntity {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<ProfileLink> profileLinkList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    @Builder.Default
     private List<Answer> answerList = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)

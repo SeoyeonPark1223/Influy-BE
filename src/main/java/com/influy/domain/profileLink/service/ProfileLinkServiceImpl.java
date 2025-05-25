@@ -28,8 +28,9 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
     @Transactional
     public ProfileLink createLinkOf(Long sellerId, ProfileLinkRequestDTO request) {
         Seller seller = sellerService.getSeller(sellerId);
+        Integer linkCount = profileLinkRepository.countBySeller(seller);
 
-        if(seller.getProfileLinkList().size()==5){
+        if(linkCount==5){
             throw new GeneralException(ErrorStatus.LINK_COUNT_LIMIT);
         }
         ProfileLink profileLink = ProfileLinkConverter.toEntity(request,seller);
