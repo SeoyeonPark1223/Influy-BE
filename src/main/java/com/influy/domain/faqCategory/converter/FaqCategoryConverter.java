@@ -11,11 +11,11 @@ import java.util.List;
 public class FaqCategoryConverter {
 
     public static FaqCategoryResponseDto.AddResultDto toAddResultDto(List<FaqCategory> faqCategoryList) {
-        List<Long> idList = faqCategoryList.stream()
-                .map(FaqCategory::getId).toList();
+        List<FaqCategoryResponseDto.ViewDto> addList = faqCategoryList.stream()
+                .map(FaqCategoryConverter::toViewDto).toList();
 
         return FaqCategoryResponseDto.AddResultDto.builder()
-                .idList(idList)
+                .addList(addList)
                 .build();
     }
 
@@ -41,12 +41,12 @@ public class FaqCategoryConverter {
                 .build();
     }
 
-    public static FaqCategoryResponseDto.ResultDto toResultDto(List<FaqCategoryRequestDto.DeleteDto> faqCategoryIdList) {
+    public static FaqCategoryResponseDto.DeleteResultDto toDeleteResultDto(List<FaqCategoryRequestDto.DeleteDto> faqCategoryIdList) {
         List<Long> idList = faqCategoryIdList.stream()
                 .map(FaqCategoryRequestDto.DeleteDto::getId)
                 .toList();
 
-        return FaqCategoryResponseDto.ResultDto.builder()
+        return FaqCategoryResponseDto.DeleteResultDto.builder()
                 .idList(idList)
                 .build();
     }

@@ -44,11 +44,11 @@ public class FaqRestController {
 
     @DeleteMapping
     @Operation(summary = "개별 상품의 faq 카테고리 삭제")
-    public ApiResponse<FaqCategoryResponseDto.ResultDto> deleteAll (@PathVariable("sellerId") Long sellerId,
-                                                                 @PathVariable("itemId") Long itemId,
-                                                                 @RequestBody @Valid List<FaqCategoryRequestDto.DeleteDto> requestList) {
+    public ApiResponse<FaqCategoryResponseDto.DeleteResultDto> deleteAll (@PathVariable("sellerId") Long sellerId,
+                                                                          @PathVariable("itemId") Long itemId,
+                                                                          @RequestBody @Valid List<FaqCategoryRequestDto.DeleteDto> requestList) {
         faqCategoryService.deleteAll(sellerId, itemId, requestList);
-        return ApiResponse.onSuccess(FaqCategoryConverter.toResultDto(requestList));
+        return ApiResponse.onSuccess(FaqCategoryConverter.toDeleteResultDto(requestList));
     }
 
     @PatchMapping

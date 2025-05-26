@@ -14,8 +14,8 @@ public class FaqCategoryResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddResultDto {
-        @Schema(description = "추가된 faq 카테고리 id 리스트", example = "[1, 2]")
-        private List<Long> idList;
+        @Schema(description = "추가된 faq 카테고리 리스트")
+        private List<ViewDto> addList;
     }
 
     @Getter
@@ -49,7 +49,7 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ResultDto {
+    public static class DeleteResultDto {
         @Schema(description = "삭제된 faq 카테고리 id 리스트", example = "[1, 2]")
         private List<Long> idList;
     }
