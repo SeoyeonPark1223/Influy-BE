@@ -1,22 +1,17 @@
 package com.influy.domain.profileLink.service;
 
+import com.influy.domain.profileLink.dto.ProfileLinkRequestDTO;
 import com.influy.domain.profileLink.entity.ProfileLink;
-import com.influy.domain.profileLink.repository.ProfileLinkRepository;
-import com.influy.domain.seller.entity.Seller;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class ProfileLinkService {
+public interface ProfileLinkService {
 
-    private final ProfileLinkRepository profileLinkRepository;
+    ProfileLink createLinkOf(Long sellerId, ProfileLinkRequestDTO request);
 
-    public List<ProfileLink> getProfileLinksOf(Seller seller) {
-        return profileLinkRepository.findBySeller(seller);
-    }
+    ProfileLink updateLinkOf(Long sellerId, Long linkId, ProfileLinkRequestDTO request);
+
+    List<ProfileLink> getLinkListOf(Long sellerId);
+
+    void deleteLinkOf(Long sellerId, Long linkId);
 }

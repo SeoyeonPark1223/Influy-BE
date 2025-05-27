@@ -1,7 +1,5 @@
 package com.influy.domain.seller.controller;
 
-import com.influy.domain.profileLink.entity.ProfileLink;
-import com.influy.domain.profileLink.service.ProfileLinkService;
 import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.service.SellerService;
@@ -12,8 +10,6 @@ import com.influy.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
