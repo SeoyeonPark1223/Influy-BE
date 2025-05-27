@@ -29,6 +29,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
+    private final SellerRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final SellerService sellerService;
@@ -52,7 +53,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Item getDetail(Long sellerId, Long itemId) {
-        sellerService.getSeller(sellerId);
+        if (!sellerRepository.existsById(sellerId)) {
+            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
 
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -61,18 +64,21 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItem(Long sellerId, Long itemId) {
-        sellerService.getSeller(sellerId);
+        Seller seller = sellerService.getSeller(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
+        seller.getItemList().remove(item);
         itemRepository.delete(item);
     }
 
     @Override
     @Transactional
     public Item updateItem(Long sellerId, Long itemId, ItemRequestDto.DetailDto request) {
-        sellerService.getSeller(sellerId);
+        if (!sellerRepository.existsById(sellerId)) {
+            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -104,7 +110,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item setAccess(Long sellerId, Long itemId, ItemRequestDto.AccessDto request) {
-        sellerService.getSeller(sellerId);
+        if (!sellerRepository.existsById(sellerId)) {
+            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -118,7 +126,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request) {
-        sellerService.getSeller(sellerId);
+        if (!sellerRepository.existsById(sellerId)) {
+            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -131,7 +141,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Integer getCount(Long sellerId, Boolean isArchived) {
-        sellerService.getSeller(sellerId);
+        if (!sellerRepository.existsById(sellerId)) {
+            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
 
         if (isArchived) return itemRepository.countBySellerIdAndIsArchivedTrue(sellerId);
         else return itemRepository.countBySellerIdAndIsArchivedFalse(sellerId);
@@ -139,7 +151,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, Integer pageNumber, ItemSortType sortType) {
-        sellerService.getSeller(sellerId);
+        if (!sellerRepository.existsById(sellerId)) {
+            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
 
         int pageSize = 10;
         String sortField = switch (sortType) {
@@ -174,7 +188,7 @@ public class ItemServiceImpl implements ItemService {
         List<String> itemCategoryStrList = request.getItemCategoryList();
         for (String str : itemCategoryStrList) {
             Category category = categoryRepository.findByCategory(str)
-                    .orElseThrow(() -> new GeneralException(ErrorStatus.CATEGORY_NOT_FOUND));
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND));
             ItemCategory itemCategory = ItemCategoryConverter.toItemCategory(category, item);
             category.getItemCategoryList().add(itemCategory);
             item.getItemCategoryList().add(itemCategory);
