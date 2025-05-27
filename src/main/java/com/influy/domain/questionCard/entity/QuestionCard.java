@@ -28,7 +28,4 @@ public class QuestionCard extends BaseEntity {
 
     @Builder.Default
     private Boolean isPinned = false;
-
-    @Builder.Default
-    private Boolean isFrequent = false;
 }
