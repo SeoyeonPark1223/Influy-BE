@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FaqCategory extends BaseEntity {
@@ -24,8 +25,6 @@ public class FaqCategory extends BaseEntity {
     private Item item;
 
     private String category;
-
-    private Integer categoryOrder;
 
     @OneToMany(mappedBy = "faqCategory", cascade = CascadeType.ALL)
     @Builder.Default
