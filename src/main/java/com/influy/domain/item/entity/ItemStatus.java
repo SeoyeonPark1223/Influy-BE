@@ -1,5 +1,5 @@
 package com.influy.domain.item.entity;
 
 public enum ItemStatus {
-    DEFAULT, SOLD_OUT
+    DEFAULT, EXTEND, SOLD_OUT
 }
