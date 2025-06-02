@@ -21,7 +21,7 @@ public class FaqCardResponseDto {
         private String questionContent;
 
         @Schema(description = "고정 여부", example = "true")
-        private boolean isPinned;
+        private boolean pinned;
     }
 
     @Getter
@@ -37,5 +37,17 @@ public class FaqCardResponseDto {
         private Long totalElements;
         private Boolean isFirst;
         private Boolean isLast;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateResultDto {
+        @Schema(description = "FAQ 카드 id", example = "1")
+        private Long id;
+
+        @Schema(description = "FAQ 질문 내용", example = "모야요")
+        private String questionContent;
     }
 }

@@ -1,7 +1,10 @@
 package com.influy.domain.faqCard.service;
 
+import com.influy.domain.faqCard.converter.FaqCardConverter;
+import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.repository.FaqCardRepository;
+import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
@@ -21,10 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class FaqCardServiceImpl implements FaqCardService {
-    private final SellerRepository sellerRepository;
-    private final ItemRepository itemRepository;
     private final FaqCategoryRepository faqCategoryRepository;
     private final FaqCardRepository faqCardRepository;
+    private final SellerRepository sellerRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -43,17 +45,33 @@ public class FaqCardServiceImpl implements FaqCardService {
         return faqCardRepository.findByFaqCategoryId(faqCategoryId, pageable);
     }
 
-    void checkAll (Long sellerId, Long itemId, Long faqCategoryId) {
-        // seller가 레포에 존재하는지 확인
-        // seller가 해당 item을 가지고 있는지 확인
-        // item이 해당 faqCategory를 가지고 있는지 확인
+    @Override
+    @Transactional
+    public FaqCard create(Long sellerId, Long itemId, Long faqCategoryId, FaqCardRequestDto.CreateDto request) {
+        FaqCategory faqCategory = checkAll(sellerId, itemId, faqCategoryId);
         Seller seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-        if (seller != item.getSeller()) throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
+
+        FaqCard faqCard = FaqCardConverter.toFaqCard(request, faqCategory, seller);
+        seller.getFaqCardList().add(faqCard);
+        faqCategory.getFaqCardList().add(faqCard);
+        return faqCardRepository.save(faqCard);
+    }
+
+    FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {
         FaqCategory faqCategory = faqCategoryRepository.findById(faqCategoryId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
-        if (item != faqCategory.getItem()) throw new GeneralException(ErrorStatus.UNMATCHED_ITEM_FAQCATEGORY);
+
+        Item item = faqCategory.getItem();
+        if (!item.getId().equals(itemId)) {
+            throw new GeneralException(ErrorStatus.UNMATCHED_ITEM_FAQCATEGORY);
+        }
+
+        Seller seller = item.getSeller();
+        if (!seller.getId().equals(sellerId)) {
+            throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
+        }
+
+        return faqCategory;
     }
 }

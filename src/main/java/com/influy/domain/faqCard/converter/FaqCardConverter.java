@@ -1,17 +1,32 @@
 package com.influy.domain.faqCard.converter;
 
+import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.faqCard.entity.FaqCard;
+import com.influy.domain.faqCategory.entity.FaqCategory;
+import com.influy.domain.seller.entity.Seller;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public class FaqCardConverter {
+    public static FaqCard toFaqCard(FaqCardRequestDto.CreateDto request, FaqCategory faqCategory, Seller seller) {
+        return FaqCard.builder()
+                .faqCategory(faqCategory)
+                .seller(seller)
+                .questionContent(request.getQuestionContent())
+                .answerContent(request.getAnswerContent())
+                .backgroundColor(request.getBackgroundColor())
+                .backgroundImageLink(request.getBackgroundImgLink())
+                .textColor(request.getTextColor())
+                .build();
+    }
+
     public static FaqCardResponseDto.QuestionCardDto toQuestionCardDto(FaqCard questionCard) {
         return FaqCardResponseDto.QuestionCardDto.builder()
                 .id(questionCard.getId())
                 .questionContent(questionCard.getQuestionContent())
-                .isPinned(questionCard.getIsPinned())
+                .pinned(questionCard.getIsPinned())
                 .build();
     }
 
@@ -26,6 +41,13 @@ public class FaqCardConverter {
                 .totalElements(questionCardPage.getTotalElements())
                 .isFirst(questionCardPage.isFirst())
                 .isLast(questionCardPage.isLast())
+                .build();
+    }
+
+    public static FaqCardResponseDto.CreateResultDto toCreateResultDto(FaqCard questionCard) {
+        return FaqCardResponseDto.CreateResultDto.builder()
+                .id(questionCard.getId())
+                .questionContent(questionCard.getQuestionContent())
                 .build();
     }
 }

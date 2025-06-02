@@ -1,6 +1,7 @@
 package com.influy.domain.faqCard.controller;
 
 import com.influy.domain.faqCard.converter.FaqCardConverter;
+import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.service.FaqCardService;
@@ -8,7 +9,9 @@ import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Check;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +31,15 @@ public class FaqCardRestController {
         Integer pageNumber = page - 1;
         Page<FaqCard> questionCardPage = faqCardService.getPage(sellerId, itemId, faqCategoryId, pageNumber);
         return ApiResponse.onSuccess(FaqCardConverter.toPageDto(questionCardPage));
+    }
+
+    @PostMapping
+    @Operation(summary = "faq 카테고리별 faq 카드 등록")
+    public ApiResponse<FaqCardResponseDto.CreateResultDto> create(@PathVariable("sellerId") Long sellerId,
+                                                           @PathVariable("itemId") Long itemId,
+                                                           @RequestParam(name = "faqCategoryId") Long faqCategoryId,
+                                                           @RequestBody @Valid FaqCardRequestDto.CreateDto request) {
+        FaqCard faqCard = faqCardService.create(sellerId, itemId, faqCategoryId, request);
+        return ApiResponse.onSuccess(FaqCardConverter.toCreateResultDto(faqCard));
     }
 }

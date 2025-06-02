@@ -68,7 +68,7 @@ public class Seller extends BaseEntity {
     @Builder.Default
     private List<Question> questionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<FaqCard> faqCardList = new ArrayList<>();
 
