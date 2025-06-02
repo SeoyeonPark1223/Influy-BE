@@ -71,4 +71,13 @@ public class FaqCardRestController {
         FaqCard faqCard = faqCardService.pinUpdate(sellerId, itemId, faqCardId, isPinned);
         return ApiResponse.onSuccess(FaqCardConverter.toQuestionCardDto(faqCard));
     }
+
+    @DeleteMapping("/{faqCardId}")
+    @Operation(summary = "각 faq 카드 삭제")
+    public ApiResponse<FaqCardResponseDto.DeleteResultDto> delete(@PathVariable("sellerId") Long sellerId,
+                                                                  @PathVariable("itemId") Long itemId,
+                                                                  @PathVariable("faqCardId") Long faqCardId) {
+        faqCardService.delete(sellerId, itemId, faqCardId);
+        return ApiResponse.onSuccess(FaqCardConverter.toDeleteResultDto(faqCardId));
+    }
 }

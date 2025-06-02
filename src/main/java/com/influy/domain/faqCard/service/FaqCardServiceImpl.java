@@ -94,6 +94,20 @@ public class FaqCardServiceImpl implements FaqCardService {
         return faqCard;
     }
 
+    @Override
+    @Transactional
+    public void delete(Long sellerId, Long itemId, Long faqCardId) {
+        FaqCard faqCard = faqCardRepository.findById(faqCardId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
+        FaqCategory faqCategory = checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+
+        faqCategory.getFaqCardList().remove(faqCard);
+        seller.getFaqCardList().remove(faqCard);
+        faqCardRepository.delete(faqCard);
+    }
+
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {
         FaqCategory faqCategory = faqCategoryRepository.findById(faqCategoryId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));

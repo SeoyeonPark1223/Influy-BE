@@ -95,4 +95,13 @@ public class FaqCardResponseDto {
         @Schema(description = "텍스트 색상 코드", example = "FFFFFF")
         private String textColor;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteResultDto {
+        @Schema(description = "FAQ 카드 id", example = "1")
+        private Long id;
+    }
 }

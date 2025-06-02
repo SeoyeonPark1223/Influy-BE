@@ -72,6 +72,12 @@ public class FaqCardConverter {
                 .build();
     }
 
+    public static FaqCardResponseDto.DeleteResultDto toDeleteResultDto(Long faqCardId) {
+        return FaqCardResponseDto.DeleteResultDto.builder()
+                .id(faqCardId)
+                .build();
+    }
+
     private static String nonNull(String value) {
         return value != null ? value : "";
     }
