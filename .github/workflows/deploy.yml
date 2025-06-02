@@ -2,7 +2,7 @@ name: CI/CD Pipeline with Docker and EC2
 
 on:
   push:
-    branches: [ "feature-25" ]
+    branches: [ "develop" ]
 
 jobs:
   build-with-docker:
