@@ -50,5 +50,15 @@ public class FaqCardConverter {
                 .questionContent(questionCard.getQuestionContent())
                 .build();
     }
+
+    public static FaqCardResponseDto.AnswerCardDto toAnswerCardDto(FaqCard faqCard) {
+        return FaqCardResponseDto.AnswerCardDto.builder()
+                .id(faqCard.getId())
+                .answerContent(faqCard.getAnswerContent())
+                .backgroundColor(faqCard.getBackgroundColor())
+                .backgroundImgLink(faqCard.getBackgroundImageLink())
+                .textColor(faqCard.getTextColor())
+                .build();
+    }
 }
 

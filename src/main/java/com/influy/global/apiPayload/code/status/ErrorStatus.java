@@ -27,11 +27,13 @@ public enum ErrorStatus implements BaseCode {
     LINK_COUNT_LIMIT(HttpStatus.FORBIDDEN, "LINK COUNT LIMIT", "링크 최대 등록 개수를 초과합니다."),
 
     // 카테고리 관련 응답
-    ITEM_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM CATEGORY NOT FOUND", "카테고리를 찾을 수 없습니다."),
+    ITEM_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM CATEGORY NOT FOUND", "아이템 카테고리를 찾을 수 없습니다."),
     FAQ_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "FAQ CATEGORY NOT FOUND", "FAQ 카테고리를 찾을 수 없습니다."),
     INVALID_FAQ_ITEM_RELATION(HttpStatus.BAD_REQUEST, "INVALID FAQ ITEM RELATION", "해당 FAQ 카테고리의 아이템을 찾을 수 없습니다."),
-    FAQ_CATEGORY_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "FAQCATEGORY ALREADY EXISTS", "해당 FAQ 카테고리가 이미 존재합니다."),
+    FAQ_CATEGORY_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "FAQ CATEGORY ALREADY EXISTS", "해당 FAQ 카테고리가 이미 존재합니다."),
 
+    // FAQ 카드 관련 응답
+    FAQ_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "FAQ CARD NOT FOUND", "FAQ 카드를 찾을 수 없습니다."),
 
     // 아이템 관련 응답
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM NOT FOUND", "아이템을 찾을 수 없습니다."),

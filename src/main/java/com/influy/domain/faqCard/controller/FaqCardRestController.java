@@ -36,10 +36,19 @@ public class FaqCardRestController {
     @PostMapping
     @Operation(summary = "faq 카테고리별 faq 카드 등록")
     public ApiResponse<FaqCardResponseDto.CreateResultDto> create(@PathVariable("sellerId") Long sellerId,
-                                                           @PathVariable("itemId") Long itemId,
-                                                           @RequestParam(name = "faqCategoryId") Long faqCategoryId,
-                                                           @RequestBody @Valid FaqCardRequestDto.CreateDto request) {
+                                                                  @PathVariable("itemId") Long itemId,
+                                                                  @RequestParam(name = "faqCategoryId") Long faqCategoryId,
+                                                                  @RequestBody @Valid FaqCardRequestDto.CreateDto request) {
         FaqCard faqCard = faqCardService.create(sellerId, itemId, faqCategoryId, request);
         return ApiResponse.onSuccess(FaqCardConverter.toCreateResultDto(faqCard));
+    }
+
+    @GetMapping("/{faqCardId}/answer-card")
+    @Operation(summary = "각 faq 카드의 답변 카드 조회")
+    public ApiResponse<FaqCardResponseDto.AnswerCardDto> getAnswerCard(@PathVariable("sellerId") Long sellerId,
+                                                                       @PathVariable("itemId") Long itemId,
+                                                                       @PathVariable("faqCardId") Long faqCardId) {
+        FaqCard faqCard = faqCardService.getAnswerCard(sellerId, itemId, faqCardId);
+        return ApiResponse.onSuccess(FaqCardConverter.toAnswerCardDto(faqCard));
     }
 }

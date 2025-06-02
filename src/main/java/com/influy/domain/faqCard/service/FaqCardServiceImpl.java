@@ -58,6 +58,16 @@ public class FaqCardServiceImpl implements FaqCardService {
         return faqCardRepository.save(faqCard);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public FaqCard getAnswerCard(Long sellerId, Long itemId, Long faqCardId) {
+        FaqCard faqCard = faqCardRepository.findById(faqCardId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
+        checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+
+        return faqCard;
+    }
+
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {
         FaqCategory faqCategory = faqCategoryRepository.findById(faqCategoryId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
