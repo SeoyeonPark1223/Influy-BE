@@ -2,7 +2,7 @@ name: CI/CD Pipeline with Docker and EC2
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "feature-25" ]
 
 jobs:
   build-with-docker:
@@ -29,6 +29,10 @@ jobs:
         env:
           RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
           RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+          S3_BUCKET: ${{ secrets.S3_BUCKETS }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_ACCESS: ${{ secrets.S3_ACCESS }}
+          S3_SECRET: ${{ secrets.S3_SECRET }}
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -40,6 +44,10 @@ jobs:
         env:
           RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
           RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+          S3_BUCKET: ${{ secrets.S3_BUCKETS }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_ACCESS: ${{ secrets.S3_ACCESS }}
+          S3_SECRET: ${{ secrets.S3_SECRET }}
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
