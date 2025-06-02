@@ -1,4 +1,4 @@
-package com.influy.domain.questionCard.dto;
+package com.influy.domain.faqCard.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-public class QuestionCardResponseDto {
+public class FaqCardResponseDto {
     @Getter
     @Builder
     @NoArgsConstructor
@@ -18,7 +18,7 @@ public class QuestionCardResponseDto {
         private Long id;
 
         @Schema(description = "질문 내용", example = "구성이 어떻게 되나요?")
-        private String content;
+        private String questionContent;
 
         @Schema(description = "고정 여부", example = "true")
         private boolean isPinned;
@@ -30,7 +30,7 @@ public class QuestionCardResponseDto {
     @AllArgsConstructor
     public static class PageDto {
         @Schema(description = "질문 카드 리스트")
-        private List<QuestionCardDto> questionCardList;
+        private List<FaqCardResponseDto.QuestionCardDto> questionCardList;
 
         private Integer listSize;
         private Integer totalPage;

@@ -1,7 +1,7 @@
 package com.influy.domain.faqCategory.entity;
 
+import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.questionCard.entity.QuestionCard;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,5 +28,5 @@ public class FaqCategory extends BaseEntity {
 
     @OneToMany(mappedBy = "faqCategory", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<QuestionCard> questionCardList = new ArrayList<>();
+    private List<FaqCard> faqCardList = new ArrayList<>();
 }

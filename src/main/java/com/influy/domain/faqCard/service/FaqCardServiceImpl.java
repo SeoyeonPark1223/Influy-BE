@@ -1,11 +1,11 @@
-package com.influy.domain.questionCard.service;
+package com.influy.domain.faqCard.service;
 
+import com.influy.domain.faqCard.entity.FaqCard;
+import com.influy.domain.faqCard.repository.FaqCardRepository;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
-import com.influy.domain.questionCard.entity.QuestionCard;
-import com.influy.domain.questionCard.repository.QuestionCardRepository;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -20,24 +20,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class QuestionCardServiceImpl implements QuestionCardService {
+public class FaqCardServiceImpl implements FaqCardService {
     private final SellerRepository sellerRepository;
     private final ItemRepository itemRepository;
     private final FaqCategoryRepository faqCategoryRepository;
-    private final QuestionCardRepository questionCardRepository;
+    private final FaqCardRepository faqCardRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<QuestionCard> getPage(Long sellerId, Long itemId, Long faqCategoryId, Integer pageNumber) {
+    public Page<FaqCard> getPage(Long sellerId, Long itemId, Long faqCategoryId, Integer pageNumber) {
         checkAll(sellerId, itemId, faqCategoryId);
 
-        // questionCard 레포에서 해당 faqCategory를 가지고 있는 카드들을 가지고 와서 페이지로 반환
-        int pageSize = 6;
-        String sortField = "createdAt";
-        Sort.Direction direction = Sort.Direction.ASC; // 먼저 등록한 질문카드가 앞쪽에 위치하도록
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortField));
+        // questionCard 중에 해당 faqCategory를 가지고 있는 카드들을 가지고 와서 페이지로 반환
+        // 정렬순서: (1) 핀된 질문 카드가 앞으로 오도록, (2) 등록이 빠른 질문 카드가 앞으로 오도록
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                pageSize,
+                Sort.by(Sort.Order.desc("isPinned"), Sort.Order.asc("createdAt"))
+        );
 
-        return questionCardRepository.findByFaqCategoryId(faqCategoryId, pageable);
+        return faqCardRepository.findByFaqCategoryId(faqCategoryId, pageable);
     }
 
     void checkAll (Long sellerId, Long itemId, Long faqCategoryId) {

@@ -27,7 +27,7 @@ public class FaqRestController {
     @Operation(summary = "개별 상품의 faq 카테고리 추가 (한번에 여러개 가능)")
     public ApiResponse<FaqCategoryResponseDto.AddResultDto> addAll (@PathVariable("sellerId") Long sellerId,
                                                                     @PathVariable("itemId") Long itemId,
-                                                                    @RequestBody @Valid List<FaqCategoryRequestDto.AddDto> requestList) {
+                                                                    @RequestBody List<FaqCategoryRequestDto.AddDto> requestList) {
         List<FaqCategory> faqCategoryList = faqCategoryService.addAll(sellerId, itemId, requestList);
         return ApiResponse.onSuccess(FaqCategoryConverter.toAddResultDto(faqCategoryList));
     }
