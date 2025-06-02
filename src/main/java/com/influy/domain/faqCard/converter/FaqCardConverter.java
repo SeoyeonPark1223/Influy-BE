@@ -54,11 +54,26 @@ public class FaqCardConverter {
     public static FaqCardResponseDto.AnswerCardDto toAnswerCardDto(FaqCard faqCard) {
         return FaqCardResponseDto.AnswerCardDto.builder()
                 .id(faqCard.getId())
-                .answerContent(faqCard.getAnswerContent())
-                .backgroundColor(faqCard.getBackgroundColor())
-                .backgroundImgLink(faqCard.getBackgroundImageLink())
-                .textColor(faqCard.getTextColor())
+                .answerContent(nonNull(faqCard.getAnswerContent()))
+                .backgroundColor(nonNull(faqCard.getBackgroundColor()))
+                .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
+                .textColor(nonNull(faqCard.getTextColor()))
                 .build();
+    }
+
+    public static FaqCardResponseDto.UpdateResultDto toUpdateResultDto(FaqCard faqCard) {
+        return FaqCardResponseDto.UpdateResultDto.builder()
+                .id(faqCard.getId())
+                .questionContent(faqCard.getQuestionContent())
+                .answerContent(nonNull(faqCard.getAnswerContent()))
+                .backgroundColor(nonNull(faqCard.getBackgroundColor()))
+                .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
+                .textColor(nonNull(faqCard.getTextColor()))
+                .build();
+    }
+
+    private static String nonNull(String value) {
+        return value != null ? value : "";
     }
 }
 

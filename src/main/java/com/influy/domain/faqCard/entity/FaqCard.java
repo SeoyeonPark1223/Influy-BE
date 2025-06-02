@@ -24,7 +24,7 @@ public class FaqCard extends BaseEntity {
     private Boolean isPinned = false;
 
     @Column(length = 300)
-    private String answerContent;
+    private String answerContent = "";
 
     @Column
     private String backgroundColor;

@@ -51,4 +51,14 @@ public class FaqCardRestController {
         FaqCard faqCard = faqCardService.getAnswerCard(sellerId, itemId, faqCardId);
         return ApiResponse.onSuccess(FaqCardConverter.toAnswerCardDto(faqCard));
     }
+
+    @PatchMapping("/{faqCardId}")
+    @Operation(summary = "각 faq 카드 수정")
+    public ApiResponse<FaqCardResponseDto.UpdateResultDto> update(@PathVariable("sellerId") Long sellerId,
+                                                                @PathVariable("itemId") Long itemId,
+                                                                @PathVariable("faqCardId") Long faqCardId,
+                                                                @RequestBody @Valid FaqCardRequestDto.UpdateDto request) {
+        FaqCard faqCard = faqCardService.update(sellerId, itemId, faqCardId, request);
+        return ApiResponse.onSuccess(FaqCardConverter.toUpdateResultDto(faqCard));
+    }
 }

@@ -71,4 +71,28 @@ public class FaqCardResponseDto {
         @Schema(description = "텍스트 색상 코드", example = "FFFFFF")
         private String textColor;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateResultDto {
+        @Schema(description = "FAQ 카드 id", example = "1")
+        private Long id;
+
+        @Schema(description = "FAQ 질문 내용", example = "모야요")
+        private String questionContent;
+
+        @Schema(description = "FAQ 답변 내용", example = "이건 이거입니당")
+        private String answerContent;
+
+        @Schema(description = "배경 색상 코드", example = "FFFFFF")
+        private String backgroundColor;
+
+        @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
+        private String backgroundImgLink;
+
+        @Schema(description = "텍스트 색상 코드", example = "FFFFFF")
+        private String textColor;
+    }
 }

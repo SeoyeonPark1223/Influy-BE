@@ -4,11 +4,9 @@ import com.influy.domain.faqCard.converter.FaqCardConverter;
 import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.repository.FaqCardRepository;
-import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -64,6 +62,21 @@ public class FaqCardServiceImpl implements FaqCardService {
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
         checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+
+        return faqCard;
+    }
+
+    @Override
+    public FaqCard update(Long sellerId, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request) {
+        FaqCard faqCard = faqCardRepository.findById(faqCardId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
+        checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+
+        if (request.getQuestionContent() != null) faqCard.setQuestionContent(request.getQuestionContent());
+        if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent());
+        if (request.getBackgroundColor() != null) faqCard.setBackgroundColor(request.getBackgroundColor());
+        if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink());
+        if (request.getTextColor() != null) faqCard.setTextColor(request.getTextColor());
 
         return faqCard;
     }
