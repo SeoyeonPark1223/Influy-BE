@@ -55,10 +55,20 @@ public class FaqCardRestController {
     @PatchMapping("/{faqCardId}")
     @Operation(summary = "각 faq 카드 수정")
     public ApiResponse<FaqCardResponseDto.UpdateResultDto> update(@PathVariable("sellerId") Long sellerId,
-                                                                @PathVariable("itemId") Long itemId,
-                                                                @PathVariable("faqCardId") Long faqCardId,
-                                                                @RequestBody @Valid FaqCardRequestDto.UpdateDto request) {
+                                                                  @PathVariable("itemId") Long itemId,
+                                                                  @PathVariable("faqCardId") Long faqCardId,
+                                                                  @RequestBody @Valid FaqCardRequestDto.UpdateDto request) {
         FaqCard faqCard = faqCardService.update(sellerId, itemId, faqCardId, request);
         return ApiResponse.onSuccess(FaqCardConverter.toUpdateResultDto(faqCard));
+    }
+
+    @PatchMapping("/{faqCardId}/pin")
+    @Operation(summary = "각 faq 카드 상단 고정 여부 수정")
+    public ApiResponse<FaqCardResponseDto.QuestionCardDto> pinUpdate(@PathVariable("sellerId") Long sellerId,
+                                                                     @PathVariable("itemId") Long itemId,
+                                                                     @PathVariable("faqCardId") Long faqCardId,
+                                                                     @RequestParam(name = "isPinned", defaultValue = "false") boolean isPinned) {
+        FaqCard faqCard = faqCardService.pinUpdate(sellerId, itemId, faqCardId, isPinned);
+        return ApiResponse.onSuccess(FaqCardConverter.toQuestionCardDto(faqCard));
     }
 }

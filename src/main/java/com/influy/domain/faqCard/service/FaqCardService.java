@@ -9,4 +9,5 @@ public interface FaqCardService {
     FaqCard create(Long sellerId, Long itemId, Long faqCategoryId, FaqCardRequestDto.CreateDto request);
     FaqCard getAnswerCard(Long sellerId, Long itemId, Long faqCardId);
     FaqCard update(Long sellerId, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request);
+    FaqCard pinUpdate(Long sellerId, Long itemId, Long faqCardId, boolean isPinned);
 }

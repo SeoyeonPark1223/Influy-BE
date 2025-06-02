@@ -67,6 +67,7 @@ public class FaqCardServiceImpl implements FaqCardService {
     }
 
     @Override
+    @Transactional
     public FaqCard update(Long sellerId, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request) {
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
@@ -77,6 +78,18 @@ public class FaqCardServiceImpl implements FaqCardService {
         if (request.getBackgroundColor() != null) faqCard.setBackgroundColor(request.getBackgroundColor());
         if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink());
         if (request.getTextColor() != null) faqCard.setTextColor(request.getTextColor());
+
+        return faqCard;
+    }
+
+    @Override
+    @Transactional
+    public FaqCard pinUpdate(Long sellerId, Long itemId, Long faqCardId, boolean isPinned) {
+        FaqCard faqCard = faqCardRepository.findById(faqCardId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
+        checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+
+        faqCard.setIsPinned(isPinned);
 
         return faqCard;
     }
