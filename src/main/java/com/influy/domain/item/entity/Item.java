@@ -57,7 +57,7 @@ public class Item extends BaseEntity {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 완판]
+    private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
     @NotBlank
     private String marketLink;

@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> {
     Page<FaqCategory> findAllByItemId(Long itemId, Pageable pageable);
+    boolean existsByItemIdAndCategory(Long itemId, String category);
 }
