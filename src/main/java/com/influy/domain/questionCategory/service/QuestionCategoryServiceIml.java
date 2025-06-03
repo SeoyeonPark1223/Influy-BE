@@ -2,6 +2,7 @@ package com.influy.domain.questionCategory.service;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.JPQLQuestionDTO;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.repository.QuestionRepository;
@@ -91,12 +92,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
 
             categoryMap.putIfAbsent(
                     result.getCategoryId(),
-                    QuestionCategoryResponseDTO.Preview.builder()
-                            .id(result.getCategoryId())
-                            .name(result.getCategoryName())
-                            .answeredCnt(0)
-                            .pendingCnt(0)
-                            .build()
+                    QuestionCategoryConverter.toPreviewDTO(result)
             );
 
             //------여기서부터는 모든 categoryId는 Map에 무조건 존재----
@@ -118,15 +114,10 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
 
             if(row[0]!=null){//질문이 존재하면 dto의 questionList에 추가해준다.
                 QuestionCategoryResponseDTO.Preview dto = categoryMap.get(categoryId);
-                dto.getQuestions().add(
-                        QuestionResponseDTO.General.builder()
-                                .id(((Number) row[0]).longValue())
-                                .nickname(userRepository.findById((Long) row[1]).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND)).getNickname())
-                                .content((String) row[2])
-                                .createdAt(((Timestamp) row[3]).toLocalDateTime())
-                                .itemPeriod((Integer) row[4])
-                                .build()
-                );
+
+                String nickname = userRepository.findById((Long) row[1]).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND)).getNickname();
+
+                dto.getQuestions().add(QuestionConverter.toGeneralDTO(row,nickname));
             }
 
         }

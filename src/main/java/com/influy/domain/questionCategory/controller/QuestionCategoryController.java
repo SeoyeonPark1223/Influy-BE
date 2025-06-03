@@ -58,20 +58,6 @@ public class QuestionCategoryController {
         return ApiResponse.onSuccess(body);
     }
 
-    //질문 카테고리 수정
-    @PutMapping
-    @Operation(summary = "질문 카테고리 수정",description = "질문 카테고리를 수정합니다. 수정할거 이름밖에 없지않나")
-    public ApiResponse<QuestionCategory> updateCategory(@PathVariable("itemId") Long itemId,
-                                                        @PathVariable("sellerId") Long sellerId) {
-        return null;
-    }
 
-    //질문 카테고리 삭제
-    @DeleteMapping
-    @Operation(summary = "질문 카테고리 삭제",description = "질문 카테고리를 삭제합니다. 해당 질문 카테고리에 속한 질문들은 기타 카테고리로 옮겨집니다.")
-    public ApiResponse<QuestionCategory> deleteCategory(@PathVariable("itemId") Long itemId,
-                                                        @PathVariable("sellerId") Long sellerId) {
-        return null;
-    }
 
 }
