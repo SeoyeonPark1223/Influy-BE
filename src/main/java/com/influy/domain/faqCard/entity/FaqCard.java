@@ -27,13 +27,7 @@ public class FaqCard extends BaseEntity {
     private String answerContent = "";
 
     @Column
-    private String backgroundColor;
-
-    @Column
     private String backgroundImageLink;
-
-    @Column
-    private String textColor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faq_category_id")

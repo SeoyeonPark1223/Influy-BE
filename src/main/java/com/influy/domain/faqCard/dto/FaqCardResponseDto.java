@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FaqCardResponseDto {
@@ -47,7 +48,7 @@ public class FaqCardResponseDto {
         @Schema(description = "FAQ 카드 id", example = "1")
         private Long id;
 
-        @Schema(description = "FAQ 질문 내용", example = "모야요")
+        @Schema(description = "FAQ 질문 내용", example = "모야요??")
         private String questionContent;
     }
 
@@ -59,17 +60,23 @@ public class FaqCardResponseDto {
         @Schema(description = "FAQ 카드 id", example = "1")
         private Long id;
 
+        @Schema(description = "고정 여부", example = "true")
+        private boolean pinned;
+
+        @Schema(description = "FAQ 질문 내용", example = "모야요??")
+        private String questionContent;
+
         @Schema(description = "FAQ 답변 내용", example = "이건 이거입니당")
         private String answerContent;
-
-        @Schema(description = "배경 색상 코드", example = "FFFFFF")
-        private String backgroundColor;
 
         @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
         private String backgroundImgLink;
 
-        @Schema(description = "텍스트 색상 코드", example = "FFFFFF")
-        private String textColor;
+        @Schema(description = "FAQ 카테고리", example = "색상")
+        private String faqCategory;
+
+        @Schema(description = "생성일", example = "2021-01-01T00:00")
+        private LocalDateTime createdAt;
     }
 
     @Getter
@@ -86,14 +93,8 @@ public class FaqCardResponseDto {
         @Schema(description = "FAQ 답변 내용", example = "이건 이거입니당")
         private String answerContent;
 
-        @Schema(description = "배경 색상 코드", example = "FFFFFF")
-        private String backgroundColor;
-
         @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
         private String backgroundImgLink;
-
-        @Schema(description = "텍스트 색상 코드", example = "FFFFFF")
-        private String textColor;
     }
 
     @Getter

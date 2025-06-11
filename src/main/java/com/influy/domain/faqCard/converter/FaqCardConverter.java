@@ -16,9 +16,7 @@ public class FaqCardConverter {
                 .seller(seller)
                 .questionContent(request.getQuestionContent())
                 .answerContent(request.getAnswerContent())
-                .backgroundColor(request.getBackgroundColor())
                 .backgroundImageLink(request.getBackgroundImgLink())
-                .textColor(request.getTextColor())
                 .build();
     }
 
@@ -54,10 +52,12 @@ public class FaqCardConverter {
     public static FaqCardResponseDto.AnswerCardDto toAnswerCardDto(FaqCard faqCard) {
         return FaqCardResponseDto.AnswerCardDto.builder()
                 .id(faqCard.getId())
+                .questionContent(faqCard.getQuestionContent())
+                .pinned(faqCard.getIsPinned())
                 .answerContent(nonNull(faqCard.getAnswerContent()))
-                .backgroundColor(nonNull(faqCard.getBackgroundColor()))
+                .faqCategory(faqCard.getFaqCategory().getCategory())
+                .createdAt(faqCard.getCreatedAt())
                 .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
-                .textColor(nonNull(faqCard.getTextColor()))
                 .build();
     }
 
@@ -66,9 +66,7 @@ public class FaqCardConverter {
                 .id(faqCard.getId())
                 .questionContent(faqCard.getQuestionContent())
                 .answerContent(nonNull(faqCard.getAnswerContent()))
-                .backgroundColor(nonNull(faqCard.getBackgroundColor()))
                 .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
-                .textColor(nonNull(faqCard.getTextColor()))
                 .build();
     }
 
