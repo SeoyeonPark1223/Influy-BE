@@ -4,7 +4,6 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.JPQLQuestionDTO;
-import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDTO;
@@ -12,7 +11,7 @@ import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.service.SellerService;
+import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.domain.user.repository.UserRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
@@ -22,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +30,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuestionCategoryServiceIml implements QuestionCategoryService{
 
-    private final SellerService sellerService;
+    private final SellerServiceImpl sellerService;
     private final ItemRepository itemRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionRepository questionRepository;

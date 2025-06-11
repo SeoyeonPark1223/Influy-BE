@@ -5,11 +5,10 @@ import com.influy.domain.profileLink.dto.ProfileLinkRequestDTO;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.profileLink.repository.ProfileLinkRepository;
 import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.service.SellerService;
+import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ import java.util.List;
 public class ProfileLinkServiceImpl implements ProfileLinkService {
 
     private final ProfileLinkRepository profileLinkRepository;
-    private final SellerService sellerService;
+    private final SellerServiceImpl sellerService;
 
     //링크 생성
     @Override
