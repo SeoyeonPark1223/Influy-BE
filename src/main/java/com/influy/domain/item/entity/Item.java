@@ -57,7 +57,7 @@ public class Item extends BaseEntity {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 완판]
+    private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
     @NotBlank
     private String marketLink;
@@ -67,7 +67,7 @@ public class Item extends BaseEntity {
     @Builder.Default
     private Boolean isArchived = false; //보관 여부
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<FaqCategory> faqCategoryList = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public class Item extends BaseEntity {
     @Builder.Default
     private List<ItemCategory> itemCategoryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<QuestionCategory> questionCategoryList = new ArrayList<>();
 

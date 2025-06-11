@@ -1,7 +1,7 @@
 package com.influy.domain.faqCategory.entity;
 
+import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.questionCard.entity.QuestionCard;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FaqCategory extends BaseEntity {
@@ -25,9 +26,7 @@ public class FaqCategory extends BaseEntity {
 
     private String category;
 
-    private Integer categoryOrder;
-
-    @OneToMany(mappedBy = "faqCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "faqCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<QuestionCard> questionCardList = new ArrayList<>();
+    private List<FaqCard> faqCardList = new ArrayList<>();
 }

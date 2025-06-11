@@ -2,10 +2,10 @@ package com.influy.domain.seller.entity;
 
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.answer.entity.Answer;
+import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.question.entity.Question;
-import com.influy.domain.questionCard.entity.QuestionCard;
 import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -58,10 +58,6 @@ public class Seller extends BaseEntity {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<ProfileLink> profileLinkList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    @Builder.Default
     private List<Answer> answerList = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
@@ -72,9 +68,9 @@ public class Seller extends BaseEntity {
     @Builder.Default
     private List<Question> questionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<QuestionCard> questionCardList = new ArrayList<>();
+    private List<FaqCard> faqCardList = new ArrayList<>();
 
 
     public Seller setProfile(SellerRequestDTO.UpdateProfile requestBody){

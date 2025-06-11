@@ -28,5 +28,15 @@ public class ProfileLink extends BaseEntity {
     @NotBlank
     private String link;
 
+    public ProfileLink setLinkName(String name){
+        this.linkName = name;
+        return this;
+    }
+
+    public ProfileLink setLink(String link){
+        this.link = link;
+        return this;
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.influy.domain.questionCard.entity;
+package com.influy.domain.faqCard.entity;
 
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.seller.entity.Seller;
@@ -9,12 +9,31 @@ import lombok.*;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionCard extends BaseEntity {
+public class FaqCard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 150)
+    private String questionContent;
+
+    @Builder.Default
+    private Boolean isPinned = false;
+
+    @Column(length = 300)
+    private String answerContent = "";
+
+    @Column
+    private String backgroundColor;
+
+    @Column
+    private String backgroundImageLink;
+
+    @Column
+    private String textColor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faq_category_id")
@@ -23,12 +42,5 @@ public class QuestionCard extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
-
-    private String content;
-
-    @Builder.Default
-    private Boolean isPinned = false;
-
-    @Builder.Default
-    private Boolean isFrequent = false;
 }
+
