@@ -47,7 +47,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {
-            throw new GeneralException(ErrorStatus.FORBIDDEN);
+            throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
         }
 
         //생성 로직
@@ -66,7 +66,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {
-            throw new GeneralException(ErrorStatus.FORBIDDEN);
+            throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
         }
 
         return questionCategoryRepository.findAllByItem(item,pageable);
