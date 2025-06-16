@@ -33,9 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionCategory questionCategory = questionCategoryRepository.findById(questionCategoryId).orElseThrow(
                 ()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
 
-        Page<Question> questions = questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategory,isAnswered,pageable);
-
-        return null;
+        return questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategory,isAnswered,pageable);
     }
 
 

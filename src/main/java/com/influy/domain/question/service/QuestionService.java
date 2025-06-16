@@ -12,4 +12,5 @@ public interface QuestionService {
     Page<Question> getQuestionList(QuestionCategory category, Pageable p);
 
     Page<Question> getQuestionsByCategory(Long questionCategoryId, Boolean isAnswered, Pageable pageable);
+
 }
