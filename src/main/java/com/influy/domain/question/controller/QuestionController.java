@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name="질문 관리")
 @RequiredArgsConstructor
-@RequestMapping("seller/items/{itemId}/questions/{questionCategoryId}/{sellerId}")//sellerID 파라미터..어케할건지
+@RequestMapping("seller/items/{itemId}/questions/{questionCategoryId}")//sellerID 파라미터..어케할건지
 public class QuestionController {
     private final SellerService sellerService;
     private final QuestionService questionService;
@@ -27,7 +27,7 @@ public class QuestionController {
     @Operation(summary = "각 카테고리별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
     public ApiResponse<Object> getQuestions(@PathVariable("itemId") Long itemId,
                                             @PathVariable("questionCategoryId") Long questionCategoryId,
-                                            @PathVariable("sellerId") Long sellerId,
+                                            @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                             @RequestParam(value = "isAnswered",defaultValue = "true") Boolean isAnswered,
                                             @ParameterObject Pageable pageable) {
 

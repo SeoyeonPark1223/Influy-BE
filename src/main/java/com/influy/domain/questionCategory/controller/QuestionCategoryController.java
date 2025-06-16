@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("seller/items/{itemId}/questions/categories/{sellerId}")//로그인 구현 시 sellerID 삭제
+@RequestMapping("seller/items/{itemId}/questions/categories")//로그인 구현 시 sellerID 삭제
 @RequiredArgsConstructor
 @Tag(name ="질문 카테고리")
 public class QuestionCategoryController {
@@ -35,8 +35,8 @@ public class QuestionCategoryController {
     @PostMapping
     @Operation(summary = "질문 카테고리 추가",description = "특정 아이템에 질문 카테고리를 추가합니다")
     public ApiResponse<QuestionCategoryResponseDTO.General> createCategory(@PathVariable("itemId") Long itemId,
-                                                        @PathVariable("sellerId") Long sellerId,
-                                                        @RequestBody QuestionCategoryRequestDTO.Create request) {
+                                                                           @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+                                                                           @RequestBody QuestionCategoryRequestDTO.Create request) {
 
         QuestionCategory category = questionCategoryService.createCategory(sellerId,itemId,request);
         QuestionCategoryResponseDTO.General body = QuestionCategoryConverter.toGeneralDTO(category,0,0);
@@ -48,7 +48,7 @@ public class QuestionCategoryController {
     @GetMapping
     @Operation(summary = "질문 카테고리 리스트+질문2개",description = "질문 카테고리 리스트와 함께 해당 카테고리의 최신 질문 2개를 제공")
     public ApiResponse<List<QuestionCategoryResponseDTO.Preview>> getCategoriesAnd2Question(@PathVariable("itemId") Long itemId,
-                                                                                            @PathVariable("sellerId") Long sellerId,
+                                                                                            @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                    @ParameterObject Pageable pageable) {
 
         Page<QuestionCategory> categories = questionCategoryService.getCategoryList(sellerId,itemId,pageable);
