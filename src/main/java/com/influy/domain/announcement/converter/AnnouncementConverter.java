@@ -12,7 +12,7 @@ public class AnnouncementConverter {
                 .title(requestDTO.getTitle())
                 .content(requestDTO.getContent())
                 .seller(seller)
-                .isPrimary(requestDTO.getIsPrimary())
+                .isPrimary(false)
                 .build();
     }
 

@@ -20,9 +20,10 @@ import java.util.List;
 public class ProfileLinkController {
     private final ProfileLinkService profileLinkServiceImpl;
     //링크 생성
-    @PostMapping("/{sellerId}")
+    @PostMapping("")
     @Operation(summary = "링크 추가",description = "링크를 추가합니다.")
-    public ApiResponse<ProfileLinkResponseDTO.General> createLink(@PathVariable("sellerId")Long sellerId, @RequestBody ProfileLinkRequestDTO request){
+    public ApiResponse<ProfileLinkResponseDTO.General> createLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
+                                                                  @RequestBody ProfileLinkRequestDTO request){
 
         ProfileLink profileLink = profileLinkServiceImpl.createLinkOf(sellerId, request);
 
@@ -32,9 +33,9 @@ public class ProfileLinkController {
     }
 
     //링크 수정
-    @PatchMapping("/{sellerId}/{linkId}")
+    @PatchMapping("/{linkId}")
     @Operation(summary = "링크 수정",description = "링크를 수정합니다.")
-    public ApiResponse<ProfileLinkResponseDTO.General> updateLink(@PathVariable("sellerId")Long sellerId,
+    public ApiResponse<ProfileLinkResponseDTO.General> updateLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
                                                                   @PathVariable("linkId") Long linkId,
                                                                   @RequestBody ProfileLinkRequestDTO request){
 
@@ -46,9 +47,9 @@ public class ProfileLinkController {
     }
 
     //링크 리스트 조회
-    @GetMapping("/{sellerId}")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
+    @GetMapping("")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
     @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다.")
-    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId){
+    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId){
 
         List<ProfileLink> profileLinks = profileLinkServiceImpl.getLinkListOf(sellerId);
 
@@ -59,9 +60,9 @@ public class ProfileLinkController {
 
     //링크 삭제
 
-    @DeleteMapping("/{sellerId}/{linkId}")
+    @PostMapping("/{linkId}")
     @Operation(summary = "링크 삭제",description = "링크를 삭제합니다.")
-    public ApiResponse<String> deleteLink(@PathVariable("sellerId")Long sellerId,
+    public ApiResponse<String> deleteLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
                                           @PathVariable("linkId") Long linkId){
 
         profileLinkServiceImpl.deleteLinkOf(sellerId,linkId);

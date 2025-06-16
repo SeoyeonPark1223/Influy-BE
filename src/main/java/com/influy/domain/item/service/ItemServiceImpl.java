@@ -13,7 +13,7 @@ import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
-import com.influy.domain.seller.service.SellerService;
+import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
     private final SellerRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
-    private final SellerService sellerService;
+    private final SellerServiceImpl sellerService;
 
     @Override
     @Transactional

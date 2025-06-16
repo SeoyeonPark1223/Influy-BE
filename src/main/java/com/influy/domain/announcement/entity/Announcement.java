@@ -29,19 +29,19 @@ public class Announcement extends BaseEntity {
     @Builder.Default
     private Boolean isPrimary = false;
 
-    public Announcement updateAnnouncement(AnnouncementRequestDTO requestDTO){
+    public Announcement updateAnnouncement(AnnouncementRequestDTO requestDTO, Boolean isPrimary){
         if(requestDTO.getTitle() != null){
             this.title = requestDTO.getTitle();
         }
         if(requestDTO.getContent() != null){
             this.content = requestDTO.getContent();
         }
-        if(requestDTO.getIsPrimary() != null){
+        if(isPrimary != null){
 
-            if(requestDTO.getIsPrimary()){ //이 공지를 최상단 공지로 등록하는 요청일 경우
+            if(isPrimary){ //이 공지를 최상단 공지로 등록하는 요청일 경우
                 this.seller.setPrimaryAnnouncement(this); //나로 등록
             }
-            this.isPrimary = requestDTO.getIsPrimary();
+            this.isPrimary = isPrimary;
         }
         return this;
     }

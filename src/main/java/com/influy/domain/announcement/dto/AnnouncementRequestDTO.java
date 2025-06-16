@@ -6,5 +6,4 @@ import lombok.Getter;
 public class AnnouncementRequestDTO {
     private String title;
     private String content;
-    private Boolean isPrimary;
 }
