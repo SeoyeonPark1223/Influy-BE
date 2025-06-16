@@ -76,7 +76,7 @@ public class ItemRestController {
     }
 
     @PatchMapping("/{itemId}/status")
-    @Operation(summary = "개별 상품 표기 상태 설정")
+    @Operation(summary = "개별 상품 표기 상태 설정 | DEFAULT, EXTEND, SOLD_OUT")
     public ApiResponse<ItemResponseDto.ResultDto> setStatus(@PathVariable("sellerId") Long sellerId,
                                                             @PathVariable("itemId") Long itemId,
                                                             @RequestBody @Valid ItemRequestDto.StatusDto request) {

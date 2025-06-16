@@ -150,6 +150,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, Integer pageNumber, ItemSortType sortType) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);

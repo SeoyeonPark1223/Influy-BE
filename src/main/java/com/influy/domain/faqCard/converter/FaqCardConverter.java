@@ -1,0 +1,85 @@
+package com.influy.domain.faqCard.converter;
+
+import com.influy.domain.faqCard.dto.FaqCardRequestDto;
+import com.influy.domain.faqCard.dto.FaqCardResponseDto;
+import com.influy.domain.faqCard.entity.FaqCard;
+import com.influy.domain.faqCategory.entity.FaqCategory;
+import com.influy.domain.seller.entity.Seller;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+public class FaqCardConverter {
+    public static FaqCard toFaqCard(FaqCardRequestDto.CreateDto request, FaqCategory faqCategory, Seller seller) {
+        return FaqCard.builder()
+                .faqCategory(faqCategory)
+                .seller(seller)
+                .questionContent(request.getQuestionContent())
+                .answerContent(request.getAnswerContent())
+                .backgroundColor(request.getBackgroundColor())
+                .backgroundImageLink(request.getBackgroundImgLink())
+                .textColor(request.getTextColor())
+                .build();
+    }
+
+    public static FaqCardResponseDto.QuestionCardDto toQuestionCardDto(FaqCard questionCard) {
+        return FaqCardResponseDto.QuestionCardDto.builder()
+                .id(questionCard.getId())
+                .questionContent(questionCard.getQuestionContent())
+                .pinned(questionCard.getIsPinned())
+                .build();
+    }
+
+    public static FaqCardResponseDto.PageDto toPageDto(Page<FaqCard> questionCardPage) {
+        List<FaqCardResponseDto.QuestionCardDto> questionCardDtoList = questionCardPage.stream()
+                .map(FaqCardConverter::toQuestionCardDto).toList();
+
+        return FaqCardResponseDto.PageDto.builder()
+                .questionCardList(questionCardDtoList)
+                .listSize(questionCardPage.getContent().size())
+                .totalPage(questionCardPage.getTotalPages())
+                .totalElements(questionCardPage.getTotalElements())
+                .isFirst(questionCardPage.isFirst())
+                .isLast(questionCardPage.isLast())
+                .build();
+    }
+
+    public static FaqCardResponseDto.CreateResultDto toCreateResultDto(FaqCard questionCard) {
+        return FaqCardResponseDto.CreateResultDto.builder()
+                .id(questionCard.getId())
+                .questionContent(questionCard.getQuestionContent())
+                .build();
+    }
+
+    public static FaqCardResponseDto.AnswerCardDto toAnswerCardDto(FaqCard faqCard) {
+        return FaqCardResponseDto.AnswerCardDto.builder()
+                .id(faqCard.getId())
+                .answerContent(nonNull(faqCard.getAnswerContent()))
+                .backgroundColor(nonNull(faqCard.getBackgroundColor()))
+                .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
+                .textColor(nonNull(faqCard.getTextColor()))
+                .build();
+    }
+
+    public static FaqCardResponseDto.UpdateResultDto toUpdateResultDto(FaqCard faqCard) {
+        return FaqCardResponseDto.UpdateResultDto.builder()
+                .id(faqCard.getId())
+                .questionContent(faqCard.getQuestionContent())
+                .answerContent(nonNull(faqCard.getAnswerContent()))
+                .backgroundColor(nonNull(faqCard.getBackgroundColor()))
+                .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
+                .textColor(nonNull(faqCard.getTextColor()))
+                .build();
+    }
+
+    public static FaqCardResponseDto.DeleteResultDto toDeleteResultDto(Long faqCardId) {
+        return FaqCardResponseDto.DeleteResultDto.builder()
+                .id(faqCardId)
+                .build();
+    }
+
+    private static String nonNull(String value) {
+        return value != null ? value : "";
+    }
+}
+

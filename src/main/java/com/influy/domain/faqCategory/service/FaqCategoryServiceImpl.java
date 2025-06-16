@@ -38,6 +38,10 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         List<FaqCategory> faqCategoryList = new ArrayList<>();
 
         for (FaqCategoryRequestDto.AddDto request : requestList) {
+            // 중복 체크
+            boolean exists = faqCategoryRepository.existsByItemIdAndCategory(itemId, request.getCategory());
+            if (exists) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_ALREADY_EXISTS);
+
             FaqCategory newFaqCategory= FaqCategoryConverter.toFaqCategory(request, item);
             faqCategoryList.add(newFaqCategory);
             item.getFaqCategoryList().add(newFaqCategory);
