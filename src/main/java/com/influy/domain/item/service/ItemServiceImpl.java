@@ -16,6 +16,7 @@ import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -151,12 +152,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, Integer pageNumber, ItemSortType sortType) {
+    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
-        int pageSize = 10;
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
             case END_DATE -> "endDate";
@@ -167,7 +167,7 @@ public class ItemServiceImpl implements ItemService {
             case END_DATE -> Sort.Direction.ASC;     // 마감일 빠른순
         };
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortField));
+        Pageable pageable = pageRequest.toPageable(Sort.by(direction, sortField));
 
         if (isArchived) {
             return itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);

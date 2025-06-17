@@ -11,9 +11,9 @@ import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.repository.SellerRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,15 +28,12 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FaqCard> getPage(Long sellerId, Long itemId, Long faqCategoryId, Integer pageNumber) {
+    public Page<FaqCard> getPage(Long sellerId, Long itemId, Long faqCategoryId, PageRequestDto pageRequest) {
         checkAll(sellerId, itemId, faqCategoryId);
 
         // questionCard 중에 해당 faqCategory를 가지고 있는 카드들을 가지고 와서 페이지로 반환
         // 정렬순서: (1) 핀된 질문 카드가 앞으로 오도록, (2) 등록이 빠른 질문 카드가 앞으로 오도록
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(
-                pageNumber,
-                pageSize,
+        Pageable pageable = pageRequest.toPageable(
                 Sort.by(Sort.Order.desc("isPinned"), Sort.Order.asc("createdAt"))
         );
 

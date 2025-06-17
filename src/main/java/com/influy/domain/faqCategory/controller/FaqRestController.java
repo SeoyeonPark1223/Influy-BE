@@ -6,11 +6,13 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.service.FaqCategoryService;
 import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.common.PageRequestDto;
 import com.influy.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +38,8 @@ public class FaqRestController {
     @Operation(summary = "개별 상품의 faq 카테고리 리스트 조회 (등록순 정렬)")
     public ApiResponse<FaqCategoryResponseDto.PageDto> getPage (@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId,
-                                                                @CheckPage @RequestParam(name = "page") Integer page) {
-        Integer pageNumber = page - 1;
-        Page<FaqCategory> faqCategoryPage = faqCategoryService.getPage(sellerId, itemId, pageNumber);
+                                                                @Valid @ParameterObject PageRequestDto pageRequest) {
+        Page<FaqCategory> faqCategoryPage = faqCategoryService.getPage(sellerId, itemId, pageRequest);
         return ApiResponse.onSuccess(FaqCategoryConverter.toPageDto(faqCategoryPage));
     }
 
