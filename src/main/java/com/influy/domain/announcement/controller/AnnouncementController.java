@@ -5,7 +5,7 @@ import com.influy.domain.announcement.dto.AnnouncementRequestDTO;
 import com.influy.domain.announcement.dto.AnnouncementResponseDTO;
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.announcement.service.AnnouncementService;
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.announcement.service.AnnouncementServiceImpl;
 import com.influy.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -73,9 +73,10 @@ public class AnnouncementController {
     @Operation(summary = "공지 수정",description ="셀러가 개별 공지 수정" )
     public ApiResponse<AnnouncementResponseDTO.General> updateAnnouncement(@PathVariable("announcementId") Long announcementId,
                                                                            @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
-                                                                           @RequestBody AnnouncementRequestDTO requestDTO) {
+                                                                           @RequestParam(value="isPrimary", required = false) Boolean isPrimary,
+                                                                           @RequestBody(required = false) AnnouncementRequestDTO requestDTO) {
 
-        Announcement announcement = announcementService.updateAnnouncement(announcementId, requestDTO, sellerId);
+        Announcement announcement = announcementService.updateAnnouncement(announcementId, requestDTO, sellerId,isPrimary);
         AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
         return ApiResponse.onSuccess(body);
     }
