@@ -74,7 +74,7 @@ public class AnnouncementController {
     public ApiResponse<AnnouncementResponseDTO.General> updateAnnouncement(@PathVariable("announcementId") Long announcementId,
                                                                            @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                            @RequestParam(value="isPrimary", required = false) Boolean isPrimary,
-                                                                           @RequestBody AnnouncementRequestDTO requestDTO) {
+                                                                           @RequestBody(required = false) AnnouncementRequestDTO requestDTO) {
 
         Announcement announcement = announcementService.updateAnnouncement(announcementId, requestDTO, sellerId,isPrimary);
         AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
