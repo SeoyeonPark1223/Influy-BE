@@ -75,9 +75,7 @@ public class FaqCardServiceImpl implements FaqCardService {
 
         if (request.getQuestionContent() != null) faqCard.setQuestionContent(request.getQuestionContent());
         if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent());
-        if (request.getBackgroundColor() != null) faqCard.setBackgroundColor(request.getBackgroundColor());
         if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink());
-        if (request.getTextColor() != null) faqCard.setTextColor(request.getTextColor());
 
         return faqCard;
     }
