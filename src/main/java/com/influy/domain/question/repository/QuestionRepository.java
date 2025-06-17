@@ -47,4 +47,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         """,nativeQuery = true)
     List<Object[]> get2QuestionsInCategory(@Param("itemId") Long itemId);
 
+    Page<Question> findAllByQuestionCategoryAndIsAnswered(QuestionCategory questionCategory, Boolean isAnswered, Pageable pageable);
 }

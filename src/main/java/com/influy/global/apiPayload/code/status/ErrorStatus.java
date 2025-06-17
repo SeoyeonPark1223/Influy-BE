@@ -40,6 +40,9 @@ public enum ErrorStatus implements BaseCode {
     UNMATCHED_SELLER_ITEM(HttpStatus.BAD_REQUEST, "UNMATCHED SELLER ITEM", "셀러가 해당 아이템을 가지고 있지 않습니다."),
     UNMATCHED_ITEM_FAQCATEGORY(HttpStatus.BAD_REQUEST, "UNMATCHED ITEM FAQCATEGORY", "아이템이 해당 FAQ 카테고리를 가지고 있지 않습니다."),
 
+    //질문관리창 관련 응당
+    QUESTION_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION CATEGORY NOT FOUND", "질문 카테고리를 찾을 수 없습니다."),
+
     // 정렬 관련 응답
     UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식은 CREATE_DATE, END_DATE 입니다.");
 

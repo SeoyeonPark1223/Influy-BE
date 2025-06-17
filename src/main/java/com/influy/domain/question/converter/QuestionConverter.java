@@ -3,6 +3,7 @@ package com.influy.domain.question.converter;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
+import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
 
@@ -25,6 +26,19 @@ public class QuestionConverter {
                 .content((String) row[2])
                 .createdAt(((Timestamp) row[3]).toLocalDateTime())
                 .itemPeriod((Integer) row[4])
+                .build();
+    }
+
+    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<Question> questions) {
+
+
+        return QuestionResponseDTO.GeneralPage.builder()
+                .isFirst(questions.isFirst())
+                .isLast(questions.isLast())
+                .totalPage(questions.getTotalPages())
+                .totalElements(questions.getTotalElements())
+                .listSize(questions.getSize())
+                .questions(questions.map(QuestionConverter::toGeneralDTO).getContent())
                 .build();
     }
 }

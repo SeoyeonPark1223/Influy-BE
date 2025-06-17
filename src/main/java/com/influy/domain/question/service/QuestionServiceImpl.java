@@ -1,5 +1,7 @@
 package com.influy.domain.question.service;
 
+import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -18,9 +20,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public Page<Question> getQuestionList(QuestionCategory category, Pageable pageable) {
         return questionRepository.findAllByQuestionCategory(category,pageable);
     }
+
+    @Override
+    public Page<Question> getQuestionsByCategory(Long questionCategoryId, Boolean isAnswered, Pageable pageable) {
+
+        QuestionCategory questionCategory = questionCategoryRepository.findById(questionCategoryId).orElseThrow(
+                ()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+
+        return questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategory,isAnswered,pageable);
+    }
+
+
 }
