@@ -19,13 +19,13 @@ import java.util.List;
 @Tag(name = "셀러 아이템 FAQ", description = "셀러 아이템 FAQ 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/seller/{sellerId}/items/{itemId}/faq-categories")
+@RequestMapping("/seller/items/{itemId}/faq-categories")
 public class FaqRestController {
     private final FaqCategoryService faqCategoryService;
 
     @PostMapping
     @Operation(summary = "개별 상품의 faq 카테고리 추가 (한번에 여러개 가능)")
-    public ApiResponse<FaqCategoryResponseDto.AddResultDto> addAll (@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.AddResultDto> addAll (@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                     @PathVariable("itemId") Long itemId,
                                                                     @RequestBody List<FaqCategoryRequestDto.AddDto> requestList) {
         List<FaqCategory> faqCategoryList = faqCategoryService.addAll(sellerId, itemId, requestList);
@@ -34,7 +34,7 @@ public class FaqRestController {
 
     @GetMapping
     @Operation(summary = "개별 상품의 faq 카테고리 리스트 조회 (등록순 정렬)")
-    public ApiResponse<FaqCategoryResponseDto.PageDto> getPage (@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.PageDto> getPage (@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId,
                                                                 @CheckPage @RequestParam(name = "page") Integer page) {
         Integer pageNumber = page - 1;
@@ -44,7 +44,7 @@ public class FaqRestController {
 
     @DeleteMapping
     @Operation(summary = "개별 상품의 faq 카테고리 삭제")
-    public ApiResponse<FaqCategoryResponseDto.DeleteResultDto> deleteAll (@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.DeleteResultDto> deleteAll (@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                           @PathVariable("itemId") Long itemId,
                                                                           @RequestBody @Valid List<FaqCategoryRequestDto.DeleteDto> requestList) {
         faqCategoryService.deleteAll(sellerId, itemId, requestList);
@@ -53,7 +53,7 @@ public class FaqRestController {
 
     @PatchMapping
     @Operation(summary = "개별 상품의 faq 카테고리 수정")
-    public ApiResponse<FaqCategoryResponseDto.UpdateResultDto> updateAll(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.UpdateResultDto> updateAll(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId,
                                                                    @RequestBody @Valid List<FaqCategoryRequestDto.UpdateDto> requestList) {
         List<FaqCategory> faqCategoryList = faqCategoryService.updateAll(sellerId, itemId, requestList);

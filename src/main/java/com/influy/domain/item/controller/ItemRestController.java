@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "셀러 아이템", description = "셀러 아이템 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/seller/{sellerId}/items")
+@RequestMapping("/seller/items")
 public class ItemRestController {
     private final ItemService itemService;
 
     @PostMapping
     @Operation(summary = "셀러 상품 상세정보 작성 후 생성")
-    public ApiResponse<ItemResponseDto.ResultDto> createItem(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> createItem(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                              @RequestBody @Valid ItemRequestDto.DetailDto request) {
         Item item = itemService.createItem(sellerId, request);
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
@@ -32,7 +32,7 @@ public class ItemRestController {
 
     @GetMapping
     @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브 여부 선택 가능)")
-    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                                   @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
                                                                                   @CheckPage @RequestParam(name = "page") Integer page,
                                                                                   @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType) {
@@ -43,7 +43,7 @@ public class ItemRestController {
 
     @GetMapping("/{itemId}")
     @Operation(summary = "개별 상품 상세정보 조회")
-    public ApiResponse<ItemResponseDto.DetailViewDto> getDetail(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.DetailViewDto> getDetail(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId) {
         Item item = itemService.getDetail(sellerId, itemId);
         return ApiResponse.onSuccess(ItemConverter.toDetailViewDto(item));
@@ -51,7 +51,7 @@ public class ItemRestController {
 
     @DeleteMapping("/{itemId}")
     @Operation(summary = "개별 상품 삭제")
-    public ApiResponse<ItemResponseDto.ResultDto> deleteItem(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> deleteItem(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                              @PathVariable("itemId") Long itemId) {
         itemService.deleteItem(sellerId, itemId);
         return ApiResponse.onSuccess(ItemConverter.toResultDto(itemId));
@@ -59,7 +59,7 @@ public class ItemRestController {
 
     @PutMapping("/{itemId}")
     @Operation(summary = "개별 상품 상세정보 수정")
-    public ApiResponse<ItemResponseDto.DetailViewDto> updateItem(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.DetailViewDto> updateItem(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                  @PathVariable("itemId") Long itemId,
                                                                  @RequestBody @Valid ItemRequestDto.DetailDto request) {
         Item item = itemService.updateItem(sellerId, itemId, request);
@@ -68,7 +68,7 @@ public class ItemRestController {
 
     @PatchMapping("/{itemId}/access")
     @Operation(summary = "개별 상품 공개 범위 설정")
-    public ApiResponse<ItemResponseDto.ResultDto> setAccess(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> setAccess(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                             @PathVariable("itemId") Long itemId,
                                                             @RequestBody @Valid ItemRequestDto.AccessDto request) {
         Item item = itemService.setAccess(sellerId, itemId, request);
@@ -77,7 +77,7 @@ public class ItemRestController {
 
     @PatchMapping("/{itemId}/status")
     @Operation(summary = "개별 상품 표기 상태 설정 | DEFAULT, EXTEND, SOLD_OUT")
-    public ApiResponse<ItemResponseDto.ResultDto> setStatus(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> setStatus(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                             @PathVariable("itemId") Long itemId,
                                                             @RequestBody @Valid ItemRequestDto.StatusDto request) {
         Item item = itemService.setStatus(sellerId, itemId, request);
@@ -86,7 +86,7 @@ public class ItemRestController {
 
     @GetMapping("/count")
     @Operation(summary = "상품 공개/보관 개수 조회")
-    public ApiResponse<ItemResponseDto.CountDto> getCount(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.CountDto> getCount(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                           @RequestParam(name = "isArchived", defaultValue = "false") Boolean isArchived) {
         Integer count = itemService.getCount(sellerId, isArchived);
         return ApiResponse.onSuccess(ItemConverter.toCountDto(sellerId, count));
