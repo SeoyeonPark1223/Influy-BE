@@ -5,8 +5,7 @@ import com.influy.domain.announcement.dto.AnnouncementRequestDTO;
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.announcement.repository.AnnouncementRepository;
 import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.repository.SellerRepository;
-import com.influy.domain.seller.service.SellerService;
+import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -15,15 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    private final SellerService sellerService;
+    private final SellerServiceImpl sellerService;
 
     //공지 리스트 조회
     public Page<Announcement> getAnnouncementsOf(Long sellerId, Pageable pageable) {

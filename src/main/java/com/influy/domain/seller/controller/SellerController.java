@@ -3,6 +3,7 @@ package com.influy.domain.seller.controller;
 import com.influy.domain.seller.dto.SellerRequestDTO;
 import com.influy.domain.seller.entity.ItemSortType;
 import com.influy.domain.seller.service.SellerService;
+import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.domain.seller.converter.SellerConverter;
 import com.influy.domain.seller.dto.SellerResponseDTO;
 import com.influy.domain.seller.entity.Seller;
