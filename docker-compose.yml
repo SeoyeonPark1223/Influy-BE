@@ -14,6 +14,13 @@ services:
       - "8080:8080"
     depends_on:
       - redis
+    environment:
+      RDS_USERNAME: ${RDS_USERNAME}
+      RDS_PASSWORD: ${RDS_PASSWORD}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_REGION: ${S3_REGION}
+      S3_ACCESS: ${S3_ACCESS}
+      S3_SECRET: ${S3_SECRET}
 
   nginx:
     image: nginx
