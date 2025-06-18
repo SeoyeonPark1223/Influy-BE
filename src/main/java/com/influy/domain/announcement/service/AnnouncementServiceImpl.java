@@ -8,9 +8,11 @@ import com.influy.domain.seller.entity.Seller;
 import com.influy.domain.seller.service.SellerServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private final SellerServiceImpl sellerService;
 
     //공지 리스트 조회
-    public Page<Announcement> getAnnouncementsOf(Long sellerId, Pageable pageable) {
+    public Page<Announcement> getAnnouncementsOf(Long sellerId, PageRequestDto page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = page.toPageable(sort);
 
         Seller seller = sellerService.getSeller(sellerId);
         return announcementRepository.findAllBySeller(seller,pageable);
