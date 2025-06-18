@@ -8,6 +8,7 @@ services:
   spring:
     image: trissss/influy
     container_name: influy
+    env_file: .env
     restart: always
     ports:
       - "8080:8080"
