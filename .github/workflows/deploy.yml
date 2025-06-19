@@ -24,11 +24,12 @@ jobs:
         shell: bash
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_PROD_YML }}" > src/main/resources/application.yml
+          cat <<'EOF' > src/main/resources/application.yml
+          ${{ secrets.APPLICATION_PROD_YML }}
+          EOF
 
       - name: Debug app.yml
         run: cat src/main/resources/application.yml
-
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
