@@ -7,7 +7,6 @@ import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.service.FaqCardService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
-import com.influy.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,13 +24,13 @@ public class FaqCardRestController {
 
     @GetMapping("/{sellerId}/items/{itemId}/faq/question-cards")
     @Operation(summary = "개별 상품의 faq 카테고리별 질문 카드 리스트 조회 ")
-    public ApiResponse<FaqCardResponseDto.PageDto> getPage(@PathVariable("sellerId") Long sellerId,
-                                                           @PathVariable("itemId") Long itemId,
-                                                           @RequestParam(name = "faqCategoryId") Long faqCategoryId,
-                                                           @Valid @ParameterObject PageRequestDto pageRequest) {
+    public ApiResponse<FaqCardResponseDto.QuestionCardPageDto> getQuestionCardPage(@PathVariable("sellerId") Long sellerId,
+                                                                       @PathVariable("itemId") Long itemId,
+                                                                       @RequestParam(name = "faqCategoryId") Long faqCategoryId,
+                                                                       @Valid @ParameterObject PageRequestDto pageRequest) {
 
-        Page<FaqCard> questionCardPage = faqCardService.getPage(sellerId, itemId, faqCategoryId, pageRequest);
-        return ApiResponse.onSuccess(FaqCardConverter.toPageDto(questionCardPage));
+        Page<FaqCard> questionCardPage = faqCardService.getFaqCardPage(sellerId, itemId, faqCategoryId, pageRequest);
+        return ApiResponse.onSuccess(FaqCardConverter.toQuestionCardPageDto(questionCardPage));
     }
 
     @PostMapping("/items/{itemId}/faq")
@@ -44,13 +43,23 @@ public class FaqCardRestController {
         return ApiResponse.onSuccess(FaqCardConverter.toCreateResultDto(faqCard));
     }
 
-    @GetMapping("/{sellerId}/items/{itemId}/faq/{faqCardId}/answer-card")
-    @Operation(summary = "각 faq 카드의 답변 카드 조회")
-    public ApiResponse<FaqCardResponseDto.AnswerCardDto> getAnswerCard(@PathVariable("sellerId") Long sellerId,
-                                                                       @PathVariable("itemId") Long itemId,
-                                                                       @PathVariable("faqCardId") Long faqCardId) {
+    @GetMapping("/{sellerId}/items/{itemId}/faq/{faqCardId}")
+    @Operation(summary = "각 faq 카드 조회")
+    public ApiResponse<FaqCardResponseDto.FaqCardDto> getFaqCard(@PathVariable("sellerId") Long sellerId,
+                                                                    @PathVariable("itemId") Long itemId,
+                                                                    @PathVariable("faqCardId") Long faqCardId) {
         FaqCard faqCard = faqCardService.getAnswerCard(sellerId, itemId, faqCardId);
-        return ApiResponse.onSuccess(FaqCardConverter.toAnswerCardDto(faqCard));
+        return ApiResponse.onSuccess(FaqCardConverter.toFaqCardDto(faqCard));
+    }
+
+    @GetMapping("/{sellerId}/items/{itemId}/faq/faq-cards")
+    @Operation(summary = "faq 카테고리별 faq 카드 리스트 조회")
+    public ApiResponse<FaqCardResponseDto.FaqCardPageDto> getFaqCardPage(@PathVariable("sellerId") Long sellerId,
+                                                                    @PathVariable("itemId") Long itemId,
+                                                                    @RequestParam(name = "faqCategoryId") Long faqCategoryId,
+                                                                    @Valid @ParameterObject PageRequestDto pageRequest) {
+        Page<FaqCard> faqCardPage = faqCardService.getFaqCardPage(sellerId, itemId, faqCategoryId, pageRequest);
+        return ApiResponse.onSuccess(FaqCardConverter.toFaqCardPageDto(faqCardPage));
     }
 
     @PatchMapping("/items/{itemId}/faq/{faqCardId}")

@@ -28,7 +28,7 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FaqCard> getPage(Long sellerId, Long itemId, Long faqCategoryId, PageRequestDto pageRequest) {
+    public Page<FaqCard> getFaqCardPage(Long sellerId, Long itemId, Long faqCategoryId, PageRequestDto pageRequest) {
         checkAll(sellerId, itemId, faqCategoryId);
 
         // questionCard 중에 해당 faqCategory를 가지고 있는 카드들을 가지고 와서 페이지로 반환

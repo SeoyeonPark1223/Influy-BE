@@ -23,15 +23,33 @@ public class FaqCardResponseDto {
 
         @Schema(description = "고정 여부", example = "true")
         private boolean pinned;
+
+        @Schema(description = "업뎃일", example = "2021-01-01T00:00")
+        private LocalDateTime updatedAt;
     }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PageDto {
+    public static class QuestionCardPageDto {
         @Schema(description = "질문 카드 리스트")
         private List<FaqCardResponseDto.QuestionCardDto> questionCardList;
+
+        private Integer listSize;
+        private Integer totalPage;
+        private Long totalElements;
+        private Boolean isFirst;
+        private Boolean isLast;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FaqCardPageDto {
+        @Schema(description = "질문 카드 리스트")
+        private List<FaqCardResponseDto.FaqCardDto> faqCardList;
 
         private Integer listSize;
         private Integer totalPage;
@@ -56,7 +74,7 @@ public class FaqCardResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AnswerCardDto {
+    public static class FaqCardDto {
         @Schema(description = "FAQ 카드 id", example = "1")
         private Long id;
 
@@ -75,8 +93,8 @@ public class FaqCardResponseDto {
         @Schema(description = "FAQ 카테고리", example = "색상")
         private String faqCategory;
 
-        @Schema(description = "생성일", example = "2021-01-01T00:00")
-        private LocalDateTime createdAt;
+        @Schema(description = "업뎃일", example = "2021-01-01T00:00")
+        private LocalDateTime updatedAt;
     }
 
     @Getter
