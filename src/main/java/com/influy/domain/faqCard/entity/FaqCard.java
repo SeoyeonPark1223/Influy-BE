@@ -1,7 +1,7 @@
 package com.influy.domain.faqCard.entity;
 
 import com.influy.domain.faqCategory.entity.FaqCategory;
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,6 +35,6 @@ public class FaqCard extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    private Seller seller;
+    private SellerProfile seller;
 }
 

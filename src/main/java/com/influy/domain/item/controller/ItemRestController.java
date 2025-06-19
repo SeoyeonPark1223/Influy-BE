@@ -5,7 +5,7 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.service.ItemService;
-import com.influy.domain.seller.entity.ItemSortType;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;

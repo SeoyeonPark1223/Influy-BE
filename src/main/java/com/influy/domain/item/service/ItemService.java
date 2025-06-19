@@ -2,11 +2,8 @@ package com.influy.domain.item.service;
 
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.seller.entity.ItemSortType;
-import jakarta.validation.Valid;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface ItemService {
     Item createItem(Long sellerId, ItemRequestDto.DetailDto request);

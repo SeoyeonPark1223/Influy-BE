@@ -1,12 +1,12 @@
-package com.influy.domain.seller.service;
+package com.influy.domain.sellerProfile.service;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
-import com.influy.domain.seller.converter.SellerConverter;
-import com.influy.domain.seller.dto.SellerRequestDTO;
-import com.influy.domain.seller.entity.ItemSortType;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.repository.SellerRepository;
+import com.influy.domain.sellerProfile.converter.SellerProfileConverter;
+import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -16,36 +16,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class SellerServiceImpl implements SellerService{
+public class SellerProfileServiceImpl implements SellerProfileService {
 
-    private final SellerRepository sellerRepository;
+    private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
 
-    @Transactional
-    public Seller join(SellerRequestDTO.Join requestBody) {
-        Seller seller = SellerConverter.toSeller(requestBody);
-        return sellerRepository.save(seller);
-    }
-
-    public Seller getSeller(Long sellerId){
+    public SellerProfile getSeller(Long sellerId){
         return sellerRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
     }
 
     @Transactional
-    public Seller updateSeller(Long sellerId, SellerRequestDTO.UpdateProfile requestBody) {
-        Seller seller = getSeller(sellerId);
+    public SellerProfile updateSeller(Long sellerId, SellerProfileRequestDTO.UpdateProfile requestBody) {
+        SellerProfile seller = getSeller(sellerId);
         return seller.setProfile(requestBody);
     }
 
     @Transactional
-    public Seller updateItemSortType(Long sellerId, ItemSortType sortBy) {
-        Seller seller = getSeller(sellerId);
+    public SellerProfile updateItemSortType(Long sellerId, ItemSortType sortBy) {
+        SellerProfile seller = getSeller(sellerId);
         return seller.setItemSortType(sortBy);
     }
 
     @Override
     public void checkItemMatchSeller(Long sellerId, Long itemId) {
-        Seller seller = getSeller(sellerId);
+        SellerProfile seller = getSeller(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {

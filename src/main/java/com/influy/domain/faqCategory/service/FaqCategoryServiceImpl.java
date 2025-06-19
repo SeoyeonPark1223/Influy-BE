@@ -6,7 +6,7 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
-import com.influy.domain.seller.repository.SellerRepository;
+import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FaqCategoryServiceImpl implements FaqCategoryService {
-    private final SellerRepository sellerRepository;
+    private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
     private final FaqCategoryRepository faqCategoryRepository;
 
