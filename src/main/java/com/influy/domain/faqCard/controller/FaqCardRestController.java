@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "셀러 FAQ 카드", description = "셀러 FAQ 카드 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("seller/items/{itemId}/faq")
+@RequestMapping("/seller")
 public class FaqCardRestController {
     private final FaqCardService faqCardService;
 
-    @GetMapping("/question-cards")
+    @GetMapping("/{sellerId}/items/{itemId}/faq/question-cards")
     @Operation(summary = "개별 상품의 faq 카테고리별 질문 카드 리스트 조회 ")
-    public ApiResponse<FaqCardResponseDto.PageDto> getPage(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCardResponseDto.PageDto> getPage(@PathVariable("sellerId") Long sellerId,
                                                            @PathVariable("itemId") Long itemId,
                                                            @RequestParam(name = "faqCategoryId") Long faqCategoryId,
                                                            @Valid @ParameterObject PageRequestDto pageRequest) {
@@ -34,7 +34,7 @@ public class FaqCardRestController {
         return ApiResponse.onSuccess(FaqCardConverter.toPageDto(questionCardPage));
     }
 
-    @PostMapping
+    @PostMapping("/items/{itemId}/faq")
     @Operation(summary = "faq 카테고리별 faq 카드 등록")
     public ApiResponse<FaqCardResponseDto.CreateResultDto> create(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                   @PathVariable("itemId") Long itemId,
@@ -44,16 +44,16 @@ public class FaqCardRestController {
         return ApiResponse.onSuccess(FaqCardConverter.toCreateResultDto(faqCard));
     }
 
-    @GetMapping("/{faqCardId}/answer-card")
+    @GetMapping("/{sellerId}/items/{itemId}/faq/{faqCardId}/answer-card")
     @Operation(summary = "각 faq 카드의 답변 카드 조회")
-    public ApiResponse<FaqCardResponseDto.AnswerCardDto> getAnswerCard(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCardResponseDto.AnswerCardDto> getAnswerCard(@PathVariable("sellerId") Long sellerId,
                                                                        @PathVariable("itemId") Long itemId,
                                                                        @PathVariable("faqCardId") Long faqCardId) {
         FaqCard faqCard = faqCardService.getAnswerCard(sellerId, itemId, faqCardId);
         return ApiResponse.onSuccess(FaqCardConverter.toAnswerCardDto(faqCard));
     }
 
-    @PatchMapping("/{faqCardId}")
+    @PatchMapping("/items/{itemId}/faq/{faqCardId}")
     @Operation(summary = "각 faq 카드 수정")
     public ApiResponse<FaqCardResponseDto.UpdateResultDto> update(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                   @PathVariable("itemId") Long itemId,
@@ -63,7 +63,7 @@ public class FaqCardRestController {
         return ApiResponse.onSuccess(FaqCardConverter.toUpdateResultDto(faqCard));
     }
 
-    @PatchMapping("/{faqCardId}/pin")
+    @PatchMapping("/items/{itemId}/faq/{faqCardId}/pin")
     @Operation(summary = "각 faq 카드 상단 고정 여부 수정")
     public ApiResponse<FaqCardResponseDto.QuestionCardDto> pinUpdate(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                      @PathVariable("itemId") Long itemId,
@@ -73,7 +73,7 @@ public class FaqCardRestController {
         return ApiResponse.onSuccess(FaqCardConverter.toQuestionCardDto(faqCard));
     }
 
-    @DeleteMapping("/{faqCardId}")
+    @DeleteMapping("/items/{itemId}/faq/{faqCardId}")
     @Operation(summary = "각 faq 카드 삭제")
     public ApiResponse<FaqCardResponseDto.DeleteResultDto> delete(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                   @PathVariable("itemId") Long itemId,
