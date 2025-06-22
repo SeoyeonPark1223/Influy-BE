@@ -81,6 +81,9 @@ public class FaqCardResponseDto {
         @Schema(description = "고정 여부", example = "true")
         private boolean pinned;
 
+        @Schema(description = "사진 비율 수정 여부", example = "false")
+        private boolean adjustImg;
+
         @Schema(description = "FAQ 질문 내용", example = "모야요??")
         private String questionContent;
 
