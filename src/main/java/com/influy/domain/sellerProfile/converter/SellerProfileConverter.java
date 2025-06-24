@@ -15,9 +15,7 @@ public class SellerProfileConverter {
 
         return SellerProfileResponseDTO.SellerProfile.builder()
                 .id(seller.getId())
-                .nickname(seller.getNickname())
                 .backgroundImg(seller.getBackgroundImg())
-                .profileImg(seller.getProfileImg())
                 .isPublic(seller.getIsPublic())
                 .itemSortType(seller.getItemSortType())
                 .instagram(seller.getInstagram())

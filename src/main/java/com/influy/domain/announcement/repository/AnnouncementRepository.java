@@ -14,4 +14,6 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     Page<Announcement> findAllBySeller(SellerProfile seller, Pageable pageable);
 
     Optional<Announcement> findFirstBySellerOrderByCreatedAtDesc(SellerProfile seller);
+
+    Integer countBySeller(SellerProfile seller);
 }

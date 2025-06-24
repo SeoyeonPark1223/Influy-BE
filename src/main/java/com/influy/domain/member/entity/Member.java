@@ -29,7 +29,7 @@ public class Member extends BaseEntity {
     private String profileImg;
 
     @NotNull
-    private String username; //=가입용 email
+    private String username; //=인스타 아이디 강력 추천
 
     @NotNull
     private String password;

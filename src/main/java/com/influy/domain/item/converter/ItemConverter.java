@@ -8,6 +8,7 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ItemConverter {
     public static Item toItem(SellerProfile seller, ItemRequestDto.DetailDto request) {
@@ -39,12 +40,14 @@ public class ItemConverter {
     }
 
     public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item) {
+        String username = null;
+
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .MainImg(item.getImageList().get(0).getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
-                .sellerName(item.getSeller().getNickname())
+                .sellerName(item.getSeller().getMember().getUsername())
                 .startDate(item.getStartDate())
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())

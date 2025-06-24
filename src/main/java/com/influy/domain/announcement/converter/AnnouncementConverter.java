@@ -26,6 +26,14 @@ public class AnnouncementConverter {
                 .createdAt(announcement.getCreatedAt())
                 .build();
     }
+    public static AnnouncementResponseDTO.PinnedAnnouncement toPinnedAnnouncementDTO(Announcement announcement, Integer totalAnnouncements) {
+
+        return AnnouncementResponseDTO.PinnedAnnouncement.builder()
+                .id(announcement.getId())
+                .title(announcement.getTitle())
+                .totalAnnouncements(totalAnnouncements)
+                .build();
+    }
 
     public static AnnouncementResponseDTO.GeneralList toListDTO(Page<Announcement> announcements) {
 

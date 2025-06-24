@@ -10,9 +10,7 @@ import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.global.common.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,22 +24,8 @@ public class SellerProfile extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Nullable   //매니저가 임의로 셀러를 만드는 경우
     @OneToOne
     private Member member;
-
-    /**
-     * 일단 1차 MVP 문제 없도록 넣어두지만
-     * 2차 MVP때부터는 프론트에도 requestBody, responseBody에 nickname, profilePic 빠진다고 알리기
-     * seller 페이지에서도 회원 기본 정보(닉네임 등)는 member API를 통해 받아와야하지 한번에 주지않음!!
-     * seller API를 셀러 정보 API 보다는 마켓 API정도로 생각하는게 맞음
-     */
-    @NotNull
-    @Builder.Default
-    private String nickname = "2차 MVP 수정때문에 임시 닉네임사용";
-
-    private String profileImg;
-
 
     @Nullable
     @ManyToOne(fetch = FetchType.LAZY)

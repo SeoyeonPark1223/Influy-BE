@@ -16,4 +16,6 @@ public interface AnnouncementService {
     Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, Long sellerId, Boolean isPrimary);
 
     void deleteAnnouncement(Long sellerId, Long announcementId);
+
+    Integer getTotalAnnouncementsOf(Long sellerId);
 }

@@ -50,10 +50,11 @@ public class AnnouncementController {
     //최상단 공지 조회
     @GetMapping("/seller/{sellerId}/announcements/primary-announcement")
     @Operation(summary = "최상단 공지 조회", description = "최상단 공지가 없으면 가장 최신 등록된 공지 반환")
-    public ApiResponse<AnnouncementResponseDTO.General> getPrimaryAnnouncement(@PathVariable("sellerId") Long sellerId) {
+    public ApiResponse<AnnouncementResponseDTO.PinnedAnnouncement> getPrimaryAnnouncement(@PathVariable("sellerId") Long sellerId) {
 
         Announcement announcement = announcementService.getPrimaryAnnouncementOf(sellerId);
-        AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
+        Integer totalAnnouncements = announcementService.getTotalAnnouncementsOf(sellerId);
+        AnnouncementResponseDTO.PinnedAnnouncement body = AnnouncementConverter.toPinnedAnnouncementDTO(announcement,totalAnnouncements);
 
         return ApiResponse.onSuccess(body);
     }

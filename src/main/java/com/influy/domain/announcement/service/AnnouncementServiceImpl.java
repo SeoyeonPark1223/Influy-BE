@@ -93,4 +93,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
         announcementRepository.delete(announcement);
     }
+
+    @Override
+    public Integer getTotalAnnouncementsOf(Long sellerId) {
+        SellerProfile seller = sellerService.getSeller(sellerId);
+        return announcementRepository.countBySeller(seller);
+    }
 }
