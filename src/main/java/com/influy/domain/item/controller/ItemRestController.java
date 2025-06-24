@@ -32,7 +32,7 @@ public class ItemRestController {
     }
 
     @GetMapping("/items")
-    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브 여부 선택 가능)")
+    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)")
     public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                                   @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
                                                                                   @Valid @ParameterObject PageRequestDto pageRequest,
