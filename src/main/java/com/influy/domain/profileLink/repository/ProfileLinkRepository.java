@@ -1,7 +1,7 @@
 package com.influy.domain.profileLink.repository;
 
 import com.influy.domain.profileLink.entity.ProfileLink;
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,9 +9,9 @@ import java.util.List;
 
 @Repository
 public interface ProfileLinkRepository extends JpaRepository<ProfileLink, Long> {
-    List<ProfileLink> findBySeller(Seller seller);
+    List<ProfileLink> findBySeller(SellerProfile seller);
 
-    List<ProfileLink> findAllBySellerOrderByCreatedAt(Seller seller);
+    List<ProfileLink> findAllBySellerOrderByCreatedAt(SellerProfile seller);
 
-    Integer countBySeller(Seller seller);
+    Integer countBySeller(SellerProfile seller);
 }

@@ -4,14 +4,12 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class Item extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    private Seller seller;
+    private SellerProfile seller;
 
     @NotBlank
     private String name;

@@ -2,11 +2,12 @@ package com.influy.domain.announcement.service;
 
 import com.influy.domain.announcement.dto.AnnouncementRequestDTO;
 import com.influy.domain.announcement.entity.Announcement;
+import com.influy.global.common.PageRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AnnouncementService {
-    Page<Announcement> getAnnouncementsOf(Long sellerId, Pageable pageable);
+    Page<Announcement> getAnnouncementsOf(Long sellerId, PageRequestDto pageable);
 
     Announcement getPrimaryAnnouncementOf(Long sellerId);
 
@@ -15,4 +16,6 @@ public interface AnnouncementService {
     Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, Long sellerId, Boolean isPrimary);
 
     void deleteAnnouncement(Long sellerId, Long announcementId);
+
+    Integer getTotalAnnouncementsOf(Long sellerId);
 }

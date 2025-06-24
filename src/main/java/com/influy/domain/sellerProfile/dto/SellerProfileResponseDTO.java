@@ -1,9 +1,9 @@
-package com.influy.domain.seller.dto;
+package com.influy.domain.sellerProfile.dto;
 
-import com.influy.domain.seller.entity.ItemSortType;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
 import lombok.*;
 
-public class SellerResponseDTO {
+public class SellerProfileResponseDTO {
 
     @Getter @Builder
     @AllArgsConstructor

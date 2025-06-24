@@ -7,8 +7,8 @@ import com.influy.domain.faqCard.repository.FaqCardRepository;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.repository.SellerRepository;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FaqCardServiceImpl implements FaqCardService {
     private final FaqCategoryRepository faqCategoryRepository;
     private final FaqCardRepository faqCardRepository;
-    private final SellerRepository sellerRepository;
+    private final SellerProfileRepository sellerRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -44,7 +44,7 @@ public class FaqCardServiceImpl implements FaqCardService {
     @Transactional
     public FaqCard create(Long sellerId, Long itemId, Long faqCategoryId, FaqCardRequestDto.CreateDto request) {
         FaqCategory faqCategory = checkAll(sellerId, itemId, faqCategoryId);
-        Seller seller = sellerRepository.findById(sellerId)
+        SellerProfile seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
 
         FaqCard faqCard = FaqCardConverter.toFaqCard(request, faqCategory, seller);
@@ -95,7 +95,7 @@ public class FaqCardServiceImpl implements FaqCardService {
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
         FaqCategory faqCategory = checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
-        Seller seller = sellerRepository.findById(sellerId)
+        SellerProfile seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
 
         faqCategory.getFaqCardList().remove(faqCard);
@@ -112,7 +112,7 @@ public class FaqCardServiceImpl implements FaqCardService {
             throw new GeneralException(ErrorStatus.UNMATCHED_ITEM_FAQCATEGORY);
         }
 
-        Seller seller = item.getSeller();
+        SellerProfile seller = item.getSeller();
         if (!seller.getId().equals(sellerId)) {
             throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
         }
