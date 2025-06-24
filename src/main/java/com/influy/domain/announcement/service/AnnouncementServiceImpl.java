@@ -4,13 +4,15 @@ import com.influy.domain.announcement.converter.AnnouncementConverter;
 import com.influy.domain.announcement.dto.AnnouncementRequestDTO;
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.announcement.repository.AnnouncementRepository;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.service.SellerServiceImpl;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnnouncementServiceImpl implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    private final SellerServiceImpl sellerService;
+    private final SellerProfileServiceImpl sellerService;
 
     //공지 리스트 조회
-    public Page<Announcement> getAnnouncementsOf(Long sellerId, Pageable pageable) {
+    public Page<Announcement> getAnnouncementsOf(Long sellerId, PageRequestDto page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = page.toPageable(sort);
 
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
         return announcementRepository.findAllBySeller(seller,pageable);
     }
 
@@ -33,7 +37,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public Announcement addAnnouncementOf(Long sellerId, AnnouncementRequestDTO requestDTO) {
 
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
 
@@ -46,7 +50,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, Long sellerId, Boolean isPrimary) {
 
 
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
@@ -60,7 +64,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     //최상단 공지 조회
     public Announcement getPrimaryAnnouncementOf(Long sellerId) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = seller.getPrimaryAnnouncement();
 
@@ -76,7 +80,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public void deleteAnnouncement(Long sellerId, Long announcementId) {
 
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
@@ -88,5 +92,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             seller.setPrimaryAnnouncement(null);
         }
         announcementRepository.delete(announcement);
+    }
+
+    @Override
+    public Integer getTotalAnnouncementsOf(Long sellerId) {
+        SellerProfile seller = sellerService.getSeller(sellerId);
+        return announcementRepository.countBySeller(seller);
     }
 }

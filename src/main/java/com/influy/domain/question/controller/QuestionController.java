@@ -5,7 +5,7 @@ import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.service.QuestionService;
-import com.influy.domain.seller.service.SellerService;
+import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("seller/items/{itemId}/questions/{questionCategoryId}")//sellerID 파라미터..어케할건지
 public class QuestionController {
-    private final SellerService sellerService;
+    private final SellerProfileService sellerService;
     private final QuestionService questionService;
 
     @GetMapping("")
