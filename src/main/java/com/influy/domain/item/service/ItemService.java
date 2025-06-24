@@ -3,6 +3,7 @@ package com.influy.domain.item.service;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
+import com.influy.global.common.PageRequestDto;
 import org.springframework.data.domain.Page;
 
 public interface ItemService {
@@ -13,5 +14,5 @@ public interface ItemService {
     Item setAccess(Long sellerId, Long itemId, ItemRequestDto.AccessDto request);
     Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request);
     Integer getCount(Long sellerId, Boolean isArchived);
-    Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, Integer pageNumber, ItemSortType sortType);
+    Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType);
 }

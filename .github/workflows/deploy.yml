@@ -24,16 +24,9 @@ jobs:
         shell: bash
         run: |
           mkdir -p src/main/resources
-          cat <<EOF > src/main/resources/application.yml
+          cat <<'EOF' > src/main/resources/application.yml
           ${{ secrets.APPLICATION_PROD_YML }}
           EOF
-        env:
-          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
-          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
-          S3_BUCKET: ${{ secrets.S3_BUCKETS }}
-          S3_REGION: ${{ secrets.S3_REGION }}
-          S3_ACCESS: ${{ secrets.S3_ACCESS }}
-          S3_SECRET: ${{ secrets.S3_SECRET }}
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -42,13 +35,6 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew bootJar
-        env:
-          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
-          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
-          S3_BUCKET: ${{ secrets.S3_BUCKETS }}
-          S3_REGION: ${{ secrets.S3_REGION }}
-          S3_ACCESS: ${{ secrets.S3_ACCESS }}
-          S3_SECRET: ${{ secrets.S3_SECRET }}
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
