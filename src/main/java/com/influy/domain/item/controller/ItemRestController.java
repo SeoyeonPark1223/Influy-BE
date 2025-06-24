@@ -85,7 +85,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @GetMapping("/items/count")
+    @GetMapping("/items/count-access")
     @Operation(summary = "상품 공개/보관 개수 조회")
     public ApiResponse<ItemResponseDto.CountDto> getCount(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                           @RequestParam(name = "isArchived", defaultValue = "false") Boolean isArchived) {
