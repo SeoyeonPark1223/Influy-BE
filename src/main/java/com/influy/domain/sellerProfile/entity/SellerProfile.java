@@ -37,7 +37,8 @@ public class SellerProfile extends BaseEntity {
      * seller API를 셀러 정보 API 보다는 마켓 API정도로 생각하는게 맞음
      */
     @NotNull
-    private String nickname;
+    @Builder.Default
+    private String nickname = "2차 MVP 수정때문에 임시 닉네임사용";
 
     private String profileImg;
 

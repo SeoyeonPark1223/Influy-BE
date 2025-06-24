@@ -5,11 +5,17 @@ import lombok.Getter;
 
 public class MemberRequestDTO {
     @Getter
-    public static class Join{
+    public static class UserJoin {
         private String username;
         private String password;
         private String name;
         private String nickname;
         private MemberRole role;
+    }
+    @Getter
+    public static class SellerJoin {
+        private UserJoin userInfo;
+        private String email;
+        private String instagram;
     }
 }

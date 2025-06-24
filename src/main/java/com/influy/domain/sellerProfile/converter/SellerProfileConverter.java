@@ -1,4 +1,6 @@
 package com.influy.domain.sellerProfile.converter;
+import com.influy.domain.member.dto.MemberRequestDTO;
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -6,11 +8,7 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 public class SellerProfileConverter {
 
     public static SellerProfile toSeller(SellerProfileRequestDTO.Join requestDTO) {
-        //회원가입 로직 구현 시 수정
-        return SellerProfile.builder()
-                .nickname(requestDTO.getNickname())
-                .email(requestDTO.getEmail())
-                .build();
+        return null;
     }
 
     public static SellerProfileResponseDTO.SellerProfile toSellerProfileDTO(SellerProfile seller) {
@@ -31,5 +29,12 @@ public class SellerProfileConverter {
 
     public static SellerProfileResponseDTO.SortType toSortTypeDTO(SellerProfile seller) {
         return SellerProfileResponseDTO.SortType.builder().itemSortType(seller.getItemSortType()).build();
+    }
+
+    public static SellerProfile toSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
+        return SellerProfile.builder()
+                .email(request.getEmail())
+                .instagram(request.getInstagram())
+                .build();
     }
 }

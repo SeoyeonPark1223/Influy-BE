@@ -4,5 +4,7 @@ import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
 
 public interface MemberService {
-    Member join(MemberRequestDTO.Join requestBody);
+    Member joinUser(MemberRequestDTO.UserJoin requestBody);
+
+    Member joinSeller(MemberRequestDTO.SellerJoin requestBody);
 }

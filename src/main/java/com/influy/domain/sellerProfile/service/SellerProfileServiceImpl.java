@@ -2,6 +2,8 @@ package com.influy.domain.sellerProfile.service;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.member.dto.MemberRequestDTO;
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.converter.SellerProfileConverter;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
@@ -20,6 +22,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
 
     private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
+    private final SellerProfileRepository sellerProfileRepository;
 
     public SellerProfile getSeller(Long sellerId){
         return sellerRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
@@ -45,5 +48,13 @@ public class SellerProfileServiceImpl implements SellerProfileService {
         if(!item.getSeller().equals(seller)) {
             throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
         }
+    }
+
+    @Override
+    public SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
+
+        SellerProfile sellerProfile = SellerProfileConverter.toSellerProfile(member,request);
+
+        return sellerProfileRepository.save(sellerProfile);
     }
 }

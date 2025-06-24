@@ -23,7 +23,7 @@ public class SellerProfileController {
 
     //프로필 조회
     @GetMapping("/profile")//로그인 구현 이후 엔드포인트 변경
-    @Operation(summary = "셀러가 본인 프로필 조회 API", description = "로그인 기능 구현 전까지는 PathVariable으로 id 받아서 사용합니다.")
+    @Operation(summary = "셀러 프로필 조회 API", description = "로그인 기능 구현 전까지는 PathVariable으로 id 받아서 사용합니다.")
     public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId){
 
         //로그인 구현 이후 SellerProfile 객체 반환

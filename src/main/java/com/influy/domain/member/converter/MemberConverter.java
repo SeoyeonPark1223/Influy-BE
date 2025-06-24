@@ -3,10 +3,9 @@ package com.influy.domain.member.converter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.entity.MemberRole;
 
 public class MemberConverter {
-    public static Member toMember(MemberRequestDTO.Join requestDTO) {
+    public static Member toMember(MemberRequestDTO.UserJoin requestDTO) {
         //각 롤에 따라 프로필 생성로직
         //회원가입 로직 구현 시 수정
         return Member.builder()
