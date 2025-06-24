@@ -36,8 +36,9 @@ public class ItemRestController {
     public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                                   @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
                                                                                   @Valid @ParameterObject PageRequestDto pageRequest,
-                                                                                  @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType) {
-        Page<Item> itemPage = itemService.getDetailPreviewPage(sellerId, isArchived, pageRequest, sortType);
+                                                                                  @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType,
+                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing) {
+        Page<Item> itemPage = itemService.getDetailPreviewPage(sellerId, isArchived, pageRequest, sortType, isOnGoing);
         return ApiResponse.onSuccess(ItemConverter.toDetailPreviewPageDto(itemPage));
     }
 
