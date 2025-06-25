@@ -4,6 +4,7 @@ import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.like.entity.Like;
 import com.influy.domain.managerProfile.entity.ManagerProfile;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
@@ -25,6 +26,7 @@ public class SellerProfile extends BaseEntity {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Nullable
@@ -70,6 +72,10 @@ public class SellerProfile extends BaseEntity {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<FaqCard> faqCardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Like> likeList = new ArrayList<>();
 
 
     public SellerProfile setProfile(SellerProfileRequestDTO.UpdateProfile requestBody){

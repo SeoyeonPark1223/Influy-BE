@@ -3,6 +3,7 @@ package com.influy.domain.item.entity;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.like.entity.Like;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
@@ -81,4 +82,7 @@ public class Item extends BaseEntity {
     @Builder.Default
     private List<Image> imageList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Like> likeList = new ArrayList<>();
 }
