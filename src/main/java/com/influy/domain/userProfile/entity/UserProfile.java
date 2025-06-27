@@ -1,5 +1,6 @@
-package com.influy.domain.user.entity;
+package com.influy.domain.userProfile.entity;
 
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.entity.Question;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -13,12 +14,13 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class UserProfile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nickname;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default

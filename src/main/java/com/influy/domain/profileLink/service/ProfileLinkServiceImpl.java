@@ -4,8 +4,8 @@ import com.influy.domain.profileLink.converter.ProfileLinkConverter;
 import com.influy.domain.profileLink.dto.ProfileLinkRequestDTO;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.profileLink.repository.ProfileLinkRepository;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.service.SellerServiceImpl;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ import java.util.List;
 public class ProfileLinkServiceImpl implements ProfileLinkService {
 
     private final ProfileLinkRepository profileLinkRepository;
-    private final SellerServiceImpl sellerService;
+    private final SellerProfileServiceImpl sellerService;
 
     //링크 생성
     @Override
     @Transactional
     public ProfileLink createLinkOf(Long sellerId, ProfileLinkRequestDTO request) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
         Integer linkCount = profileLinkRepository.countBySeller(seller);
 
         if(linkCount==5){
@@ -40,7 +40,7 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
     @Override
     @Transactional
     public ProfileLink updateLinkOf(Long sellerId, Long linkId, ProfileLinkRequestDTO request) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
         ProfileLink profileLink = profileLinkRepository.findById(linkId).orElseThrow(()->new GeneralException(ErrorStatus.LINK_NOT_FOUND));
 
         if(request.getLinkName()!=null) {
@@ -55,7 +55,7 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
     //링크 리스트 조회
     @Override
     public List<ProfileLink> getLinkListOf(Long sellerId) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         return profileLinkRepository.findAllBySellerOrderByCreatedAt(seller);
     }
@@ -63,7 +63,7 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
     @Override
     @Transactional
     public void deleteLinkOf(Long sellerId, Long linkId) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
         ProfileLink profileLink = profileLinkRepository.findById(linkId).orElseThrow(()->new GeneralException(ErrorStatus.LINK_NOT_FOUND));
 
         //본인 검증

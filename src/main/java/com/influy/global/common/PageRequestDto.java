@@ -1,6 +1,7 @@
 package com.influy.global.common;
 
 import com.influy.global.validation.annotation.CheckPage;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
