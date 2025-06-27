@@ -23,6 +23,9 @@ public class FaqCard extends BaseEntity {
     @Builder.Default
     private Boolean isPinned = false;
 
+    @Builder.Default
+    private Boolean adjustImg = false;
+
     @Column(length = 300)
     private String answerContent = "";
 

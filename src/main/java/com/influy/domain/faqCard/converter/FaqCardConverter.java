@@ -17,6 +17,8 @@ public class FaqCardConverter {
                 .questionContent(request.getQuestionContent())
                 .answerContent(request.getAnswerContent())
                 .backgroundImageLink(request.getBackgroundImgLink())
+                .isPinned(request.isPinned())
+                .adjustImg(request.isAdjustImg())
                 .build();
     }
 
@@ -55,6 +57,7 @@ public class FaqCardConverter {
                 .id(faqCard.getId())
                 .questionContent(faqCard.getQuestionContent())
                 .pinned(faqCard.getIsPinned())
+                .adjustImg(faqCard.getAdjustImg())
                 .answerContent(nonNull(faqCard.getAnswerContent()))
                 .faqCategory(faqCard.getFaqCategory().getCategory())
                 .updatedAt(faqCard.getUpdatedAt())

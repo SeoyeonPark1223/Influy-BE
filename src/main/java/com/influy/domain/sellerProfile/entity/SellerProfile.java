@@ -48,7 +48,7 @@ public class SellerProfile extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private ItemSortType itemSortType = ItemSortType.CREATE_DATE;
+    private ItemSortType itemSortType = ItemSortType.END_DATE;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     @Builder.Default

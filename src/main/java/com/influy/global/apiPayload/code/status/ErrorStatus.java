@@ -44,7 +44,7 @@ public enum ErrorStatus implements BaseCode {
     QUESTION_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION CATEGORY NOT FOUND", "질문 카테고리를 찾을 수 없습니다."),
 
     // 정렬 관련 응답
-    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식은 CREATE_DATE, END_DATE 입니다.");
+    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식이 아닙니다.");
 
 
     private final HttpStatus httpStatus;
