@@ -4,13 +4,13 @@ import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCategory.entity.FaqCategory;
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public class FaqCardConverter {
-    public static FaqCard toFaqCard(FaqCardRequestDto.CreateDto request, FaqCategory faqCategory, Seller seller) {
+    public static FaqCard toFaqCard(FaqCardRequestDto.CreateDto request, FaqCategory faqCategory, SellerProfile seller) {
         return FaqCard.builder()
                 .faqCategory(faqCategory)
                 .seller(seller)
@@ -25,14 +25,15 @@ public class FaqCardConverter {
                 .id(questionCard.getId())
                 .questionContent(questionCard.getQuestionContent())
                 .pinned(questionCard.getIsPinned())
+                .updatedAt(questionCard.getUpdatedAt())
                 .build();
     }
 
-    public static FaqCardResponseDto.PageDto toPageDto(Page<FaqCard> questionCardPage) {
+    public static FaqCardResponseDto.QuestionCardPageDto toQuestionCardPageDto(Page<FaqCard> questionCardPage) {
         List<FaqCardResponseDto.QuestionCardDto> questionCardDtoList = questionCardPage.stream()
                 .map(FaqCardConverter::toQuestionCardDto).toList();
 
-        return FaqCardResponseDto.PageDto.builder()
+        return FaqCardResponseDto.QuestionCardPageDto.builder()
                 .questionCardList(questionCardDtoList)
                 .listSize(questionCardPage.getContent().size())
                 .totalPage(questionCardPage.getTotalPages())
@@ -49,15 +50,29 @@ public class FaqCardConverter {
                 .build();
     }
 
-    public static FaqCardResponseDto.AnswerCardDto toAnswerCardDto(FaqCard faqCard) {
-        return FaqCardResponseDto.AnswerCardDto.builder()
+    public static FaqCardResponseDto.FaqCardDto toFaqCardDto(FaqCard faqCard) {
+        return FaqCardResponseDto.FaqCardDto.builder()
                 .id(faqCard.getId())
                 .questionContent(faqCard.getQuestionContent())
                 .pinned(faqCard.getIsPinned())
                 .answerContent(nonNull(faqCard.getAnswerContent()))
                 .faqCategory(faqCard.getFaqCategory().getCategory())
-                .createdAt(faqCard.getCreatedAt())
+                .updatedAt(faqCard.getUpdatedAt())
                 .backgroundImgLink(nonNull(faqCard.getBackgroundImageLink()))
+                .build();
+    }
+
+    public static FaqCardResponseDto.FaqCardPageDto toFaqCardPageDto(Page<FaqCard> faqCardPage) {
+        List<FaqCardResponseDto.FaqCardDto> faqCardDtoList = faqCardPage.stream()
+                .map(FaqCardConverter::toFaqCardDto).toList();
+
+        return FaqCardResponseDto.FaqCardPageDto.builder()
+                .faqCardList(faqCardDtoList)
+                .listSize(faqCardPage.getContent().size())
+                .totalPage(faqCardPage.getTotalPages())
+                .totalElements(faqCardPage.getTotalElements())
+                .isFirst(faqCardPage.isFirst())
+                .isLast(faqCardPage.isLast())
                 .build();
     }
 

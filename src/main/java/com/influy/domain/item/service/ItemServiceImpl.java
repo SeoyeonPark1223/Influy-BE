@@ -10,15 +10,15 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
-import com.influy.domain.seller.entity.ItemSortType;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.repository.SellerRepository;
-import com.influy.domain.seller.service.SellerServiceImpl;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
+import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,15 +29,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final SellerRepository sellerRepository;
+    private final SellerProfileRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
-    private final SellerServiceImpl sellerService;
+    private final SellerProfileServiceImpl sellerService;
 
     @Override
     @Transactional
     public Item createItem(Long sellerId, ItemRequestDto.DetailDto request) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItem(Long sellerId, Long itemId) {
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -151,12 +151,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, Integer pageNumber, ItemSortType sortType) {
+    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
-        int pageSize = 10;
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
             case END_DATE -> "endDate";
@@ -167,7 +166,7 @@ public class ItemServiceImpl implements ItemService {
             case END_DATE -> Sort.Direction.ASC;     // 마감일 빠른순
         };
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortField));
+        Pageable pageable = pageRequest.toPageable(Sort.by(direction, sortField));
 
         if (isArchived) {
             return itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);

@@ -2,8 +2,8 @@ package com.influy.domain.question.entity;
 
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.user.entity.User;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.userProfile.entity.UserProfile;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -24,11 +24,11 @@ public class Question extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="seller_id")
-    private Seller seller;
+    private SellerProfile seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
-    private User user;
+    private UserProfile user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")

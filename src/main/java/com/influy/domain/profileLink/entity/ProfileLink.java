@@ -1,6 +1,6 @@
 package com.influy.domain.profileLink.entity;
 
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +20,7 @@ public class ProfileLink extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    private Seller seller;
+    private SellerProfile seller;
 
     @NotBlank
     private String linkName;

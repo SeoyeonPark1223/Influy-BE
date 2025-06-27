@@ -1,9 +1,8 @@
-package com.influy.domain.seller.dto;
+package com.influy.domain.sellerProfile.dto;
 
-import com.influy.domain.seller.entity.ItemSortType;
 import lombok.Getter;
 
-public class SellerRequestDTO {
+public class SellerProfileRequestDTO {
     @Getter
     public static class Join{
         private String nickname;
