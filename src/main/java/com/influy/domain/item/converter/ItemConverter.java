@@ -40,8 +40,6 @@ public class ItemConverter {
     }
 
     public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item) {
-        String username = null;
-
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .MainImg(item.getImageList().get(0).getImageLink())

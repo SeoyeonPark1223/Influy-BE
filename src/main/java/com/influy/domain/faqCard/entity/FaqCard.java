@@ -26,6 +26,7 @@ public class FaqCard extends BaseEntity {
     @Builder.Default
     private Boolean adjustImg = false;
 
+    @Builder.Default
     @Column(length = 300)
     private String answerContent = "";
 
