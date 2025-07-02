@@ -19,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class FaqCardServiceImpl implements FaqCardService {
@@ -68,11 +70,19 @@ public class FaqCardServiceImpl implements FaqCardService {
     public FaqCard update(Long sellerId, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request) {
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
-        checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+        FaqCategory faqCategory = checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
 
         if (request.getQuestionContent() != null) faqCard.setQuestionContent(request.getQuestionContent());
         if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent());
         if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink());
+        if (request.getPinned() != null) faqCard.setIsPinned(request.getPinned());
+        if (!Objects.equals(request.getFaqCategoryId(), faqCard.getFaqCategory().getId())) {
+            FaqCategory newFaqCategory = faqCategoryRepository.findById(request.getFaqCategoryId())
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
+            faqCategory.getFaqCardList().remove(faqCard);
+            newFaqCategory.getFaqCardList().add(faqCard);
+            faqCard.setFaqCategory(newFaqCategory);
+        }
 
         return faqCard;
     }
