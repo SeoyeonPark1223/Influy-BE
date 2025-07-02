@@ -51,4 +51,19 @@ public class LikeRestController {
         Like like = likeService.toCancelItemLike(sellerId, itemId, memberId);
         return ApiResponse.onSuccess(LikeConverter.toItemLikeDto(like));
     }
+
+    @GetMapping("/count-likes")
+    @Operation(summary = "멤버의 셀러 찜 개수 조회")
+    public ApiResponse<LikeResponseDto.LikeCountDto> countSellerLikes(@PathVariable("sellerId") Long sellerId) {
+        return ApiResponse.onSuccess(likeService.toCountSellerLikes(sellerId));
+    }
+
+    @GetMapping("/items/{itemId}/count-likes")
+    @Operation(summary = "멤버의 아이템 찜 개수 조회")
+    public ApiResponse<LikeResponseDto.LikeCountDto> countItemLikes(@PathVariable("sellerId") Long sellerId,
+                                                                    @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(likeService.toCountItemLikes(sellerId, itemId));
+    }
+
+
 }

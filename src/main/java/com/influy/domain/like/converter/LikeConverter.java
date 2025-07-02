@@ -8,6 +8,8 @@ import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 
+import java.lang.annotation.Target;
+
 public class LikeConverter {
     public static Like toLike(Member member, SellerProfile seller, Item item, TargetType targetType) {
         return Like.builder()
@@ -23,6 +25,7 @@ public class LikeConverter {
         SellerProfile seller = like.getSeller();
 
         return LikeResponseDto.SellerLikeDto.builder()
+                .likeId(like.getId())
                 .memberId(like.getMember().getId())
                 .targetType(like.getTargetType())
                 .likeStatus(like.getLikeStatus())
@@ -33,11 +36,20 @@ public class LikeConverter {
 
     public static LikeResponseDto.ItemLikeDto toItemLikeDto(Like like) {
         return LikeResponseDto.ItemLikeDto.builder()
+                .likeId(like.getId())
                 .memberId(like.getMember().getId())
                 .targetType(like.getTargetType())
                 .likeStatus(like.getLikeStatus())
                 .itemId(like.getItem().getId())
                 .itemName(like.getItem().getName())
+                .build();
+    }
+
+    public static LikeResponseDto.LikeCountDto toLikeCountDto(TargetType targetType, Long targetId, Integer cnt) {
+        return LikeResponseDto.LikeCountDto.builder()
+                .targetId(targetId)
+                .targetType(targetType)
+                .likeCount(cnt)
                 .build();
     }
 }

@@ -12,4 +12,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Optional<Like> findByMemberIdAndSellerIdAndTargetType(Long memberId, Long sellerId, TargetType targetType);
     Optional<Like> findByMemberIdAndItemIdAndTargetType(Long memberId, Long itemId, TargetType targetType);
     List<Like> findAllByLikeStatus(LikeStatus likeStatus);
+    Integer countBySellerIdAndTargetTypeAndLikeStatus(Long sellerId, TargetType targetType, LikeStatus likeStatus);
+    Integer countByItemIdAndTargetTypeAndLikeStatus(Long itemId, TargetType targetType, LikeStatus likeStatus);
 }

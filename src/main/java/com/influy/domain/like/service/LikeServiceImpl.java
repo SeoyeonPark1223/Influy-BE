@@ -3,6 +3,7 @@ package com.influy.domain.like.service;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.converter.LikeConverter;
+import com.influy.domain.like.dto.LikeResponseDto;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,8 +85,7 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional
     public Like toCancelSellerLike(Long sellerId, Long memberId) {
-        TargetType targetType = TargetType.SELLER;
-        Like like = likeRepository.findByMemberIdAndSellerIdAndTargetType(memberId, sellerId, targetType)
+        Like like = likeRepository.findByMemberIdAndSellerIdAndTargetType(memberId, sellerId, TargetType.SELLER)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.LIKE_NOT_FOUND));
 
         like.setLikeStatus(LikeStatus.UNLIKE);
@@ -94,11 +95,30 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional
     public Like toCancelItemLike(Long sellerId, Long itemId, Long memberId) {
-        TargetType targetType = TargetType.ITEM;
-        Like like = likeRepository.findByMemberIdAndItemIdAndTargetType(memberId, itemId, targetType)
+        Like like = likeRepository.findByMemberIdAndItemIdAndTargetType(memberId, itemId, TargetType.ITEM)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.LIKE_NOT_FOUND));
 
         like.setLikeStatus(LikeStatus.UNLIKE);
         return likeRepository.save(like);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public LikeResponseDto.LikeCountDto toCountSellerLikes(Long sellerId) {
+        // like repository에서 sellerId, likeStatus like 개수를 count해서 가져와야함
+        Integer likeCnt = likeRepository.countBySellerIdAndTargetTypeAndLikeStatus(sellerId, TargetType.SELLER, LikeStatus.LIKE);
+        return LikeConverter.toLikeCountDto(TargetType.SELLER, sellerId, likeCnt);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public LikeResponseDto.LikeCountDto toCountItemLikes(Long sellerId, Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+        if (!item.getSeller().getId().equals(sellerId)) throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
+
+        // like repository에서 itemId, likeStatus like 개수를 count해서 가져와야함
+        Integer likeCnt = likeRepository.countByItemIdAndTargetTypeAndLikeStatus(itemId, TargetType.ITEM, LikeStatus.LIKE);
+        return LikeConverter.toLikeCountDto(TargetType.ITEM, itemId, likeCnt);
     }
 }

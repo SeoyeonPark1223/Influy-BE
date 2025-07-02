@@ -11,6 +11,9 @@ public class LikeResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SellerLikeDto {
+        @Schema(description = "찜 id", example = "1")
+        private Long likeId;
+
         @Schema(description = "멤버 id", example = "1")
         private Long memberId;
 
@@ -32,6 +35,9 @@ public class LikeResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ItemLikeDto {
+        @Schema(description = "찜 id", example = "1")
+        private Long likeId;
+
         @Schema(description = "멤버 id", example = "1")
         private Long memberId;
 
@@ -46,5 +52,20 @@ public class LikeResponseDto {
 
         @Schema(description = "아이템 이름", example = "빤짝 원피스")
         private String itemName;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LikeCountDto {
+        @Schema(description = "셀러/아이템 찜", example = "아이템")
+        private TargetType targetType;
+
+        @Schema(description = "셀러/아이템 id", example = "1")
+        private Long targetId;
+
+        @Schema(description = "찜 개수", example = "10")
+        private Integer likeCount;
     }
 }
