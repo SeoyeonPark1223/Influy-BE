@@ -3,10 +3,11 @@ package com.influy.domain.member.service;
 import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.domain.userProfile.service.UserProfileService;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,5 +42,11 @@ public class MemberServiceImpl implements MemberService {
         userProfileService.createUserProfile(member);
         sellerProfileService.createSellerProfile(member,requestBody);
         return member;
+    }
+
+    @Override
+    public Member findByKakaoId(Long kakaoId) {
+        return memberRepository.findByKakaoId(kakaoId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 }

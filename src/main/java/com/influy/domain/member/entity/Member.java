@@ -20,6 +20,9 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private Long kakaoId;
+
     @NotNull
     private String nickname;
 

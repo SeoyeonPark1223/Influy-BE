@@ -7,4 +7,6 @@ public interface MemberService {
     Member joinUser(MemberRequestDTO.UserJoin requestBody);
 
     Member joinSeller(MemberRequestDTO.SellerJoin requestBody);
+
+    Member findByKakaoId(Long kakaoId);
 }
