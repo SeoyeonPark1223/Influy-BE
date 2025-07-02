@@ -18,8 +18,8 @@ import java.util.List;
 public class LikeScheduler {
     private final LikeRepository likeRepository;
 
-//    @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 */2 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 */2 * * * *") 테스트용 (2분마다)
     @Transactional
     public void softDeleteLikes() {
         List<Like> toDeleteLikeList = likeRepository.findAllByLikeStatus(LikeStatus.UNLIKE);
