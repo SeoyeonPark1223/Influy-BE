@@ -54,7 +54,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     public SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
 
         SellerProfile sellerProfile = SellerProfileConverter.toSellerProfile(member,request);
-
+        member.setSellerProfile(sellerProfile);
         return sellerProfileRepository.save(sellerProfile);
     }
 }

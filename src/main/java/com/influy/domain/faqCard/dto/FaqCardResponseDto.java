@@ -93,8 +93,8 @@ public class FaqCardResponseDto {
         @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
         private String backgroundImgLink;
 
-        @Schema(description = "FAQ 카테고리", example = "색상")
-        private String faqCategory;
+        @Schema(description = "FAQ 카테고리 id", example = "1")
+        private Long faqCategoryId;
 
         @Schema(description = "업뎃일", example = "2021-01-01T00:00")
         private LocalDateTime updatedAt;
@@ -116,6 +116,12 @@ public class FaqCardResponseDto {
 
         @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
         private String backgroundImgLink;
+
+        @Schema(description = "고정 여부", example = "true")
+        private boolean pinned;
+
+        @Schema(description = "FAQ 카테고리 id", example = "1")
+        private Long faqCategoryId;
     }
 
     @Getter
