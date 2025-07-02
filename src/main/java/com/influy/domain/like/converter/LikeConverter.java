@@ -19,21 +19,23 @@ public class LikeConverter {
                 .build();
     }
 
-    public static LikeResponseDto.AddSellerLikeDto toAddSellerLikeDto(Like like) {
+    public static LikeResponseDto.SellerLikeDto toSellerLikeDto(Like like) {
         SellerProfile seller = like.getSeller();
 
-        return LikeResponseDto.AddSellerLikeDto.builder()
+        return LikeResponseDto.SellerLikeDto.builder()
                 .memberId(like.getMember().getId())
                 .targetType(like.getTargetType())
+                .likeStatus(like.getLikeStatus())
                 .sellerId(seller.getId())
                 .sellerName(seller.getMember().getNickname())
                 .build();
     }
 
-    public static LikeResponseDto.AddItemLikeDto toAddItemLikeDto(Like like) {
-        return LikeResponseDto.AddItemLikeDto.builder()
+    public static LikeResponseDto.ItemLikeDto toItemLikeDto(Like like) {
+        return LikeResponseDto.ItemLikeDto.builder()
                 .memberId(like.getMember().getId())
                 .targetType(like.getTargetType())
+                .likeStatus(like.getLikeStatus())
                 .itemId(like.getItem().getId())
                 .itemName(like.getItem().getName())
                 .build();

@@ -42,6 +42,7 @@ public class Member extends BaseEntity {
     private MemberRole role;
 
     @Nullable
+    @Setter
     @OneToOne(mappedBy = "member")
     private SellerProfile sellerProfile;
 

@@ -7,7 +7,6 @@ import com.influy.domain.like.service.LikeService;
 import com.influy.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,18 +19,36 @@ public class LikeRestController {
 
     @PostMapping("/likes")
     @Operation(summary = "멤버가 셀러에 찜 추가")
-    public ApiResponse<LikeResponseDto.AddSellerLikeDto> AddSellerLike(@PathVariable("sellerId") Long sellerId,
-                                                                             @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
+    public ApiResponse<LikeResponseDto.SellerLikeDto> addSellerLike(@PathVariable("sellerId") Long sellerId,
+                                                                    @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
         Like like = likeService.toAddSellerLike(sellerId, memberId);
-        return ApiResponse.onSuccess(LikeConverter.toAddSellerLikeDto(like));
+        return ApiResponse.onSuccess(LikeConverter.toSellerLikeDto(like));
     }
 
     @PostMapping("/items/{itemId}/likes")
     @Operation(summary = "멤버가 아이템에 찜 추가")
-    public ApiResponse<LikeResponseDto.AddItemLikeDto> AddItemLike(@PathVariable("sellerId") Long sellerId,
-                                                                         @PathVariable("itemId") Long itemId,
-                                                                         @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
+    public ApiResponse<LikeResponseDto.ItemLikeDto> addItemLike(@PathVariable("sellerId") Long sellerId,
+                                                                @PathVariable("itemId") Long itemId,
+                                                                @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
         Like like = likeService.toAddItemLike(sellerId, itemId, memberId);
-        return ApiResponse.onSuccess(LikeConverter.toAddItemLikeDto(like));
+        return ApiResponse.onSuccess(LikeConverter.toItemLikeDto(like));
+    }
+
+    @PatchMapping("/dislikes")
+    @Operation(summary = "멤버가 셀러 찜 취소")
+    public ApiResponse<LikeResponseDto.SellerLikeDto> cancelSellerLike(@PathVariable("sellerId") Long sellerId,
+                                                                       @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
+        Like like = likeService.toCancelSellerLike(sellerId, memberId);
+        return ApiResponse.onSuccess(LikeConverter.toSellerLikeDto(like));
+    }
+
+
+    @PatchMapping("/items/{itemId}/dislikes")
+    @Operation(summary = "멤버가 아이템 찜 취소")
+    public ApiResponse<LikeResponseDto.ItemLikeDto> cancelItemLike(@PathVariable("sellerId") Long sellerId,
+                                                                   @PathVariable("itemId") Long itemId,
+                                                                   @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
+        Like like = likeService.toCancelItemLike(sellerId, itemId, memberId);
+        return ApiResponse.onSuccess(LikeConverter.toItemLikeDto(like));
     }
 }

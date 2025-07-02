@@ -4,6 +4,7 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.converter.LikeConverter;
 import com.influy.domain.like.entity.Like;
+import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
@@ -15,6 +16,8 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +35,22 @@ public class LikeServiceImpl implements LikeService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-        return likeRepository.findByMemberAndSellerAndTargetType(member, seller, targetType)
-                .orElse(LikeConverter.toLike(member, seller, null, targetType));
+
+        Optional<Like> optLike = likeRepository.findByMemberIdAndSellerIdAndTargetType(memberId, sellerId, targetType);
+
+        if (optLike.isPresent()) {
+            Like like = optLike.get();
+            if (like.getLikeStatus() == LikeStatus.UNLIKE) {
+                like.setLikeStatus(LikeStatus.LIKE);
+                return likeRepository.save(like);
+            }
+            return like;
+        }
+
+        Like like = LikeConverter.toLike(member, seller, null, targetType);
+        member.getLikeList().add(like);
+        seller.getLikeList().add(like);
+        return likeRepository.save(like);
     }
 
     @Override
@@ -45,7 +62,43 @@ public class LikeServiceImpl implements LikeService {
         if (!item.getSeller().getId().equals(sellerId)) throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-        return likeRepository.findByMemberAndItemAndTargetType(member, item, targetType)
-                .orElse(LikeConverter.toLike(member, null, item, targetType));
+
+        Optional<Like> optLike = likeRepository.findByMemberIdAndItemIdAndTargetType(memberId, itemId, targetType);
+
+        if (optLike.isPresent()) {
+            Like like = optLike.get();
+            if (like.getLikeStatus() == LikeStatus.UNLIKE) {
+                like.setLikeStatus(LikeStatus.LIKE);
+                return likeRepository.save(like);
+            }
+            return like;
+        }
+
+        Like like = LikeConverter.toLike(member, null, item, targetType);
+        member.getLikeList().add(like);
+        item.getLikeList().add(like);
+        return likeRepository.save(like);
+    }
+
+    @Override
+    @Transactional
+    public Like toCancelSellerLike(Long sellerId, Long memberId) {
+        TargetType targetType = TargetType.SELLER;
+        Like like = likeRepository.findByMemberIdAndSellerIdAndTargetType(memberId, sellerId, targetType)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.LIKE_NOT_FOUND));
+
+        like.setLikeStatus(LikeStatus.UNLIKE);
+        return likeRepository.save(like);
+    }
+
+    @Override
+    @Transactional
+    public Like toCancelItemLike(Long sellerId, Long itemId, Long memberId) {
+        TargetType targetType = TargetType.ITEM;
+        Like like = likeRepository.findByMemberIdAndItemIdAndTargetType(memberId, itemId, targetType)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.LIKE_NOT_FOUND));
+
+        like.setLikeStatus(LikeStatus.UNLIKE);
+        return likeRepository.save(like);
     }
 }

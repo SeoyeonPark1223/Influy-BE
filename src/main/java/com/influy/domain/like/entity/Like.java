@@ -12,6 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "likes")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +32,11 @@ public class Like {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private LikeStatus likeStatus;
 
     @Enumerated(EnumType.STRING)
     private TargetType targetType;
+
 }
