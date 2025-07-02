@@ -129,7 +129,7 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional(readOnly = true)
     public Page<Like> toGetSellerLikePage(Long memberId, PageRequestDto pageRequest) {
-        // 정렬: 최근 상품 올린 셀러가 위로 가도록 (seller->가장 최근 updatedAt 아이템 기준 정렬)
+        // 정렬: 최근 상품 올린 셀러가 위로 가도록 (seller -> 가장 최근 updatedAt 아이템 기준 정렬)
         return likeRepository.findSellerLikesOrderByRecentItem(memberId, pageRequest.toPageable());
     }
 
@@ -137,7 +137,7 @@ public class LikeServiceImpl implements LikeService {
     @Transactional(readOnly = true)
     public Page<Like> toGetItemLikePage(Long memberId, PageRequestDto pageRequest) {
         // 정렬: 아이템 마감일 빠른순
-
-        return null;
+        Pageable pageable = pageRequest.toPageable(Sort.by("item.endDate").ascending());
+        return likeRepository.findByMemberIdAndTargetTypeAndLikeStatus(memberId, TargetType.ITEM, LikeStatus.LIKE, pageable);
     }
 }

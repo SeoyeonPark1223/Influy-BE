@@ -30,4 +30,5 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
         ) DESC
     """)
     Page<Like> findSellerLikesOrderByRecentItem(Long memberId, Pageable pageable);
+    Page<Like> findByMemberIdAndTargetTypeAndLikeStatus(Long memberId, TargetType targetType, LikeStatus likeStatus, Pageable pageable);
 }

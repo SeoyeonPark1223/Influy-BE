@@ -56,13 +56,13 @@ public class LikeRestController {
     }
 
     @GetMapping("seller/{sellerId}/count-likes")
-    @Operation(summary = "멤버의 셀러 찜 개수 조회")
+    @Operation(summary = "셀러 찜 개수 조회")
     public ApiResponse<LikeResponseDto.LikeCountDto> countSellerLikes(@PathVariable("sellerId") Long sellerId) {
         return ApiResponse.onSuccess(likeService.toCountSellerLikes(sellerId));
     }
 
     @GetMapping("seller/{sellerId}/items/{itemId}/count-likes")
-    @Operation(summary = "멤버의 아이템 찜 개수 조회")
+    @Operation(summary = "아이템 찜 개수 조회")
     public ApiResponse<LikeResponseDto.LikeCountDto> countItemLikes(@PathVariable("sellerId") Long sellerId,
                                                                     @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(likeService.toCountItemLikes(sellerId, itemId));
