@@ -14,7 +14,11 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,5 +124,20 @@ public class LikeServiceImpl implements LikeService {
         // like repository에서 itemId, likeStatus like 개수를 count해서 가져와야함
         Integer likeCnt = likeRepository.countByItemIdAndTargetTypeAndLikeStatus(itemId, TargetType.ITEM, LikeStatus.LIKE);
         return LikeConverter.toLikeCountDto(TargetType.ITEM, itemId, likeCnt);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Like> toGetSellerLikePage(Long memberId, PageRequestDto pageRequest) {
+        // 정렬: 최근 상품 올린 셀러가 위로 가도록 (seller->가장 최근 updatedAt 아이템 기준 정렬)
+        return likeRepository.findSellerLikesOrderByRecentItem(memberId, pageRequest.toPageable());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Like> toGetItemLikePage(Long memberId, PageRequestDto pageRequest) {
+        // 정렬: 아이템 마감일 빠른순
+
+        return null;
     }
 }
