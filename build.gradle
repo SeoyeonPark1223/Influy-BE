@@ -13,8 +13,13 @@ java {
 	}
 }
 
+ext {
+	set('springAiVersion', "1.0.0-M3")
+}
+
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -48,6 +53,10 @@ dependencies {
 
 	// s3
 	implementation 'software.amazon.awssdk:s3:2.31.40'
+
+	// AI
+	implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-M3")
+	implementation 'org.springframework.ai:spring-ai-openai'
 }
 
 tasks.named('test') {
