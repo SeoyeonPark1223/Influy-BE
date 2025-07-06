@@ -26,15 +26,20 @@ import static com.influy.global.util.StaticValues.REFRESH_EXPIRE;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+
+
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
 
     @Value("${kakao.rest-api-key}")
     private String kakaoRestApiKey;
-
+    @Value("${social.redirect-uri}")
+    private String redirectUri;
     @Override
     public AuthResponseDTO.TokenPair kakaoSignIn(String code) {
+
+
 
         //토큰 받기 POST 요청
 
@@ -46,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
                 .uri(uriBuilder -> uriBuilder.path("/oauth/token")
                         .queryParam("grant_type","authorization_code")
                         .queryParam("client_id",kakaoRestApiKey)
-                        .queryParam("redirect_uri","http://localhost:8080/oauth/kakao")
+                        .queryParam("redirect_uri",redirectUri)
                         .queryParam("code", code)
                         .build())
                 .retrieve()

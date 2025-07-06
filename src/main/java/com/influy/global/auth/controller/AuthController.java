@@ -10,6 +10,7 @@ import com.influy.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,7 @@ public class AuthController {
 
 
     @GetMapping("/kakao")
-    @Operation(summary = "카카오 서버에서 오는 redirect uri 받는 api 입니다", description = "로그인 주소: https://kauth.kakao.com/oauth/authorize?client_id=a208249d69627b4ccffff588db18bcb9&redirect_uri=http://api.influy.com/oauth/kakao&response_type=code")
+    @Operation(summary = "카카오 서버에서 오는 redirect uri 받는 api 입니다", description = "로그인 주소는 페이지 맨 위 설명 보시면 있습니다.")
     public ApiResponse<AuthResponseDTO.TokenPair> getKaKaoUser(@RequestParam("code") String code,
                                                              @RequestParam(name = "error", required = false) String error,
                                                              @RequestParam(name = "error_description", required = false) String description){
