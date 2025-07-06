@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -63,15 +65,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     //최상단 공지 조회
-    public Announcement getPrimaryAnnouncementOf(Long sellerId) {
+    public Optional<Announcement> getPrimaryAnnouncementOf(Long sellerId) {
         SellerProfile seller = sellerService.getSeller(sellerId);
 
-        Announcement announcement = seller.getPrimaryAnnouncement();
+        Optional<Announcement> announcement = Optional.ofNullable(seller.getPrimaryAnnouncement());
 
-        if(announcement == null){//최상단 공지가 없으면 가장 최신 공지 제공
-            announcement = announcementRepository.findFirstBySellerOrderByCreatedAtDesc(seller).orElseThrow(
-                    ()-> new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND)
-            );
+        if(announcement.isEmpty()){//최상단 공지가 없으면 가장 최신 공지 제공
+            announcement = announcementRepository.findFirstBySellerOrderByCreatedAtDesc(seller);
         }
 
         return announcement;

@@ -9,6 +9,7 @@ public class MemberConverter {
         //각 롤에 따라 프로필 생성로직
         //회원가입 로직 구현 시 수정
         return Member.builder()
+                .kakaoId(requestDTO.getKakaoId())
                 .nickname(requestDTO.getNickname())
                 .name(requestDTO.getName())
                 .role(requestDTO.getRole())

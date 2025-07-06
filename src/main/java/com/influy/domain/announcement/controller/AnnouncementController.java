@@ -19,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "공지")
@@ -52,7 +54,7 @@ public class AnnouncementController {
     @Operation(summary = "최상단 공지 조회", description = "최상단 공지가 없으면 가장 최신 등록된 공지 반환")
     public ApiResponse<AnnouncementResponseDTO.PinnedAnnouncement> getPrimaryAnnouncement(@PathVariable("sellerId") Long sellerId) {
 
-        Announcement announcement = announcementService.getPrimaryAnnouncementOf(sellerId);
+        Optional<Announcement> announcement = announcementService.getPrimaryAnnouncementOf(sellerId);
         Integer totalAnnouncements = announcementService.getTotalAnnouncementsOf(sellerId);
         AnnouncementResponseDTO.PinnedAnnouncement body = AnnouncementConverter.toPinnedAnnouncementDTO(announcement,totalAnnouncements);
 

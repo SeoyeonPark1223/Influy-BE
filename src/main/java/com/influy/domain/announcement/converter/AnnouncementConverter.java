@@ -6,6 +6,8 @@ import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
+import java.util.Optional;
+
 public class AnnouncementConverter {
     public static Announcement toEntity(AnnouncementRequestDTO requestDTO, SellerProfile seller){
         return Announcement.builder()
@@ -26,13 +28,20 @@ public class AnnouncementConverter {
                 .createdAt(announcement.getCreatedAt())
                 .build();
     }
-    public static AnnouncementResponseDTO.PinnedAnnouncement toPinnedAnnouncementDTO(Announcement announcement, Integer totalAnnouncements) {
+    public static AnnouncementResponseDTO.PinnedAnnouncement toPinnedAnnouncementDTO(Optional<Announcement> announcement, Integer totalAnnouncements) {
 
-        return AnnouncementResponseDTO.PinnedAnnouncement.builder()
-                .id(announcement.getId())
-                .title(announcement.getTitle())
-                .totalAnnouncements(totalAnnouncements)
-                .build();
+        if(announcement.isPresent())
+        {
+            return AnnouncementResponseDTO.PinnedAnnouncement.builder()
+                    .id(announcement.get().getId())
+                    .title(announcement.get().getTitle())
+                    .totalAnnouncements(totalAnnouncements)
+                    .build();
+        }else{
+            return null;
+        }
+
+
     }
 
     public static AnnouncementResponseDTO.GeneralList toListDTO(Page<Announcement> announcements) {

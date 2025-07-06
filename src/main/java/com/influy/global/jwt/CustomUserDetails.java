@@ -1,6 +1,7 @@
 package com.influy.global.jwt;
 
 import com.influy.domain.member.entity.Member;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
+    @Getter
     private final Member member;
 
     @Override

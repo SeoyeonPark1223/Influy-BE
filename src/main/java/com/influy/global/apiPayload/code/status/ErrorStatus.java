@@ -48,7 +48,13 @@ public enum ErrorStatus implements BaseCode {
     QUESTION_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION CATEGORY NOT FOUND", "질문 카테고리를 찾을 수 없습니다."),
 
     // 정렬 관련 응답
-    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식은 CREATE_DATE, END_DATE 입니다.");
+    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식은 CREATE_DATE, END_DATE 입니다."),
+
+    // redis 관련 응답
+    REDIS_KEY_NOT_FOUND(HttpStatus.NOT_FOUND,"REDIS KEY NOT FOUND" ,"REDIS 키를 찾을 수 없습니다." ),
+
+    //API 요청 관련 에러 응답
+    GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." );
 
 
     private final HttpStatus httpStatus;

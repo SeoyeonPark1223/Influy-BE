@@ -1,9 +1,11 @@
 package com.influy.global.jwt;
 
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.util.StaticValues;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,6 +24,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+import static com.influy.global.util.StaticValues.ACCESS_TOKEN_EXPIRE;
+import static com.influy.global.util.StaticValues.REFRESH_EXPIRE;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -38,8 +43,6 @@ public class JwtTokenProvider {
 
     private Key key;
 
-    private final long ACCESS_TOKEN_EXPIRE = 1000 * 60 * 60; // 1시간
-    private final long REFRESH_EXPIRE = 1000L * 60 * 60 * 24 * 14; // 2주
 
     @PostConstruct
     public void init() {
@@ -47,7 +50,7 @@ public class JwtTokenProvider {
     }
 
     //accessToken 생성
-    public String generateAccessToken(Long kakaoId, String role) {
+    public String generateAccessToken(Long kakaoId, MemberRole role) {
         return Jwts.builder()
                 .setSubject(String.valueOf(kakaoId))
                 .claim("role", role)

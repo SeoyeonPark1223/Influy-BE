@@ -31,6 +31,7 @@ public class SellerProfileConverter {
 
     public static SellerProfile toSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
         return SellerProfile.builder()
+                .member(member)
                 .email(request.getEmail())
                 .instagram(request.getInstagram())
                 .build();

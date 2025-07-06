@@ -7,6 +7,7 @@ public class MemberRequestDTO {
     @Getter
     public static class UserJoin {
         private String username;
+        private Long kakaoId;
         private String password;
         private String name;
         private String nickname;
@@ -18,4 +19,5 @@ public class MemberRequestDTO {
         private String email;
         private String instagram;
     }
+
 }
