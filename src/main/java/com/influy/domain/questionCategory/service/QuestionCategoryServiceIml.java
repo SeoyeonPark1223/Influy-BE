@@ -13,7 +13,6 @@ import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
-import com.influy.domain.userProfile.repository.UserProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
     private final ItemRepository itemRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionRepository questionRepository;
-    private final UserProfileRepository userRepository;
     private final MemberRepository memberRepository;
 
     @Override

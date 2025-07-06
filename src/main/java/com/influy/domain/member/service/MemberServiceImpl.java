@@ -5,7 +5,6 @@ import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
-import com.influy.domain.userProfile.service.UserProfileService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final UserProfileService userProfileService;
     private final SellerProfileService sellerProfileService;
 
     @Transactional
     @Override
     public Member joinUser(MemberRequestDTO.UserJoin requestBody) {
         Member newMember = MemberConverter.toMember(requestBody);
-        Member member = memberRepository.save(newMember);
 
-        userProfileService.createUserProfile(member);
-
-        return member;
+        return memberRepository.save(newMember);
     }
 
     @Override
@@ -39,7 +34,6 @@ public class MemberServiceImpl implements MemberService {
         Member newMember = MemberConverter.toMember(requestBody.getUserInfo());
         Member member = memberRepository.save(newMember);
 
-        userProfileService.createUserProfile(member);
         sellerProfileService.createSellerProfile(member,requestBody);
         return member;
     }

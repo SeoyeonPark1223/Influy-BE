@@ -14,5 +14,5 @@ public interface ItemService {
     Item setAccess(Long sellerId, Long itemId, ItemRequestDto.AccessDto request);
     Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request);
     Integer getCount(Long sellerId, Boolean isArchived);
-    Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType);
+    Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing);
 }

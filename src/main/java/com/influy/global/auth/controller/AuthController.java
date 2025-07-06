@@ -7,6 +7,7 @@ import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.dto.AuthResponseDTO;
 import com.influy.global.auth.service.AuthService;
 import com.influy.global.jwt.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,8 @@ public class AuthController {
 
 
     @GetMapping("/kakao")
-    public ApiResponse<AuthResponseDTO.TokenPair> kakaoLogIn(@RequestParam("code") String code,
+    @Operation(summary = "카카오 서버에서 오는 redirect uri 받는 api 입니다", description = "로그인 주소: https://kauth.kakao.com/oauth/authorize?client_id=a208249d69627b4ccffff588db18bcb9&redirect_uri=http://api.influy.com/oauth/kakao&response_type=code")
+    public ApiResponse<AuthResponseDTO.TokenPair> getKaKaoUser(@RequestParam("code") String code,
                                                              @RequestParam(name = "error", required = false) String error,
                                                              @RequestParam(name = "error_description", required = false) String description){
 
@@ -29,6 +31,7 @@ public class AuthController {
 
         return ApiResponse.onSuccess(body);
     }
+
 
 
 }

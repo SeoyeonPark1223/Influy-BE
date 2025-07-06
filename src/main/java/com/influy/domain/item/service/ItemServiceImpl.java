@@ -24,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -99,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
             createImageList(request, item);
         }
 
-        if (request.getItemCategoryList() != null) {
+        if (request.getItemCategoryIdList() != null) {
             item.getItemCategoryList().clear();
             createItemCategoryList(request, item);
         }
@@ -151,7 +152,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType) {
+    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
@@ -168,10 +169,17 @@ public class ItemServiceImpl implements ItemService {
 
         Pageable pageable = pageRequest.toPageable(Sort.by(direction, sortField));
 
-        if (isArchived) {
+        if (!isArchived & isOnGoing) {
+            // 보관 상품 아닌 것 중에서 진행 중 상품 필터 적용
+            return itemRepository.findOngoingItems(sellerId, LocalDateTime.now(), pageable);
+        } else if (!isArchived & !isOnGoing) {
+            // 보관 상품 아닌 것 중에서 진행 중 상품 필터 미적용
+            return itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
+        } else if (isArchived) {
+            // 보관 상품
             return itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
         } else {
-            return itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
+            throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         }
     }
 
@@ -185,9 +193,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void createItemCategoryList(ItemRequestDto.DetailDto request, Item item) {
-        List<String> itemCategoryStrList = request.getItemCategoryList();
-        for (String str : itemCategoryStrList) {
-            Category category = categoryRepository.findByCategory(str)
+        List<Long> itemCategoryLongList = request.getItemCategoryIdList();
+        for (Long lg : itemCategoryLongList) {
+            Category category = categoryRepository.findById(lg)
                     .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND));
             ItemCategory itemCategory = ItemCategoryConverter.toItemCategory(category, item);
             category.getItemCategoryList().add(itemCategory);
