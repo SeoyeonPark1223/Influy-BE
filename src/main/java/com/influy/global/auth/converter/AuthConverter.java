@@ -12,4 +12,11 @@ public class AuthConverter {
                 .refreshToken(refreshToken)
                 .build();
     }
+
+    public static AuthResponseDTO.RequestSignUp toRequestSignUp(Long kakaoId) {
+        return AuthResponseDTO.RequestSignUp.builder()
+                .message("회원가입이 필요합니다.")
+                .kakaoId(kakaoId)
+                .build();
+    }
 }

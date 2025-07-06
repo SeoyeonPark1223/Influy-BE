@@ -1,16 +1,11 @@
 package com.influy.global.auth.controller;
 
-import com.influy.domain.member.repository.MemberRepository;
-import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.ApiResponse;
-import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.dto.AuthResponseDTO;
 import com.influy.global.auth.service.AuthService;
-import com.influy.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,12 +18,12 @@ public class AuthController {
 
 
     @GetMapping("/kakao")
-    @Operation(summary = "카카오 서버에서 오는 redirect uri 받는 api 입니다", description = "로그인 주소는 페이지 맨 위 설명 보시면 있습니다.")
-    public ApiResponse<AuthResponseDTO.TokenPair> getKaKaoUser(@RequestParam("code") String code,
-                                                             @RequestParam(name = "error", required = false) String error,
-                                                             @RequestParam(name = "error_description", required = false) String description){
+    @Operation(summary = "카카오 서버에서 오는 redirect uri 받는 api 입니다. 프론트 사용 금지", description = "사용법: 최상단 명세서 설명란의 로그인 주소를 브라우저 주소창에 붙여넣기->응답으로 오는 카카오 아이디 복사->회원가입 api의 requestBody에 붙여넣기")
+    public ApiResponse<AuthResponseDTO.KakaoLoginResponse> getKaKaoUser(@RequestParam("code") String code,
+                                                                        @RequestParam(name = "error", required = false) String error,
+                                                                        @RequestParam(name = "error_description", required = false) String description){
 
-        AuthResponseDTO.TokenPair body =  authService.kakaoSignIn(code);
+        AuthResponseDTO.KakaoLoginResponse body =  authService.kakaoSignIn(code);
 
         return ApiResponse.onSuccess(body);
     }

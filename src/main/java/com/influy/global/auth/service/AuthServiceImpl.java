@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     @Value("${social.redirect-uri}")
     private String redirectUri;
     @Override
-    public AuthResponseDTO.TokenPair kakaoSignIn(String code) {
+    public AuthResponseDTO.KakaoLoginResponse kakaoSignIn(String code) {
 
 
 
@@ -64,14 +64,16 @@ public class AuthServiceImpl implements AuthService {
         Long kakaoId = getKakaoUserID(Objects.requireNonNull(result).getAccess_token());
 
         //멤버 찾아 서비스 토큰 발급(카카오 토큰과 다름)
-        Member member = memberService.findByKakaoId(kakaoId);
-        String accessToken = jwtTokenProvider.generateAccessToken(kakaoId,member.getRole());
-        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        try {
+            Member member = memberService.findByKakaoId(kakaoId);
 
-        // Redis에 refresh token 저장
-        redisService.setValue(member.getUsername(), refreshToken, 1000 * REFRESH_EXPIRE); // Timeout= 밀리초라서 1000 곱하기
+            //토큰 발급
+            return issueToken(member);
 
-        return AuthConverter.toTokenPair(member.getId(),accessToken,refreshToken);
+        } catch(GeneralException e){
+            return AuthConverter.toRequestSignUp(kakaoId);
+        }
+
 
     }
 
@@ -96,5 +98,16 @@ public class AuthServiceImpl implements AuthService {
 
 
         return Long.parseLong(dto.getId());
+    }
+
+    @Override
+    public AuthResponseDTO.TokenPair issueToken(Member member) {
+
+        String accessToken = jwtTokenProvider.generateAccessToken(member.getKakaoId(), member.getRole());
+        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        // Redis에 refresh token 저장
+        redisService.setValue(member.getUsername(), refreshToken, 1000 * REFRESH_EXPIRE); // Timeout= 밀리초라서 1000 곱하기
+
+        return AuthConverter.toTokenPair(member.getId(),accessToken,refreshToken);
     }
 }
