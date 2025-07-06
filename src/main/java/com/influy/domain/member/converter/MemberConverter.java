@@ -3,17 +3,17 @@ package com.influy.domain.member.converter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 
 public class MemberConverter {
-    public static Member toMember(MemberRequestDTO.UserJoin requestDTO) {
+    public static Member toMember(MemberRequestDTO.UserJoin requestDTO, MemberRole role) {
         //각 롤에 따라 프로필 생성로직
         //회원가입 로직 구현 시 수정
         return Member.builder()
                 .kakaoId(requestDTO.getKakaoId())
                 .nickname(requestDTO.getNickname())
                 .name(requestDTO.getName())
-                .role(requestDTO.getRole())
-                .password(requestDTO.getPassword()) //나중엔 hash값으로
+                .role(role)
                 .username(requestDTO.getUsername())
                 .build();
     }

@@ -38,9 +38,6 @@ public class Member extends BaseEntity {
     private String username; //=인스타 아이디 강력 추천
 
     @NotNull
-    private String password;
-
-    @NotNull
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 

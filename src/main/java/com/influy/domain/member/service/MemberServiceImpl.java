@@ -3,6 +3,7 @@ package com.influy.domain.member.service;
 import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -22,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public Member joinUser(MemberRequestDTO.UserJoin requestBody) {
-        Member newMember = MemberConverter.toMember(requestBody);
+        Member newMember = MemberConverter.toMember(requestBody, MemberRole.USER);
 
         return memberRepository.save(newMember);
     }
@@ -31,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member joinSeller(MemberRequestDTO.SellerJoin requestBody) {
 
-        Member newMember = MemberConverter.toMember(requestBody.getUserInfo());
+        Member newMember = MemberConverter.toMember(requestBody.getUserInfo(),MemberRole.SELLER);
         Member member = memberRepository.save(newMember);
 
         sellerProfileService.createSellerProfile(member,requestBody);

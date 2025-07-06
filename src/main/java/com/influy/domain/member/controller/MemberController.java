@@ -7,6 +7,8 @@ import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.auth.dto.AuthResponseDTO;
+import com.influy.global.auth.service.AuthService;
 import com.influy.global.jwt.CustomUserDetails;
 import com.influy.global.jwt.CustomUserDetailsServiceImpl;
 import com.influy.global.jwt.JwtTokenProvider;
@@ -24,21 +26,20 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-    private final UserDetailsService userDetailsService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
     //일반 유저 가입
     @PostMapping("/register/user")
-    public ApiResponse<MemberResponseDTO.MemberProfile> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody){
+    public ApiResponse<AuthResponseDTO.TokenPair> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody){
         Member member = memberService.joinUser(requestBody);
-        MemberResponseDTO.MemberProfile body= MemberConverter.toMemberDTO(member);
+        AuthResponseDTO.TokenPair body = authService.issueToken(member);
 
         return ApiResponse.onSuccess(body);
     }
     @PostMapping("/register/seller")
-    public ApiResponse<MemberResponseDTO.MemberProfile> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody){
+    public ApiResponse<AuthResponseDTO.TokenPair> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody){
         Member member = memberService.joinSeller(requestBody);
-        MemberResponseDTO.MemberProfile body= MemberConverter.toMemberDTO(member);
+        AuthResponseDTO.TokenPair body = authService.issueToken(member);
 
         return ApiResponse.onSuccess(body);
     }
