@@ -57,10 +57,6 @@ public class AuthServiceImpl implements AuthService {
                 .retrieve()
                 .body(AuthRequestDTO.KakaoToken.class);
 
-
-        System.out.println("잘 호출됨");
-        System.out.println(Objects.requireNonNull(result).getAccess_token());
-
         Long kakaoId = getKakaoUserID(Objects.requireNonNull(result).getAccess_token());
 
         //멤버 찾아 서비스 토큰 발급(카카오 토큰과 다름)
@@ -92,9 +88,6 @@ public class AuthServiceImpl implements AuthService {
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .body(AuthRequestDTO.KakaoUser.class);
-
-
-        System.out.println(Objects.requireNonNull(dto).getId());
 
 
         return Long.parseLong(dto.getId());
