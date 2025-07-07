@@ -2,6 +2,7 @@ package com.influy.domain.questionCategory.service;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.JPQLQuestionDTO;
 import com.influy.domain.question.repository.QuestionRepository;
@@ -10,9 +11,8 @@ import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDTO;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
-import com.influy.domain.seller.entity.Seller;
-import com.influy.domain.seller.service.SellerServiceImpl;
-import com.influy.domain.user.repository.UserRepository;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +30,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuestionCategoryServiceIml implements QuestionCategoryService{
 
-    private final SellerServiceImpl sellerService;
+    private final SellerProfileServiceImpl sellerService;
     private final ItemRepository itemRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionRepository questionRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
     public QuestionCategory createCategory(Long sellerId, Long itemId, QuestionCategoryRequestDTO.Create request) {
         //자격 검증
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {
@@ -59,7 +59,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
     @Override
     public Page<QuestionCategory> getCategoryList(Long sellerId, Long itemId, Pageable pageable) {
         //자격 검증
-        Seller seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSeller(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {
@@ -112,7 +112,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
             if(row[0]!=null){//질문이 존재하면 dto의 questionList에 추가해준다.
                 QuestionCategoryResponseDTO.Preview dto = categoryMap.get(categoryId);
 
-                String nickname = userRepository.findById((Long) row[1]).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND)).getNickname();
+                String nickname = memberRepository.findById((Long) row[1]).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND)).getNickname();
 
                 dto.getQuestions().add(QuestionConverter.toGeneralDTO(row,nickname));
             }

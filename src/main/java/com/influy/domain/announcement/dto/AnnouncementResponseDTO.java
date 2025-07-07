@@ -32,4 +32,13 @@ public class AnnouncementResponseDTO {
         private Boolean isFirst;
         private Boolean isLast;
     }
+
+    @Getter @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PinnedAnnouncement{
+        private Long id;
+        private String title;
+        private Integer totalAnnouncements;
+    }
 }

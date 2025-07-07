@@ -6,9 +6,10 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
-import com.influy.domain.seller.repository.SellerRepository;
+import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FaqCategoryServiceImpl implements FaqCategoryService {
-    private final SellerRepository sellerRepository;
+    private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
     private final FaqCategoryRepository faqCategoryRepository;
 
@@ -52,12 +53,11 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FaqCategory> getPage(Long sellerId, Long itemId, Integer pageNumber) {
+    public Page<FaqCategory> getPage(Long sellerId, Long itemId, PageRequestDto pageRequest) {
         if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         if (!itemRepository.existsById(itemId)) throw new GeneralException(ErrorStatus.ITEM_NOT_FOUND);
 
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "createdAt"));
 
         return faqCategoryRepository.findAllByItemId(itemId, pageable);
     }

@@ -20,6 +20,12 @@ public class FaqCardRequestDto {
 
         @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
         private String backgroundImgLink;
+
+        @Schema(description = "고정하기 여부", example = "true")
+        private boolean pinned;
+
+        @Schema(description = "사진 비율 (false: 꽉 채운거, true: 높이 비율로 조정)", example = "false")
+        private boolean adjustImg;
     }
 
     @Getter
@@ -35,5 +41,11 @@ public class FaqCardRequestDto {
 
         @Schema(description = "배경 이미지 링크", example = "xxxxx.png")
         private String backgroundImgLink;
+
+        @Schema(description = "고정하기 여부", example = "true")
+        private Boolean pinned;
+
+        @Schema(description = "FAQ 카테고리 id", example = "1")
+        private Long faqCategoryId;
     }
 }

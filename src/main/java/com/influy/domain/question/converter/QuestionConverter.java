@@ -12,7 +12,7 @@ public class QuestionConverter {
         return QuestionResponseDTO.General.builder()
                 .id(question.getId())
                 .content(question.getContent())
-                .nickname(question.getUser().getNickname())
+                .nickname(question.getMember().getNickname())
                 .itemPeriod(question.getItemPeriod())
                 .createdAt(question.getCreatedAt())
                 .build();

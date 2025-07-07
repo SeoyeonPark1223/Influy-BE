@@ -4,13 +4,14 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
-import com.influy.domain.seller.entity.Seller;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ItemConverter {
-    public static Item toItem(Seller seller, ItemRequestDto.DetailDto request) {
+    public static Item toItem(SellerProfile seller, ItemRequestDto.DetailDto request) {
         return Item.builder()
                 .seller(seller)
                 .name(request.getName())
@@ -44,7 +45,7 @@ public class ItemConverter {
                 .MainImg(item.getImageList().get(0).getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
-                .sellerName(item.getSeller().getNickname())
+                .sellerName(item.getSeller().getMember().getUsername())
                 .startDate(item.getStartDate())
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())

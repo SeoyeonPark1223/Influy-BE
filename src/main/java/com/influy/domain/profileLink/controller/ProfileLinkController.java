@@ -16,11 +16,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "링크 인 바이오")
-@RequestMapping("/seller/market-links")
 public class ProfileLinkController {
     private final ProfileLinkService profileLinkServiceImpl;
     //링크 생성
-    @PostMapping("")
+    @PostMapping("/seller/market-links")
     @Operation(summary = "링크 추가",description = "링크를 추가합니다.")
     public ApiResponse<ProfileLinkResponseDTO.General> createLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
                                                                   @RequestBody ProfileLinkRequestDTO request){
@@ -33,7 +32,7 @@ public class ProfileLinkController {
     }
 
     //링크 수정
-    @PatchMapping("/{linkId}")
+    @PatchMapping("/seller/market-links/{linkId}")
     @Operation(summary = "링크 수정",description = "링크를 수정합니다.")
     public ApiResponse<ProfileLinkResponseDTO.General> updateLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
                                                                   @PathVariable("linkId") Long linkId,
@@ -47,9 +46,9 @@ public class ProfileLinkController {
     }
 
     //링크 리스트 조회
-    @GetMapping("")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
+    @GetMapping("/seller/{sellerId}/market-links")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
     @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다.")
-    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId){
+    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId){
 
         List<ProfileLink> profileLinks = profileLinkServiceImpl.getLinkListOf(sellerId);
 
@@ -60,7 +59,7 @@ public class ProfileLinkController {
 
     //링크 삭제
 
-    @PostMapping("/{linkId}")
+    @PostMapping("/seller/market-links/{linkId}")
     @Operation(summary = "링크 삭제",description = "링크를 삭제합니다.")
     public ApiResponse<String> deleteLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
                                           @PathVariable("linkId") Long linkId){
