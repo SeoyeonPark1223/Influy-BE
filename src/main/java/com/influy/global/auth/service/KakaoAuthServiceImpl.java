@@ -7,16 +7,16 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.auth.converter.AuthConverter;
 import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.dto.AuthResponseDTO;
+import com.influy.global.jwt.CookieUtil;
 import com.influy.global.jwt.JwtTokenProvider;
 import com.influy.global.redis.RedisService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 
@@ -24,8 +24,7 @@ import static com.influy.global.util.StaticValues.REFRESH_EXPIRE;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
-
+public class KakaoAuthServiceImpl implements AuthService {
 
 
     private final MemberService memberService;
@@ -36,9 +35,9 @@ public class AuthServiceImpl implements AuthService {
     private String kakaoRestApiKey;
     @Value("${social.redirect-uri}")
     private String redirectUri;
-    @Override
-    public AuthResponseDTO.KakaoLoginResponse kakaoSignIn(String code) {
 
+    @Override
+    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code) {
 
 
         //토큰 받기 POST 요청
@@ -49,24 +48,25 @@ public class AuthServiceImpl implements AuthService {
 
         AuthRequestDTO.KakaoToken result = restClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/oauth/token")
-                        .queryParam("grant_type","authorization_code")
-                        .queryParam("client_id",kakaoRestApiKey)
-                        .queryParam("redirect_uri",redirectUri)
+                        .queryParam("grant_type", "authorization_code")
+                        .queryParam("client_id", kakaoRestApiKey)
+                        .queryParam("redirect_uri", redirectUri)
                         .queryParam("code", code)
                         .build())
                 .retrieve()
                 .body(AuthRequestDTO.KakaoToken.class);
 
-        Long kakaoId = getKakaoUserID(Objects.requireNonNull(result).getAccess_token());
+        Long kakaoId = GetSocialUserId(Objects.requireNonNull(result).getAccess_token());
 
         //멤버 찾아 서비스 토큰 발급(카카오 토큰과 다름)
         try {
             Member member = memberService.findByKakaoId(kakaoId);
 
             //토큰 발급
-            return issueToken(member);
+            String accessToken = issueToken(member)[0];
+            return AuthConverter.toTokenPair(member.getId(), accessToken);
 
-        } catch(GeneralException e){
+        } catch (GeneralException e) {
             return AuthConverter.toRequestSignUp(kakaoId);
         }
 
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Long getKakaoUserID(String accessToken) {
+    public Long GetSocialUserId(String accessToken) {
 
 
         RestClient restClient = RestClient.create();
@@ -94,13 +94,45 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponseDTO.TokenPair issueToken(Member member) {
+    public String[] issueToken(Member member) {
 
-        String accessToken = jwtTokenProvider.generateAccessToken(member.getKakaoId(), member.getRole());
-        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        String[] tokenPair = new String[2];
+
+        Long memberId = member.getId();
+
+        String accessToken = jwtTokenProvider.generateAccessToken(memberId, member.getRole());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(memberId);
         // Redis에 refresh token 저장
-        redisService.setValue(member.getUsername(), refreshToken, 1000 * REFRESH_EXPIRE); // Timeout= 밀리초라서 1000 곱하기
+        redisService.setValue(member.getUsername(), refreshToken, REFRESH_EXPIRE);
 
-        return AuthConverter.toTokenPair(member.getId(),accessToken,refreshToken);
+        tokenPair[0] = accessToken;
+        tokenPair[1] = refreshToken;
+
+        return tokenPair;
     }
+
+    @Override
+    public String[] reissueToken(HttpServletRequest request, HttpServletResponse response) {
+
+        String refreshToken = CookieUtil.extractRefreshTokenFromCookie(request);
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            System.out.println(refreshToken);
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        // 2. refreshToken에서 id 추출
+        Long memberId = jwtTokenProvider.getId(refreshToken);
+
+        Member member = memberService.findById(memberId);
+
+        // 3. DB에 저장된 refreshToken과 비교 (추가 구현 필요)
+        if(!redisService.getValue(member.getUsername()).equals(refreshToken)){
+            System.out.println(redisService.getValue(member.getUsername()));
+            System.out.println(refreshToken);
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        return issueToken(member);
+    }
+
 }

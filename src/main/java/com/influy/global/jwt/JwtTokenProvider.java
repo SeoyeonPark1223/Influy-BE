@@ -2,10 +2,7 @@ package com.influy.global.jwt;
 
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
-import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
-import com.influy.global.apiPayload.exception.GeneralException;
-import com.influy.global.util.StaticValues;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -50,9 +46,9 @@ public class JwtTokenProvider {
     }
 
     //accessToken 생성
-    public String generateAccessToken(Long kakaoId, MemberRole role) {
+    public String generateAccessToken(Long memberId, MemberRole role) {
         return Jwts.builder()
-                .setSubject(String.valueOf(kakaoId))
+                .setSubject(String.valueOf(memberId))
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE))
@@ -61,8 +57,9 @@ public class JwtTokenProvider {
     }
 
     //refreshToken 생성
-    public String generateRefreshToken() {
+    public String generateRefreshToken(Long memberId) {
         return Jwts.builder()
+                .setSubject(String.valueOf(memberId))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRE))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -80,7 +77,7 @@ public class JwtTokenProvider {
     }
 
     //id 추출
-    public Long getKakaoId(String token) {
+    public Long getId(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody();
         return Long.valueOf(claims.getSubject());
@@ -88,8 +85,8 @@ public class JwtTokenProvider {
 
 
     public Authentication getAuthentication(String token) {
-        Long kakaoId = getKakaoId(token);
-        Member member = memberService.findByKakaoId(kakaoId);
+        Long id = getId(token);
+        Member member = memberService.findById(id);
         UserDetails userDetails = new CustomUserDetails(member);
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(

@@ -2,14 +2,16 @@ package com.influy.global.auth.service;
 
 
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.entity.MemberRole;
-import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.dto.AuthResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
-    AuthResponseDTO.KakaoLoginResponse kakaoSignIn(String code);
+    AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code);
 
-    Long getKakaoUserID(String accessToken);
+    Long GetSocialUserId(String accessToken);
 
-    AuthResponseDTO.TokenPair issueToken(Member member);
+    String[] issueToken(Member member);
+
+    String[] reissueToken(HttpServletRequest request, HttpServletResponse response);
 }
