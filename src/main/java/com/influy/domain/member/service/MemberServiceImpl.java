@@ -44,4 +44,15 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByKakaoId(kakaoId)
                 .orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
+
+    @Override
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
+    }
 }

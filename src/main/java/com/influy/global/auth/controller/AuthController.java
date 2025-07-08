@@ -23,7 +23,7 @@ public class AuthController {
                                                                         @RequestParam(name = "error", required = false) String error,
                                                                         @RequestParam(name = "error_description", required = false) String description){
 
-        AuthResponseDTO.KakaoLoginResponse body =  authService.kakaoSignIn(code);
+        AuthResponseDTO.KakaoLoginResponse body =  authService.SocialLogIn(code);
 
         return ApiResponse.onSuccess(body);
     }

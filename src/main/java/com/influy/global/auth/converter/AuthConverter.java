@@ -1,15 +1,13 @@
 package com.influy.global.auth.converter;
 
-import com.influy.domain.member.entity.Member;
 import com.influy.global.auth.dto.AuthResponseDTO;
 
 public class AuthConverter {
-    public static AuthResponseDTO.TokenPair toTokenPair(Long memberId, String accessToken, String refreshToken) {
+    public static AuthResponseDTO.IdAndToken toTokenPair(Long memberId, String accessToken) {
 
-        return AuthResponseDTO.TokenPair.builder()
+        return AuthResponseDTO.IdAndToken.builder()
                 .memberId(memberId)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
     }
 
