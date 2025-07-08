@@ -18,6 +18,7 @@ public class CorsConfig {
         corsConfig.addAllowedOriginPattern("https://influy.com");
         corsConfig.addAllowedOriginPattern("https://www.influy.com");
         corsConfig.addAllowedOriginPattern("https://api.influy.com");
+        corsConfig.addAllowedOriginPattern("https://influy-fe.vercel.app");
 
         // 요청 메서드, 헤더
         corsConfig.addAllowedMethod("*");
