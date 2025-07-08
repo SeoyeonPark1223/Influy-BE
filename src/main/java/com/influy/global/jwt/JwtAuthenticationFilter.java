@@ -29,6 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+
+        String uri = request.getRequestURI();
         String jwt;
         try {
             jwt = resolveToken(request);
@@ -46,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized - " + e.getMessage());
         } catch (Exception e) {
             log.error("[ExceptionHandlerFilter] " + e.getMessage());
-            writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Error processing request - " + e.getMessage());
+            writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Error processing request - " + e.toString());
         }
     }
 

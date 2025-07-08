@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
-    AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code);
+    AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response);
 
     Long GetSocialUserId(String accessToken);
 
