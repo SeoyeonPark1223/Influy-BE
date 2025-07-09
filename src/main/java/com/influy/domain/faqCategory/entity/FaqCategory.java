@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FaqCategory extends BaseEntity {
@@ -24,8 +23,10 @@ public class FaqCategory extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Setter
     private String category;
 
+    @Setter
     private Integer categoryOrder;
 
     @OneToMany(mappedBy = "faqCategory", cascade = CascadeType.ALL, orphanRemoval = true)

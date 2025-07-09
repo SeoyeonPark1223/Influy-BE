@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> {
     Page<FaqCategory> findAllByItemId(Long itemId, Pageable pageable);
     boolean existsByItemIdAndCategory(Long itemId, String category);
@@ -17,4 +19,5 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
     @Query("UPDATE FaqCategory f SET f.categoryOrder = f.categoryOrder + 1 " +
             "WHERE f.item.id = :itemId AND f.categoryOrder >= :startOrder AND f.categoryOrder < :endOrder")
     void incrementOrdersFrom(@Param("itemId") Long itemId, @Param("startOrder") Integer startOrder, @Param("endOrder") Integer endOrder);
+    List<FaqCategory> findAllByItemId(Long itemId);
 }

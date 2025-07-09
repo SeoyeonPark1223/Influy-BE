@@ -85,7 +85,7 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
             faqCategoryRepository.delete(faqCategory);
         }
 
-        List<FaqCategory> faqCategoryList = faqCategoryRepository.findAll();
+        List<FaqCategory> faqCategoryList = faqCategoryRepository.findAllByItemId(itemId);
         for (int i=1; i<=faqCategoryList.size(); i++) {
             FaqCategory faqCategory = faqCategoryList.get(i-1);
             faqCategory.setCategoryOrder(i);
