@@ -29,12 +29,9 @@ public class FaqCategoryRequestDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UpdateDto {
+    public static class UpdateOrderDto {
         @Schema(description = "faq 카테고리 id", example = "1")
         private Long id;
-
-        @Schema(description = "faq 카테고리", example = "진행일정")
-        private String category;
 
         @Schema(description = "faq 카테고리 순서", example = "1")
         private Integer categoryOrder;

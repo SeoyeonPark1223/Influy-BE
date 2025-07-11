@@ -62,7 +62,7 @@ public class FaqCategoryResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateResultDto {
-        @Schema(description = "업데이트된 faq 카테고리 리스트", example = "[1, 2]")
+        @Schema(description = "업데이트된 faq 카테고리 리스트")
         private List<ViewDto> updatedList;
     }
 }

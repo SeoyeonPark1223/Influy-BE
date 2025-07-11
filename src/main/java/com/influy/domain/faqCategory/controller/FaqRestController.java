@@ -7,7 +7,6 @@ import com.influy.domain.faqCategory.service.FaqCategoryService;
 import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
-import com.influy.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,7 +25,7 @@ public class FaqRestController {
     private final FaqCategoryService faqCategoryService;
 
     @PostMapping("/items/{itemId}/faq-categories")
-    @Operation(summary = "개별 상품의 faq 카테고리 추가 (한번에 여러개 가능)")
+    @Operation(summary = "개별 상품의 faq 카테고리 추가 (한번에 하나)")
     public ApiResponse<FaqCategoryResponseDto.AddResultDto> addAll (@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                     @PathVariable("itemId") Long itemId,
                                                                     @RequestBody List<FaqCategoryRequestDto.AddDto> requestList) {
@@ -44,7 +43,7 @@ public class FaqRestController {
     }
 
     @DeleteMapping("/items/{itemId}/faq-categories")
-    @Operation(summary = "개별 상품의 faq 카테고리 삭제")
+    @Operation(summary = "개별 상품의 faq 카테고리 삭제 (한번에 하나)")
     public ApiResponse<FaqCategoryResponseDto.DeleteResultDto> deleteAll (@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                           @PathVariable("itemId") Long itemId,
                                                                           @RequestBody @Valid List<FaqCategoryRequestDto.DeleteDto> requestList) {
@@ -53,11 +52,21 @@ public class FaqRestController {
     }
 
     @PatchMapping("/items/{itemId}/faq-categories")
-    @Operation(summary = "개별 상품의 faq 카테고리 수정")
-    public ApiResponse<FaqCategoryResponseDto.UpdateResultDto> updateAll(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    @Operation(summary = "개별 상품의 faq 카테고리 이름 수정 (한번에 여러개 가능)")
+    public ApiResponse<FaqCategoryResponseDto.UpdateResultDto> update(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+                                                                              @PathVariable("itemId") Long itemId,
+                                                                              @RequestBody @Valid List<FaqCategoryRequestDto.UpdateOrderDto> requestList) {
+        List<FaqCategory> faqCategoryList = faqCategoryService.updateOrderAll(sellerId, itemId, requestList);
+        return ApiResponse.onSuccess(FaqCategoryConverter.toUpdateResultDto(faqCategoryList));
+    }
+
+    @PatchMapping("/items/{itemId}/faq-categories")
+    @Operation(summary = "개별 상품의 faq 카테고리 순서 수정 (한번에 여러개 가능)")
+    public ApiResponse<FaqCategoryResponseDto.UpdateResultDto> updateOrderAll(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId,
-                                                                   @RequestBody @Valid List<FaqCategoryRequestDto.UpdateDto> requestList) {
-        List<FaqCategory> faqCategoryList = faqCategoryService.updateAll(sellerId, itemId, requestList);
+                                                                   @RequestBody @Valid List<FaqCategoryRequestDto.UpdateOrderDto> requestList) {
+        List<FaqCategory> faqCategoryList = faqCategoryService.updateOrderAll(sellerId, itemId, requestList);
         return ApiResponse.onSuccess(FaqCategoryConverter.toUpdateResultDto(faqCategoryList));
     }
 }
+

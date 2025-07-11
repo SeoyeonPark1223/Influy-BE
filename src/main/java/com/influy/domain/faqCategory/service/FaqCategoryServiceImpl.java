@@ -12,7 +12,6 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -94,7 +93,7 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional
-    public List<FaqCategory> updateAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.UpdateDto> requestList) {
+    public List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.UpdateOrderDto> requestList) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
@@ -104,7 +103,7 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
         List<FaqCategory> updatedList = new ArrayList<>();
 
-        for (FaqCategoryRequestDto.UpdateDto request : requestList) {
+        for (FaqCategoryRequestDto.UpdateOrderDto request : requestList) {
             FaqCategory faqCategory = faqCategoryRepository.findById(request.getId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
 
@@ -112,7 +111,6 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
                 throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
             }
 
-            if (request.getCategory() != null) faqCategory.setCategory(request.getCategory());
             if (request.getCategoryOrder() != null) {
                 Integer newOrder = request.getCategoryOrder();
                 Integer oldOrder = faqCategory.getCategoryOrder();
