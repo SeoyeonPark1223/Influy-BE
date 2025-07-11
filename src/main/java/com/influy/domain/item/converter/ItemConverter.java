@@ -39,7 +39,7 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item) {
+    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked) {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .MainImg(item.getImageList().get(0).getImageLink())
@@ -50,12 +50,13 @@ public class ItemConverter {
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())
                 .currentStatus(item.getItemStatus())
+                .liked(liked)
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage) {
+    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems) {
         List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
-                .map(ItemConverter::toDetailPreviewDto)
+                .map(item -> toDetailPreviewDto(item, likeItems.contains(item.getId())))
                 .toList();
 
         return ItemResponseDto.DetailPreviewPageDto.builder()

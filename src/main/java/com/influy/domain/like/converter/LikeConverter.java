@@ -72,7 +72,7 @@ public class LikeConverter {
     public static LikeResponseDto.ViewItemLikeDto toViewItemLikeDto(Like like) {
         return LikeResponseDto.ViewItemLikeDto.builder()
                 .targetType(like.getTargetType())
-                .itemPreviewDto(like.getItem() != null ? ItemConverter.toDetailPreviewDto(like.getItem()) : null)
+                .itemPreviewDto(like.getItem() != null ? ItemConverter.toDetailPreviewDto(like.getItem(), true) : null)
                 .build();
     }
 
