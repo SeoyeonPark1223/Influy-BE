@@ -12,5 +12,5 @@ public interface FaqCategoryService {
     Page<FaqCategory> getPage(Long sellerId, Long itemId, PageRequestDto pageRequest);
     void delete(Long sellerId, Long itemId, FaqCategoryRequestDto.DeleteDto request);
     FaqCategory update(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateDto request);
-    List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.UpdateOrderDto> requestList);
+    List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateOrderDto request);
 }

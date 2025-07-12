@@ -12,6 +12,7 @@ import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -78,7 +79,7 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         faqCategoryRepository.delete(faqCategory);
 
         // 순서 정리
-        List<FaqCategory> faqCategoryList = faqCategoryRepository.findAllByItemIdAndCategoryOrderAsc(itemId);
+        List<FaqCategory> faqCategoryList = faqCategoryRepository.findAllByItemId(itemId, Sort.by(Sort.Direction.ASC, "categoryOrder"));
         for (int i = 0; i < faqCategoryList.size(); i++) {
             faqCategoryList.get(i).setCategoryOrder(i + 1);
         }
@@ -94,9 +95,7 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         FaqCategory faqCategory = faqCategoryRepository.findById(request.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
 
-        if (!faqCategory.getItem().getId().equals(item.getId())) {
-            throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
-        }
+        if (!faqCategory.getItem().getId().equals(item.getId())) throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
 
         if (request.getCategory() != null) faqCategory.setCategory(request.getCategory());
         faqCategoryRepository.save(faqCategory);
@@ -106,35 +105,25 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional
-    public List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.UpdateOrderDto> requestList) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+    public List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateOrderDto request) {
+        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
+        List<Long> idList= request.getIds();
         List<FaqCategory> updatedList = new ArrayList<>();
 
-        for (FaqCategoryRequestDto.UpdateOrderDto request : requestList) {
-            FaqCategory faqCategory = faqCategoryRepository.findById(request.getId())
+        for (int i=0; i<idList.size(); i++) {
+            Long id = idList.get(i);
+            FaqCategory faqCategory = faqCategoryRepository.findById(id)
                     .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
 
-            if (!faqCategory.getItem().getId().equals(item.getId())) {
-                throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
-            }
+            if (!faqCategory.getItem().getId().equals(item.getId())) throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
 
-            if (request.getCategoryOrder() != null) {
-                Integer newOrder = request.getCategoryOrder();
-                Integer oldOrder = faqCategory.getCategoryOrder();
-
-                if (!newOrder.equals(oldOrder)) {
-                    faqCategoryRepository.incrementOrdersFrom(item.getId(), newOrder, oldOrder);
-                    faqCategory.setCategoryOrder(newOrder);
-                }
-            }
-
+            faqCategory.setCategoryOrder(i + 1);
             updatedList.add(faqCategory);
+            faqCategoryRepository.save(faqCategory);
         }
 
         return updatedList;

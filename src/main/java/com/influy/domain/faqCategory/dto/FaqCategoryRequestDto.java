@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 public class FaqCategoryRequestDto {
     @Getter
     @Builder
@@ -42,10 +44,7 @@ public class FaqCategoryRequestDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UpdateOrderDto {
-        @Schema(description = "faq 카테고리 id", example = "1")
-        private Long id;
-
-        @Schema(description = "faq 카테고리 순서", example = "1")
-        private Integer categoryOrder;
+        @Schema(description = "faq 카테고리 id", example = "[5, 3, 2, 0, 1, 4]")
+        private List<Long> ids;
     }
 }

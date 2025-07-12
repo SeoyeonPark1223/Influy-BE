@@ -64,8 +64,8 @@ public class FaqRestController {
     @Operation(summary = "개별 상품의 faq 카테고리 순서 수정 (한번에 여러개 가능)")
     public ApiResponse<FaqCategoryResponseDto.UpdateOrderResultDto> updateOrderAll(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId,
-                                                                   @RequestBody @Valid List<FaqCategoryRequestDto.UpdateOrderDto> requestList) {
-        List<FaqCategory> faqCategoryList = faqCategoryService.updateOrderAll(sellerId, itemId, requestList);
+                                                                   @RequestBody @Valid FaqCategoryRequestDto.UpdateOrderDto request) {
+        List<FaqCategory> faqCategoryList = faqCategoryService.updateOrderAll(sellerId, itemId, request);
         return ApiResponse.onSuccess(FaqCategoryConverter.toUpdateOrderResultDto(faqCategoryList));
     }
 }
