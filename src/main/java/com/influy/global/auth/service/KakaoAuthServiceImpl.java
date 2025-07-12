@@ -8,6 +8,7 @@ import com.influy.global.auth.converter.AuthConverter;
 import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.dto.AuthResponseDTO;
 import com.influy.global.jwt.CookieUtil;
+import com.influy.global.jwt.JwtAuthenticationFilter;
 import com.influy.global.jwt.JwtTokenProvider;
 import com.influy.global.redis.RedisService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ public class KakaoAuthServiceImpl implements AuthService {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${kakao.rest-api-key}")
     private String kakaoRestApiKey;
@@ -139,6 +141,17 @@ public class KakaoAuthServiceImpl implements AuthService {
         }
 
         return issueToken(member);
+    }
+
+    @Override
+    public void signOut(HttpServletRequest request, Member member) {
+        if(member==null) throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+
+        String accessToken = jwtAuthenticationFilter.resolveToken(request);
+
+        // 로그아웃 시 refreshToken을 redis에서 삭제하고 accessToken을 redis에 저장
+        redisService.deleteValue(member.getUsername()); // 재로그인 방지
+        redisService.setValue(accessToken, "logout", jwtTokenProvider.getExpirationTime(accessToken)); // AccessToken을 블랙리스트에 저장
     }
 
 }

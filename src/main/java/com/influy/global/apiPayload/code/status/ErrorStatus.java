@@ -53,6 +53,10 @@ public enum ErrorStatus implements BaseCode {
     // redis 관련 응답
     REDIS_KEY_NOT_FOUND(HttpStatus.NOT_FOUND,"REDIS KEY NOT FOUND" ,"REDIS 키를 찾을 수 없습니다." ),
 
+    //토큰 관련 응답
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"EXPIRED TOKEN" ,"만료된 토큰입니다." ),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID TOKEN","유효하지 않은 토큰입니다." ),
+
     //API 요청 관련 에러 응답
     NEED_TO_SIGN_UP(HttpStatus.OK,"NEED_TO_SIGN_UP" ,"회원이 아닙니다." ),
     GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." );
