@@ -51,6 +51,9 @@ public class ItemResponseDto {
 
         @Schema(description = "아이템 상태", example = "DEFAULT")
         private ItemStatus currentStatus;
+
+        @Schema(description = "찜 여부", example = "false")
+        private Boolean liked;
     }
 
     @Getter

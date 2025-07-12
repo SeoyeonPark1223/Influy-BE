@@ -32,9 +32,11 @@ public class Like {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private LikeStatus likeStatus;
 
     @Enumerated(EnumType.STRING)
     private TargetType targetType;
+
 }
