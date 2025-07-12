@@ -1,5 +1,6 @@
 package com.influy.global.aop;
 
+import com.influy.global.apiPayload.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -38,8 +39,15 @@ public class LogAspect {
         }
 
         // 메서드 리턴값 로깅
-        log.info("Return type = {}", result.getClass().getSimpleName());
-        log.info("Return result = {}", result);
+        if (result instanceof ApiResponse<?> response) {
+            Object innerResult = response.getResult();
+            if (innerResult != null) {
+                log.info("Result type = {}", innerResult.getClass().getSimpleName());
+                log.info("Result value = {}", innerResult);
+            } else {
+                log.info("Result is null");
+            }
+        }
 
         long executionTime = System.currentTimeMillis() - startTime;
 
