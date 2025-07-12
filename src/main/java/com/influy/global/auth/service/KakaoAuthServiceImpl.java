@@ -37,7 +37,7 @@ public class KakaoAuthServiceImpl implements AuthService {
     private String redirectUri;
 
     @Override
-    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code) {
+    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response) {
 
 
         //토큰 받기 POST 요청
@@ -63,7 +63,13 @@ public class KakaoAuthServiceImpl implements AuthService {
             Member member = memberService.findByKakaoId(kakaoId);
 
             //토큰 발급
-            String accessToken = issueToken(member)[0];
+            String[] tokenPair = issueToken(member);
+            String accessToken = tokenPair[0];
+            String refreshToken = tokenPair[1];
+
+            //쿠키에 담기
+            CookieUtil.refreshTokenInCookie(response,refreshToken);
+
             return AuthConverter.toTokenPair(member.getId(), accessToken);
 
         } catch (GeneralException e) {

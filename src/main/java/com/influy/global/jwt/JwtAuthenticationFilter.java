@@ -15,8 +15,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.influy.global.util.StaticValues.WHITE_LIST;
 
 @Component
 @RequiredArgsConstructor
@@ -26,9 +29,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
 
+
+    //로그인, 회원가입, 재발급 시 인증 건너뛰기
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String requestURI = request.getRequestURI();
+        return Arrays.stream(WHITE_LIST).anyMatch(requestURI::startsWith);
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+
+        String uri = request.getRequestURI();
         String jwt;
         try {
             jwt = resolveToken(request);
@@ -46,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized - " + e.getMessage());
         } catch (Exception e) {
             log.error("[ExceptionHandlerFilter] " + e.getMessage());
-            writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Error processing request - " + e.getMessage());
+            writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Error processing request - " + e.toString());
         }
     }
 
