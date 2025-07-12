@@ -8,8 +8,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface FaqCategoryService {
-    List<FaqCategory> addAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.AddDto> requestList);
+    FaqCategory add(Long sellerId, Long itemId, FaqCategoryRequestDto.AddDto request);
     Page<FaqCategory> getPage(Long sellerId, Long itemId, PageRequestDto pageRequest);
-    void deleteAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.DeleteDto> requestList);
+    void delete(Long sellerId, Long itemId, FaqCategoryRequestDto.DeleteDto request);
+    FaqCategory update(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateDto request);
     List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, List<FaqCategoryRequestDto.UpdateOrderDto> requestList);
 }

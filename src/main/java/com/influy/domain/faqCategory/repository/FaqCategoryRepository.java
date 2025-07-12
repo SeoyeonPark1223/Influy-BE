@@ -20,4 +20,5 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
             "WHERE f.item.id = :itemId AND f.categoryOrder >= :startOrder AND f.categoryOrder < :endOrder")
     void incrementOrdersFrom(@Param("itemId") Long itemId, @Param("startOrder") Integer startOrder, @Param("endOrder") Integer endOrder);
     List<FaqCategory> findAllByItemId(Long itemId);
+    List<FaqCategory> findAllByItemIdAndCategoryOrderAsc(Long itemId);
 }
