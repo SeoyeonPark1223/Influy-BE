@@ -11,8 +11,11 @@ public class StaticValues {
             "/member/register",
             "member/reissue",
             "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/favicon.ico"
+            "/api-docs/**",
+            "/api-docs/json/swagger-config",
+            "/api-docs/json",
+            "/favicon.ico",
+            "/"
 
     };
 }
