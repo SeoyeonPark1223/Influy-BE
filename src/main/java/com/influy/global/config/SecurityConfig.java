@@ -30,7 +30,7 @@ public class SecurityConfig {
                 //인가
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(
-                                "/v3/api-docs/**",
+                                "/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/swagger-resources/**"
