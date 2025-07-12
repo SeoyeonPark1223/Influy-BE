@@ -26,6 +26,7 @@ public class MemberController {
 
         return ApiResponse.onSuccess(body);
     }
+
     @PostMapping("/register/seller")
     public ApiResponse<MemberResponseDTO.MemberProfile> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody){
         Member member = memberService.joinSeller(requestBody);
