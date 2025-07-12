@@ -23,8 +23,6 @@ public enum ErrorStatus implements BaseCode {
     //공지
     ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ANNOUNCEMENT401", "요청하신 공지를 찾을 수 없습니다."),
 
-    // 멤버 관련 응답
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER NOT FOUND", "멤버를 찾을 수 없습니다."),
 
     // 찜 관련 응답
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "LIKE NOT FOUND", "찜을 찾을 수 없습니다."),
