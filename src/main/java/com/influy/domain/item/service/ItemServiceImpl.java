@@ -6,10 +6,13 @@ import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
+import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
@@ -25,7 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +40,7 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final SellerProfileServiceImpl sellerService;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -152,9 +159,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Item> getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing) {
+    public ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing, Long memberId) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        }
+
+        List<Long> likeItems = null;
+        if (memberId != null) {
+            Optional<Member> optionalMember = memberRepository.findById(memberId);
+            if (optionalMember.isPresent()) {
+                likeItems = optionalMember.get()
+                        .getLikeList()
+                        .stream()
+                        .filter(like -> like.getItem() != null)
+                        .map(like -> like.getItem().getId())
+                        .toList();
+            }
         }
 
         String sortField = switch (sortType) {
@@ -168,19 +188,22 @@ public class ItemServiceImpl implements ItemService {
         };
 
         Pageable pageable = pageRequest.toPageable(Sort.by(direction, sortField));
+        Page<Item> itemPage;
 
         if (!isArchived & isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 적용
-            return itemRepository.findOngoingItems(sellerId, LocalDateTime.now(), pageable);
+            itemPage = itemRepository.findOngoingItems(sellerId, LocalDateTime.now(), pageable);
         } else if (!isArchived & !isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 미적용
-            return itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
+            itemPage = itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
         } else if (isArchived) {
             // 보관 상품
-            return itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
+            itemPage = itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
         } else {
             throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         }
+
+        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems);
     }
 
     private void createImageList(ItemRequestDto.DetailDto request, Item item) {
