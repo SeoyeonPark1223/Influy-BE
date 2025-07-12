@@ -11,8 +11,7 @@ public class MemberConverter {
         //회원가입 로직 구현 시 수정
         return Member.builder()
                 .kakaoId(requestDTO.getKakaoId())
-                .nickname(requestDTO.getNickname())
-                .name(requestDTO.getName())
+                .nickname(requestDTO.getUsername()) //기본값이 username과 동일
                 .role(role)
                 .username(requestDTO.getUsername())
                 .build();

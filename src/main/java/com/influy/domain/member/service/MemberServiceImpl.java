@@ -32,10 +32,9 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member joinSeller(MemberRequestDTO.SellerJoin requestBody) {
 
-        Member newMember = MemberConverter.toMember(requestBody.getUserInfo(),MemberRole.SELLER);
-        Member member = memberRepository.save(newMember);
-
+        Member member = joinUser(requestBody.getUserInfo());
         sellerProfileService.createSellerProfile(member,requestBody);
+
         return member;
     }
 
