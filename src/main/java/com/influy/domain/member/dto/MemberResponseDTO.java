@@ -20,9 +20,6 @@ public class MemberResponseDTO {
         @Schema(description = "멤버 닉네임", example = "이민용")
         private String nickname;
 
-        @Schema(description = "실제 이름", example = "최민용")
-        private String name;
-
         @Schema(description = "프로필 이미지 url", example = "https://amazon.~")
         private String profileImg;
 

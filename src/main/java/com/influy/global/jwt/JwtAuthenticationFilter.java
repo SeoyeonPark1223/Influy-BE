@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.redis.RedisService;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.influy.global.util.StaticValues.WHITE_LIST;
+import static com.influy.global.util.StaticValues.SHOULD_NOT_FILTER_LIST;
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURI = request.getRequestURI();
-        return Arrays.stream(WHITE_LIST).anyMatch(requestURI::startsWith);
+        return Arrays.stream(SHOULD_NOT_FILTER_LIST).anyMatch(requestURI::startsWith);
     }
 
     @Override

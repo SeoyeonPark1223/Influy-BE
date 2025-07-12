@@ -20,10 +20,10 @@ public class MemberConverter {
         //각 롤에 따라 프로필 생성로직
         //회원가입 로직 구현 시 수정
         return MemberResponseDTO.MemberProfile.builder()
-                .profileImg(member.getProfileImg())
-                .name(member.getName())
                 .id(member.getId())
                 .username(member.getUsername())
+                .nickname(member.getNickname())
+                .profileImg(member.getProfileImg())
                 .createdAt(member.getCreatedAt())
                 .build();
     }

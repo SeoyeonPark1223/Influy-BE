@@ -1,6 +1,7 @@
 package com.influy.domain.member.controller;
 
 
+import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
@@ -77,8 +78,12 @@ public class MemberController {
 
 
     @GetMapping("/{memberId}/profile")
-    public ApiResponse<MemberResponseDTO.MemberProfile> getMemberProfile(@PathVariable Long memberId){
-        return null;
+    public ApiResponse<MemberResponseDTO.MemberProfile> getMemberProfile(@PathVariable("memberId") Long memberId){
+
+        Member member = memberService.findById(memberId);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(member);
+
+        return ApiResponse.onSuccess(body);
 
     }
 
