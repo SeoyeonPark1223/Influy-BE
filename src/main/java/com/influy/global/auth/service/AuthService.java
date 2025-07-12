@@ -14,4 +14,6 @@ public interface AuthService {
     String[] issueToken(Member member);
 
     String[] reissueToken(HttpServletRequest request, HttpServletResponse response);
+
+    void signOut(HttpServletRequest request, Member member);
 }

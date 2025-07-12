@@ -6,10 +6,13 @@ import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.auth.converter.AuthConverter;
 import com.influy.global.auth.dto.AuthResponseDTO;
 import com.influy.global.auth.service.AuthService;
 import com.influy.global.jwt.CookieUtil;
+import com.influy.global.jwt.CustomUserDetails;
+import com.influy.global.jwt.CustomUserDetailsServiceImpl;
 import com.influy.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,7 +54,7 @@ public class MemberController {
         return ApiResponse.onSuccess(body);
     }
 
-    @PostMapping("/auth/reissue")
+    @GetMapping("/auth/reissue")
     public ApiResponse<AuthResponseDTO.IdAndToken> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
         String[] tokenPair = authService.reissueToken(request, response);
@@ -62,6 +65,14 @@ public class MemberController {
 
         return ApiResponse.onSuccess(body);
 
+    }
+
+    @PatchMapping("/logout")
+    public ApiResponse<String> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        authService.signOut(request,userDetails.getMember());
+
+        return ApiResponse.onSuccess(SuccessStatus.LOGOUT_SUCCESS);
     }
 
 
@@ -80,4 +91,5 @@ public class MemberController {
         return ApiResponse.onSuccess("정상적으로 탈퇴 되었습니다.");
 
     }
+
 }

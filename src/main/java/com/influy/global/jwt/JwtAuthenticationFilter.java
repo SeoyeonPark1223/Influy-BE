@@ -1,6 +1,9 @@
 package com.influy.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.redis.RedisService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,6 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
+    private final RedisService redisService;
 
 
     //로그인, 회원가입, 재발급 시 인증 건너뛰기
@@ -43,23 +47,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
         String jwt;
-        try {
-            jwt = resolveToken(request);
+        jwt = resolveToken(request);
 
-            //빈문자열 ""과 whiteSpace 로만 이루어진 문자열도 불허
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                // JWT에서 Authentication 객체 생성(아직 인증 전)
-                Authentication authentication = this.tokenProvider.getAuthentication(jwt);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        //빈문자열 ""과 whiteSpace 로만 이루어진 문자열도 불허. 텍스트가 있을 때만 검증 진행
+        if (StringUtils.hasText(jwt) ) {
+
+            //토큰 검사
+            if(!tokenProvider.validateToken(jwt)){
+                throw new GeneralException(ErrorStatus.INVALID_TOKEN);
             }
+
+            //블랙리스트 확인
+            if(redisService.checkAccessTokenExits(jwt)){
+                throw new GeneralException(ErrorStatus.EXPIRED_TOKEN);
+            }
+
+            // JWT에서 Authentication 객체 생성(아직 인증 전)
+            Authentication authentication = this.tokenProvider.getAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             filterChain.doFilter(request,response);
-        }
-        catch (JwtException e) {
-            log.error("[JWTExceptionHandlerFilter] " + e.getMessage());
-            writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized - " + e.getMessage());
-        } catch (Exception e) {
-            log.error("[ExceptionHandlerFilter] " + e.getMessage());
-            writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Error processing request - " + e.toString());
         }
     }
 
