@@ -31,15 +31,16 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @GetMapping("/items")
-    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)")
-    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    @GetMapping("/{sellerId}/items")
+    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)", description = "memberId는 이후 AuthenticationPrincipal로 받을 것")
+    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@PathVariable("sellerId") Long sellerId,
                                                                                   @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
                                                                                   @Valid @ParameterObject PageRequestDto pageRequest,
                                                                                   @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType,
-                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing) {
-        Page<Item> itemPage = itemService.getDetailPreviewPage(sellerId, isArchived, pageRequest, sortType, isOnGoing);
-        return ApiResponse.onSuccess(ItemConverter.toDetailPreviewPageDto(itemPage));
+                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing,
+                                                                                  @RequestParam(value = "memberId", required = false) Long memberId) {
+
+        return ApiResponse.onSuccess(itemService.getDetailPreviewPage(sellerId, isArchived, pageRequest, sortType, isOnGoing, memberId));
     }
 
     @GetMapping("/{sellerId}/items/{itemId}")
