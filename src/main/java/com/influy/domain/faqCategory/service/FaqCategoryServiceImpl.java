@@ -1,5 +1,6 @@
 package com.influy.domain.faqCategory.service;
 
+import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.repository.FaqCardRepository;
 import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.domain.faqCategory.dto.FaqCategoryRequestDto;
@@ -20,7 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,15 +43,12 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
-        int nextNum = 0;
-        if (faqCategoryRepository.count() != 0) nextNum = faqCategoryRepository.findMaxOrder();
+        int nextNum = faqCategoryRepository.countAllByItemId(itemId) + 1;
 
         // 중복 체크
         boolean exists = faqCategoryRepository.existsByItemIdAndCategory(itemId, request.getCategory());
         if (exists) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_ALREADY_EXISTS);
 
-        // 순서: nextNum +1 부터 시작
-        nextNum += 1;
         FaqCategory newFaqCategory= FaqCategoryConverter.toFaqCategory(request, item, nextNum);
         item.getFaqCategoryList().add(newFaqCategory);
 
@@ -114,13 +116,18 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         List<Long> idList= request.getIds();
         List<FaqCategory> updatedList = new ArrayList<>();
 
+        Map<Long, FaqCategory> updateMap = faqCategoryRepository.findAllByItem(item).stream()
+                .collect(Collectors.toMap(FaqCategory::getId, Function.identity()));
+
         for (int i=0; i<idList.size(); i++) {
             Long id = idList.get(i);
-            FaqCategory faqCategory = faqCategoryRepository.findById(id)
-                    .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
+            FaqCategory faqCategory = updateMap.get(id);
+            if (faqCategory == null) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND);
 
-            if (!faqCategory.getItem().getId().equals(item.getId())) throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
-
+            if (faqCategory.getCategoryOrder().equals(i+1)) {
+                updatedList.add(faqCategory);
+                continue;
+            }
             faqCategory.setCategoryOrder(i + 1);
             updatedList.add(faqCategory);
             faqCategoryRepository.save(faqCategory);
