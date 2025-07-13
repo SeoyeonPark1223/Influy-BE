@@ -49,7 +49,7 @@ public class JwtTokenProvider {
     public String generateAccessToken(Long memberId, MemberRole role) {
         return Jwts.builder()
                 .setSubject(String.valueOf(memberId))
-                .claim("role", role)
+                .claim("role", role.getAuthority())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE))
                 .signWith(key, SignatureAlgorithm.HS256)

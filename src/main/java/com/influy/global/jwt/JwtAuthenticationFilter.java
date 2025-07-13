@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURI = request.getRequestURI();
+        System.out.println("검사안함;;;");
         return Arrays.stream(SHOULD_NOT_FILTER_LIST).anyMatch(requestURI::startsWith);
     }
 
@@ -51,18 +52,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //빈문자열 ""과 whiteSpace 로만 이루어진 문자열도 불허. 텍스트가 있을 때만 검증 진행
         if (StringUtils.hasText(jwt) ) {
 
+            System.out.println("토큰 검사 전");
+
             //토큰 검사
             if(!tokenProvider.validateToken(jwt)){
                 throw new GeneralException(ErrorStatus.INVALID_TOKEN);
             }
-
+            System.out.println("토큰 검사 직후");
             //블랙리스트 확인
             if(redisService.checkAccessTokenExits(jwt)){
                 throw new GeneralException(ErrorStatus.EXPIRED_TOKEN);
             }
 
+            System.out.println("블랙리스트 검사 직후");
+
             // JWT에서 Authentication 객체 생성(아직 인증 전)
             Authentication authentication = this.tokenProvider.getAuthentication(jwt);
+            System.out.println("인증정보 객체 생성 후");
+            log.info("authentication: {}", authentication);
+            log.info("authorities: {}", authentication.getAuthorities()); // 여기 비어있으면 문제
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request,response);

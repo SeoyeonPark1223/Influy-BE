@@ -60,10 +60,10 @@ public class Member extends BaseEntity {
     //추후에 인자 -> dto로 변경
     public Member updateProfile(MemberRequestDTO.UpdateProfile request) {
         if(request.getNickname()!=null){
-            this.nickname = nickname;
+            this.nickname = request.getNickname();
         }
         if(request.getProfileUrl()!=null){
-            this.profileImg = profileImg;
+            this.profileImg = request.getProfileUrl();
         }
 
         return this;

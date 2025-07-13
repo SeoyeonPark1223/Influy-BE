@@ -20,7 +20,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -103,8 +106,10 @@ public class MemberController {
     public ApiResponse<MemberResponseDTO.MemberProfile> patchMember(@RequestBody MemberRequestDTO.UpdateProfile request,
                                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Member member = memberService.updateMemeber(userDetails.getMember(), request);
-        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(member);
+        //영속화를 위해 findBy로 찾음
+        Member member = memberService.findById(userDetails.getId());
+        Member updatedMember = memberService.updateMemeber(member, request);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
 
         return ApiResponse.onSuccess(body);
     }
@@ -114,8 +119,9 @@ public class MemberController {
     public ApiResponse<MemberResponseDTO.MemberProfile> updateUsername(@RequestBody MemberRequestDTO.UpdateUsername request,
                                                                        @AuthenticationPrincipal CustomUserDetails userDetails){
 
-        Member member = memberService.updateUsername(userDetails.getMember(),request);
-        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(member);
+        Member member = memberService.findById(userDetails.getId());
+        Member updatedMember = memberService.updateUsername(member,request);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
 
         return ApiResponse.onSuccess(body);
     }
