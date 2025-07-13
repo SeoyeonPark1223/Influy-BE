@@ -55,4 +55,9 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(Member member) {
         memberRepository.delete(member);
     }
+
+    @Override
+    public Boolean checkUsername(String username) {
+        return memberRepository.existsByUsername(username);
+    }
 }
