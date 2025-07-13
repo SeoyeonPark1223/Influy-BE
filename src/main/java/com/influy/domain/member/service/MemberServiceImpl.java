@@ -11,6 +11,7 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,19 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final SellerProfileService sellerProfileService;
 
-    @Transactional
     @Override
+    public Member findByKakaoId(Long kakaoId) {
+        return memberRepository.findByKakaoId(kakaoId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
     public Member joinUser(MemberRequestDTO.UserJoin requestBody) {
         Member newMember = MemberConverter.toMember(requestBody, MemberRole.USER);
 
@@ -39,19 +51,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findByKakaoId(Long kakaoId) {
-        return memberRepository.findByKakaoId(kakaoId)
-                .orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
-    @Override
-    public Member findById(Long id) {
-        return memberRepository.findById(id).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    @Transactional
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 
     @Override
     @Transactional
-    public void deleteMember(Member member) {
-        memberRepository.delete(member);
+    public Member updateMemeber(Member member, MemberRequestDTO.UpdateProfile request) {
+
+        return member.updateProfile(request);
+    }
+
+    @Override
+    @Transactional
+    public Member updateUsername(Member member, MemberRequestDTO.UpdateUsername request) {
+        return member.updateUsername(request.getUsername());
     }
 }

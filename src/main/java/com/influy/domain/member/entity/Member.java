@@ -2,6 +2,7 @@ package com.influy.domain.member.entity;
 
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.managerProfile.entity.ManagerProfile;
+import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
@@ -57,13 +58,19 @@ public class Member extends BaseEntity {
     private List<Question> questionList = new ArrayList<>();
 
     //추후에 인자 -> dto로 변경
-    public Member updateProfile(String profileImg, String nickname, String password) {
-        if(nickname!=null){
+    public Member updateProfile(MemberRequestDTO.UpdateProfile request) {
+        if(request.getNickname()!=null){
             this.nickname = nickname;
         }
-        if(profileImg!=null){
+        if(request.getProfileUrl()!=null){
             this.profileImg = profileImg;
         }
+
+        return this;
+    }
+
+    public Member updateUsername(String username){
+        this.username = username;
 
         return this;
     }

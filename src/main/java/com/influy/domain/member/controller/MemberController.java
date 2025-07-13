@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -95,6 +96,28 @@ public class MemberController {
 
         return ApiResponse.onSuccess("정상적으로 탈퇴 되었습니다.");
 
+    }
+
+    @PatchMapping("/profile")
+    @Operation(summary = "프로필 수정 API", description = "닉네임과 프로필 사진 수정 API")
+    public ApiResponse<MemberResponseDTO.MemberProfile> patchMember(@RequestBody MemberRequestDTO.UpdateProfile request,
+                                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Member member = memberService.updateMemeber(userDetails.getMember(), request);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(member);
+
+        return ApiResponse.onSuccess(body);
+    }
+
+    @PatchMapping("/username")
+    @Operation(summary = "유저네임(id) 수정 API", description = "유저의 아이디만 수정하는 API")
+    public ApiResponse<MemberResponseDTO.MemberProfile> updateUsername(@RequestBody MemberRequestDTO.UpdateUsername request,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        Member member = memberService.updateUsername(userDetails.getMember(),request);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(member);
+
+        return ApiResponse.onSuccess(body);
     }
 
 }
