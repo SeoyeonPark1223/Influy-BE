@@ -2,28 +2,30 @@ package com.influy.domain.questionCategory.converter;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.question.dto.JPQLQuestionDTO;
-import com.influy.domain.question.dto.QuestionResponseDTO;
-import com.influy.domain.question.entity.Question;
-import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDTO;
-import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
+import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
+import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 public class QuestionCategoryConverter {
 
-    public static QuestionCategory toEntity(Item item, QuestionCategoryRequestDTO.Create request) {
+    public static QuestionCategory toQuestionCategory(Item item, QuestionCategoryRequestDto.AddDto request) {
         return QuestionCategory.builder()
                 .category(request.getName())
                 .item(item)
                 .build();
     }
 
-    public static QuestionCategoryResponseDTO.General toGeneralDTO(QuestionCategory category,
+    public static QuestionCategoryResponseDto.ViewDto toViewDto(QuestionCategory questionCategory) {
+        return QuestionCategoryResponseDto.ViewDto.builder()
+                .id(questionCategory.getId())
+                .category(questionCategory.getCategory())
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.General toGeneralDTO(QuestionCategory category,
                                                                    Integer pending,
                                                                    Integer answered) {
-        return QuestionCategoryResponseDTO.General.builder()
+        return QuestionCategoryResponseDto.General.builder()
                 .id(category.getId())
                 .name(category.getCategory())
                 .pendingCnt(pending)
@@ -32,8 +34,8 @@ public class QuestionCategoryConverter {
     }
 
     //JPQL result to Preview
-    public static QuestionCategoryResponseDTO.Preview toPreviewDTO(JPQLQuestionDTO result) {
-        return QuestionCategoryResponseDTO.Preview.builder()
+    public static QuestionCategoryResponseDto.Preview toPreviewDTO(JPQLQuestionDTO result) {
+        return QuestionCategoryResponseDto.Preview.builder()
                 .id(result.getCategoryId())
                 .name(result.getCategoryName())
                 .answeredCnt(0)

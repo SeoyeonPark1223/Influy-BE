@@ -13,6 +13,7 @@ import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
+import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
@@ -39,13 +40,14 @@ public class ItemServiceImpl implements ItemService {
     private final SellerProfileRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
-    private final SellerProfileServiceImpl sellerService;
     private final MemberRepository memberRepository;
+    private final QuestionCategoryService questionCategoryService;
 
     @Override
     @Transactional
     public Item createItem(Long sellerId, ItemRequestDto.DetailDto request) {
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
 
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
@@ -54,6 +56,7 @@ public class ItemServiceImpl implements ItemService {
         createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
+        questionCategoryService.generate(item);
 
         return item;
     }
@@ -72,7 +75,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItem(Long sellerId, Long itemId) {
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -225,7 +229,4 @@ public class ItemServiceImpl implements ItemService {
             item.getItemCategoryList().add(itemCategory);
         }
     }
-
-
-
 }

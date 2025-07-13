@@ -7,8 +7,8 @@ import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.JPQLQuestionDTO;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
-import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDTO;
-import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
+import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
+import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -28,7 +28,7 @@ import java.util.Map;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class QuestionCategoryServiceIml implements QuestionCategoryService{
+public class QuestionCategoryServiceImpl implements QuestionCategoryService{
 
     private final SellerProfileServiceImpl sellerService;
     private final ItemRepository itemRepository;
@@ -38,7 +38,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
 
     @Override
     @Transactional
-    public QuestionCategory createCategory(Long sellerId, Long itemId, QuestionCategoryRequestDTO.Create request) {
+    public QuestionCategory createCategory(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request) {
         //자격 검증
         SellerProfile seller = sellerService.getSeller(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -48,7 +48,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
         }
 
         //생성 로직
-        QuestionCategory category = QuestionCategoryConverter.toEntity(item, request);
+        QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, request);
 
         return questionCategoryRepository.save(category);
 
@@ -70,7 +70,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
     }
 
     @Override
-    public List<QuestionCategoryResponseDTO.Preview> getPreviewDTO(Page<QuestionCategory> categories,
+    public List<QuestionCategoryResponseDto.Preview> getPreviewDTO(Page<QuestionCategory> categories,
                                                                    Long itemId) {
 
         /**
@@ -82,7 +82,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
                 .countQuestionsGroupedByCategoryAndAnswerStatus(itemId);
 
         //카테고리 당 객체 두개를 하나로 합치기 위한 HashMap. CategoryId 기준으로 저장
-        Map<Long, QuestionCategoryResponseDTO.Preview> categoryMap = new HashMap<>();
+        Map<Long, QuestionCategoryResponseDto.Preview> categoryMap = new HashMap<>();
 
         //JPQL 결과를 돌면서, 카테고리 id 별로 dto map 생성
         for(JPQLQuestionDTO result : queryResult) {
@@ -95,7 +95,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
             //------여기서부터는 모든 categoryId는 Map에 무조건 존재----
             // 해시맵에서 현재 카테고리 id에 해당하는 dto 찾아서 pending, answered 개수 세팅
             if(result.getIsAnswered()!=null){
-                QuestionCategoryResponseDTO.Preview previewDTO = categoryMap.get(result.getCategoryId());
+                QuestionCategoryResponseDto.Preview previewDTO = categoryMap.get(result.getCategoryId());
                 previewDTO.setCount(result.getIsAnswered(),result.getCount());
             }
         }
@@ -110,7 +110,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
             Long categoryId = (Long) row[5]; //카테고리 id는 map 에서 dto 찾기위한 용도 외에는 사용되지 않음
 
             if(row[0]!=null){//질문이 존재하면 dto의 questionList에 추가해준다.
-                QuestionCategoryResponseDTO.Preview dto = categoryMap.get(categoryId);
+                QuestionCategoryResponseDto.Preview dto = categoryMap.get(categoryId);
 
                 String nickname = memberRepository.findById((Long) row[1]).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND)).getNickname();
 
@@ -121,6 +121,12 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
 
 
         return categoryMap.values().stream().toList();
+    }
+
+    @Override
+    @Transactional
+    public QuestionCategory add(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request) {
+        return null;
     }
 
 }

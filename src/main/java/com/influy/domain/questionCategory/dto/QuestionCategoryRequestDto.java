@@ -2,10 +2,9 @@ package com.influy.domain.questionCategory.dto;
 
 import lombok.Getter;
 
-public class QuestionCategoryRequestDTO {
-
+public class QuestionCategoryRequestDto {
     @Getter
-    public static class Create{
+    public static class AddDto{
         private String name;
     }
 
