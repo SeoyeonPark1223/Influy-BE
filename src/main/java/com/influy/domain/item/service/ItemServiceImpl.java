@@ -100,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
             createImageList(request, item);
         }
 
-        if (request.getItemCategoryList() != null) {
+        if (request.getItemCategoryIdList() != null) {
             item.getItemCategoryList().clear();
             createItemCategoryList(request, item);
         }
@@ -193,9 +193,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void createItemCategoryList(ItemRequestDto.DetailDto request, Item item) {
-        List<String> itemCategoryStrList = request.getItemCategoryList();
-        for (String str : itemCategoryStrList) {
-            Category category = categoryRepository.findByCategory(str)
+        List<Long> itemCategoryLongList = request.getItemCategoryIdList();
+        for (Long lg : itemCategoryLongList) {
+            Category category = categoryRepository.findById(lg)
                     .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND));
             ItemCategory itemCategory = ItemCategoryConverter.toItemCategory(category, item);
             category.getItemCategoryList().add(itemCategory);
