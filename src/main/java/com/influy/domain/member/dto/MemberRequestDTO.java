@@ -2,6 +2,7 @@ package com.influy.domain.member.dto;
 
 import com.influy.domain.member.entity.MemberRole;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 
 public class MemberRequestDTO {
@@ -13,11 +14,6 @@ public class MemberRequestDTO {
         @Schema(description = "멤버의 카카오 회원 번호", example = "1234567890")
         private Long kakaoId;
 
-        @Schema(description = "실명", example = "서민정")
-        private String name;
-
-        @Schema(description = "닉네임", example = "꽈당민정")
-        private String nickname;
     }
     @Getter
     public static class SellerJoin {
@@ -30,6 +26,24 @@ public class MemberRequestDTO {
     @Getter
     public static class UsernameDuplicateCheck{
         @Schema(description = "유저네임", example = "@rapper_mj")
+        private String username;
+    }
+
+    @Getter
+    public static class UpdateProfile {
+
+        @Nullable
+        @Schema(description = "닉네임", example = "민정이")
+        private String nickname;
+
+        @Nullable
+        @Schema(description = "프로필 사진", example = "http://amazon.s3...")
+        private String profileUrl;
+    }
+
+    @Getter
+    public static class UpdateUsername{
+        @Schema(description = "유저네임(id)", example = "@rapper_mj")
         private String username;
     }
 

@@ -36,7 +36,7 @@ public class SecurityConfig {
                                 "/swagger-resources/**"
                         ).permitAll()
                         .requestMatchers("/oauth/**").permitAll()
-                        .requestMatchers("/member/**").permitAll()
+                        .requestMatchers("/member/register/**","member/*/profile","member/auth/reissue").permitAll()
                         .requestMatchers(HttpMethod.GET,"/seller/items/*/questions/**").authenticated()
                         .requestMatchers(HttpMethod.GET,"/**").permitAll()
                         .anyRequest().authenticated())

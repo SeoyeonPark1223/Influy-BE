@@ -1,6 +1,7 @@
 package com.influy.domain.member.controller;
 
 
+import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
@@ -21,9 +22,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,8 +83,12 @@ public class MemberController {
 
 
     @GetMapping("/{memberId}/profile")
-    public ApiResponse<MemberResponseDTO.MemberProfile> getMemberProfile(@PathVariable Long memberId){
-        return null;
+    public ApiResponse<MemberResponseDTO.MemberProfile> getMemberProfile(@PathVariable("memberId") Long memberId){
+
+        Member member = memberService.findById(memberId);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(member);
+
+        return ApiResponse.onSuccess(body);
 
     }
 
@@ -95,6 +102,29 @@ public class MemberController {
 
     }
 
+    @PatchMapping("/profile")
+    @Operation(summary = "프로필 수정 API", description = "닉네임과 프로필 사진 수정 API")
+    public ApiResponse<MemberResponseDTO.MemberProfile> patchMember(@RequestBody MemberRequestDTO.UpdateProfile request,
+                                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Member member = memberService.findById(userDetails.getId());
+        Member updatedMember = memberService.updateMemeber(member, request);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
+
+        return ApiResponse.onSuccess(body);
+    }
+
+    @PatchMapping("/username")
+    @Operation(summary = "유저네임(id) 수정 API", description = "유저의 아이디만 수정하는 API")
+    public ApiResponse<MemberResponseDTO.MemberProfile> updateUsername(@RequestBody MemberRequestDTO.UpdateUsername request,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        Member member = memberService.findById(userDetails.getId());
+        Member updatedMember = memberService.updateUsername(member,request);
+        MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
+
+        return ApiResponse.onSuccess(body);
+
     @PostMapping("/register/duplicate-check")
     @Operation(summary = "유저네임(id) 중복 확인")
     public ApiResponse<BaseCode> duplicateCheck(@RequestBody MemberRequestDTO.UsernameDuplicateCheck request){
@@ -102,6 +132,7 @@ public class MemberController {
             return ApiResponse.onSuccess(ErrorStatus.USERNAME_ALREADY_EXISTS);
         }
         return ApiResponse.onSuccess(SuccessStatus.NO_DUPLICATE_ROW);
+
     }
 
 }

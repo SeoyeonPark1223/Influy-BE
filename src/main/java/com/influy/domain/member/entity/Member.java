@@ -2,6 +2,7 @@ package com.influy.domain.member.entity;
 
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.managerProfile.entity.ManagerProfile;
+import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
@@ -30,9 +31,6 @@ public class Member extends BaseEntity {
     @NotNull
     private String nickname; // 보여질 이름
 
-    @NotNull
-    private String name; //=실명
-
     private String profileImg;
 
     @NotNull
@@ -60,13 +58,19 @@ public class Member extends BaseEntity {
     private List<Question> questionList = new ArrayList<>();
 
     //추후에 인자 -> dto로 변경
-    public Member updateProfile(String profileImg, String nickname, String password) {
-        if(nickname!=null){
-            this.nickname = nickname;
+    public Member updateProfile(MemberRequestDTO.UpdateProfile request) {
+        if(request.getNickname()!=null){
+            this.nickname = request.getNickname();
         }
-        if(profileImg!=null){
-            this.profileImg = profileImg;
+        if(request.getProfileUrl()!=null){
+            this.profileImg = request.getProfileUrl();
         }
+
+        return this;
+    }
+
+    public Member updateUsername(String username){
+        this.username = username;
 
         return this;
     }

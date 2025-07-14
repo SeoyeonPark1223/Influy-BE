@@ -11,6 +11,7 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -19,25 +20,6 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final SellerProfileService sellerProfileService;
-
-    @Transactional
-    @Override
-    public Member joinUser(MemberRequestDTO.UserJoin requestBody) {
-        Member newMember = MemberConverter.toMember(requestBody, MemberRole.USER);
-
-        return memberRepository.save(newMember);
-    }
-
-    @Override
-    @Transactional
-    public Member joinSeller(MemberRequestDTO.SellerJoin requestBody) {
-
-        Member newMember = MemberConverter.toMember(requestBody.getUserInfo(),MemberRole.SELLER);
-        Member member = memberRepository.save(newMember);
-
-        sellerProfileService.createSellerProfile(member,requestBody);
-        return member;
-    }
 
     @Override
     public Member findByKakaoId(Long kakaoId) {
@@ -52,8 +34,39 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
+    public Member joinUser(MemberRequestDTO.UserJoin requestBody) {
+        Member newMember = MemberConverter.toMember(requestBody, MemberRole.USER);
+
+        return memberRepository.save(newMember);
+    }
+
+    @Override
+    @Transactional
+    public Member joinSeller(MemberRequestDTO.SellerJoin requestBody) {
+
+        Member member = joinUser(requestBody.getUserInfo());
+        sellerProfileService.createSellerProfile(member,requestBody);
+
+        return member;
+    }
+
+    @Override
+    @Transactional
     public void deleteMember(Member member) {
         memberRepository.delete(member);
+    }
+
+    @Override
+    @Transactional
+    public Member updateMemeber(Member member, MemberRequestDTO.UpdateProfile request) {
+
+        return member.updateProfile(request);
+    }
+
+    @Override
+    @Transactional
+    public Member updateUsername(Member member, MemberRequestDTO.UpdateUsername request) {
+        return member.updateUsername(request.getUsername());
     }
 
     @Override
