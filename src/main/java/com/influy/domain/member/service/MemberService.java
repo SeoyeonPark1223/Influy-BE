@@ -20,4 +20,7 @@ public interface MemberService {
     Member updateMemeber(Member member, MemberRequestDTO.UpdateProfile request);
 
     Member updateUsername(Member member, MemberRequestDTO.UpdateUsername request);
+
+    Boolean checkUsername(String username);
+
 }

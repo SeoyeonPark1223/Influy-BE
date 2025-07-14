@@ -68,4 +68,9 @@ public class MemberServiceImpl implements MemberService {
     public Member updateUsername(Member member, MemberRequestDTO.UpdateUsername request) {
         return member.updateUsername(request.getUsername());
     }
+
+    @Override
+    public Boolean checkUsername(String username) {
+        return memberRepository.existsByUsername(username);
+    }
 }

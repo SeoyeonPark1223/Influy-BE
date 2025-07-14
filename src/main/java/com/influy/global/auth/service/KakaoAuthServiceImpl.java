@@ -4,6 +4,7 @@ import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.auth.TokenPair;
 import com.influy.global.auth.converter.AuthConverter;
 import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.dto.AuthResponseDTO;
@@ -65,14 +66,12 @@ public class KakaoAuthServiceImpl implements AuthService {
             Member member = memberService.findByKakaoId(kakaoId);
 
             //토큰 발급
-            String[] tokenPair = issueToken(member);
-            String accessToken = tokenPair[0];
-            String refreshToken = tokenPair[1];
+            TokenPair tokenPair = issueToken(member);
 
             //쿠키에 담기
-            CookieUtil.refreshTokenInCookie(response,refreshToken);
+            CookieUtil.refreshTokenInCookie(response,tokenPair.refreshToken());
 
-            return AuthConverter.toTokenPair(member.getId(), accessToken);
+            return AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
         } catch (GeneralException e) {
             return AuthConverter.toRequestSignUp(kakaoId);
@@ -102,9 +101,7 @@ public class KakaoAuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String[] issueToken(Member member) {
-
-        String[] tokenPair = new String[2];
+    public TokenPair issueToken(Member member) {
 
         Long memberId = member.getId();
 
@@ -113,18 +110,17 @@ public class KakaoAuthServiceImpl implements AuthService {
         // Redis에 refresh token 저장
         redisService.setValue(member.getUsername(), refreshToken, REFRESH_EXPIRE);
 
-        tokenPair[0] = accessToken;
-        tokenPair[1] = refreshToken;
 
-        return tokenPair;
+
+        return new TokenPair(accessToken,refreshToken);
     }
 
     @Override
-    public String[] reissueToken(HttpServletRequest request, HttpServletResponse response) {
+    public TokenPair reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
+        // 1. 쿠키에서 토큰 가져오기
         String refreshToken = CookieUtil.extractRefreshTokenFromCookie(request);
         if (!jwtTokenProvider.validateToken(refreshToken)) {
-            System.out.println(refreshToken);
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
@@ -133,10 +129,8 @@ public class KakaoAuthServiceImpl implements AuthService {
 
         Member member = memberService.findById(memberId);
 
-        // 3. DB에 저장된 refreshToken과 비교 (추가 구현 필요)
+        // 3. Redis에 저장된 refreshToken과 비교
         if(!redisService.getValue(member.getUsername()).equals(refreshToken)){
-            System.out.println(redisService.getValue(member.getUsername()));
-            System.out.println(refreshToken);
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 

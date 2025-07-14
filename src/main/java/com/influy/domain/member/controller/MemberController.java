@@ -7,20 +7,21 @@ import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.apiPayload.code.BaseCode;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.code.status.SuccessStatus;
+import com.influy.global.auth.TokenPair;
 import com.influy.global.auth.converter.AuthConverter;
 import com.influy.global.auth.dto.AuthResponseDTO;
 import com.influy.global.auth.service.AuthService;
 import com.influy.global.jwt.CookieUtil;
 import com.influy.global.jwt.CustomUserDetails;
-import com.influy.global.jwt.CustomUserDetailsServiceImpl;
 import com.influy.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,20 +42,20 @@ public class MemberController {
     @PostMapping("/register/user")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinUser(requestBody);
-        String[] tokenPair = authService.issueToken(member);
-        AuthResponseDTO.IdAndToken body = AuthConverter.toTokenPair(member.getId(), tokenPair[0]);
+        TokenPair tokenPair = authService.issueToken(member);
+        AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
-        CookieUtil.refreshTokenInCookie(response, tokenPair[1]);
+        CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
         return ApiResponse.onSuccess(body);
     }
     @PostMapping("/register/seller")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinSeller(requestBody);
-        String[] tokenPair = authService.issueToken(member);
-        AuthResponseDTO.IdAndToken body = AuthConverter.toTokenPair(member.getId(), tokenPair[0]);
+        TokenPair tokenPair = authService.issueToken(member);
+        AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
-        CookieUtil.refreshTokenInCookie(response, tokenPair[1]);
+        CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
         return ApiResponse.onSuccess(body);
     }
@@ -62,18 +63,18 @@ public class MemberController {
     @GetMapping("/auth/reissue")
     public ApiResponse<AuthResponseDTO.IdAndToken> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
-        String[] tokenPair = authService.reissueToken(request, response);
-        Long memberId = jwtTokenProvider.getId(tokenPair[1]);
-        AuthResponseDTO.IdAndToken body = AuthConverter.toTokenPair(memberId, tokenPair[0]);
+        TokenPair tokenPair = authService.reissueToken(request, response);
+        Long memberId = jwtTokenProvider.getId(tokenPair.refreshToken());
+        AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(memberId, tokenPair.accessToken());
 
-        CookieUtil.refreshTokenInCookie(response, tokenPair[1]);
+        CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
         return ApiResponse.onSuccess(body);
 
     }
 
     @PatchMapping("/logout")
-    public ApiResponse<String> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ApiResponse<SuccessStatus> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
 
         authService.signOut(request,userDetails.getMember());
 
@@ -91,13 +92,13 @@ public class MemberController {
 
     }
 
-    @DeleteMapping("/{memberId}/delete")
+    @DeleteMapping("/delete")
     @Operation(summary = "멤버 탈퇴 임시 API")
-    public ApiResponse<String> deleteMember(@PathVariable("memberId") Long memberId){
-        Member member = memberService.findById(memberId);
+    public ApiResponse<SuccessStatus> deleteMember( @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member member = userDetails.getMember();
         memberService.deleteMember(member);
 
-        return ApiResponse.onSuccess("정상적으로 탈퇴 되었습니다.");
+        return ApiResponse.onSuccess(SuccessStatus.ACCOUNT_DELETE_SUCCESS);
 
     }
 
@@ -106,7 +107,6 @@ public class MemberController {
     public ApiResponse<MemberResponseDTO.MemberProfile> patchMember(@RequestBody MemberRequestDTO.UpdateProfile request,
                                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        //영속화를 위해 findBy로 찾음
         Member member = memberService.findById(userDetails.getId());
         Member updatedMember = memberService.updateMemeber(member, request);
         MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
@@ -124,6 +124,15 @@ public class MemberController {
         MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
 
         return ApiResponse.onSuccess(body);
+
+    @PostMapping("/register/duplicate-check")
+    @Operation(summary = "유저네임(id) 중복 확인")
+    public ApiResponse<BaseCode> duplicateCheck(@RequestBody MemberRequestDTO.UsernameDuplicateCheck request){
+        if(memberService.checkUsername(request.getUsername())){
+            return ApiResponse.onSuccess(ErrorStatus.USERNAME_ALREADY_EXISTS);
+        }
+        return ApiResponse.onSuccess(SuccessStatus.NO_DUPLICATE_ROW);
+
     }
 
 }
