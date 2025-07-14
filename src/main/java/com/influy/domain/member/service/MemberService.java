@@ -15,4 +15,6 @@ public interface MemberService {
     Member findById(Long id);
 
     void deleteMember(Member member);
+
+    Boolean checkUsername(String username);
 }

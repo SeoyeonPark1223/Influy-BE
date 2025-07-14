@@ -27,5 +27,10 @@ public class MemberRequestDTO {
         @Schema(description = "인스타그램", example = "@rapper_mj")
         private String instagram;
     }
+    @Getter
+    public static class UsernameDuplicateCheck{
+        @Schema(description = "유저네임", example = "@rapper_mj")
+        private String username;
+    }
 
 }
