@@ -112,6 +112,8 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         List<Long> idList= request.getIds();
+        if (idList.size() != faqCategoryRepository.countAllByItemId(itemId)) throw new GeneralException(ErrorStatus.UPDATE_ORDER_INVALID_FORMAT);
+
         List<FaqCategory> updatedList = new ArrayList<>();
 
         Map<Long, FaqCategory> updateMap = faqCategoryRepository.findAllByItem(item).stream()

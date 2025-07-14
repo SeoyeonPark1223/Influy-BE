@@ -8,9 +8,9 @@ import com.influy.domain.questionCategory.entity.QuestionCategory;
 
 public class QuestionCategoryConverter {
 
-    public static QuestionCategory toQuestionCategory(Item item, QuestionCategoryRequestDto.AddDto request) {
+    public static QuestionCategory toQuestionCategory(Item item, String category) {
         return QuestionCategory.builder()
-                .category(request.getName())
+                .category(category)
                 .item(item)
                 .build();
     }
@@ -19,6 +19,12 @@ public class QuestionCategoryConverter {
         return QuestionCategoryResponseDto.ViewDto.builder()
                 .id(questionCategory.getId())
                 .category(questionCategory.getCategory())
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.DeleteResultDto toDeleteResultDto(Long id) {
+        return QuestionCategoryResponseDto.DeleteResultDto.builder()
+                .id(id)
                 .build();
     }
 

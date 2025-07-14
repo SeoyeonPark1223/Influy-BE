@@ -1,5 +1,6 @@
 package com.influy.domain.questionCategory.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.repository.MemberRepository;
@@ -12,6 +13,7 @@ import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
@@ -35,26 +37,27 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
+    private final SellerProfileRepository sellerRepository;
 
-    @Override
-    @Transactional
-    public QuestionCategory createCategory(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request) {
-        //자격 검증
-        SellerProfile seller = sellerService.getSeller(sellerId);
-        Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-
-        if(!item.getSeller().equals(seller)) {
-            throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
-        }
-
-        //생성 로직
-        QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, request);
-
-        return questionCategoryRepository.save(category);
-
-        //item.getQuestionCategoryList().add(category)
-
-    }
+//    @Override
+//    @Transactional
+//    public QuestionCategory createCategory(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request) {
+//        //자격 검증
+//        SellerProfile seller = sellerService.getSeller(sellerId);
+//        Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+//
+//        if(!item.getSeller().equals(seller)) {
+//            throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
+//        }
+//
+//        //생성 로직
+//        QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, request);
+//
+//        return questionCategoryRepository.save(category);
+//
+//        //item.getQuestionCategoryList().add(category)
+//
+//    }
 
     @Override
     public Page<QuestionCategory> getCategoryList(Long sellerId, Long itemId, Pageable pageable) {
@@ -126,7 +129,50 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     @Override
     @Transactional
     public QuestionCategory add(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request) {
-        return null;
+        Item item = checkSellerAndItem(sellerId, itemId);
+
+        // 중복 체크
+        boolean exists = questionCategoryRepository.existsByItemIdAndCategory(itemId, request.getCategory());
+        if (exists) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_ALREADY_EXISTS);
+
+        // 추가
+        QuestionCategory questionCategory = QuestionCategoryConverter.toQuestionCategory(item, request.getCategory());
+        item.getQuestionCategoryList().add(questionCategory);
+
+        return questionCategoryRepository.save(questionCategory);
     }
 
+    @Override
+    @Transactional
+    public QuestionCategory update(Long sellerId, Long itemId, QuestionCategoryRequestDto.UpdateDto request) {
+        Item item = checkSellerAndItem(sellerId, itemId);
+
+        QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+
+        if (!questionCategory.getItem().equals(item))
+            throw new GeneralException(ErrorStatus.INVALID_QUESTION_ITEM_RELATION);
+
+        if (request.getCategory() != null) questionCategory.setCategory(request.getCategory());
+
+        return questionCategory;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long sellerId, Long itemId, QuestionCategoryRequestDto.DeleteDto request) {
+        Item item = checkSellerAndItem(sellerId, itemId);
+
+        QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+
+        item.getQuestionCategoryList().remove(questionCategory);
+        questionCategoryRepository.delete(questionCategory);
+    }
+
+    private Item checkSellerAndItem(Long sellerId, Long itemId) {
+        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+    }
 }

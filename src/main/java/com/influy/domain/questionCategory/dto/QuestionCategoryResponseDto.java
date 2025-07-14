@@ -28,6 +28,15 @@ public class QuestionCategoryResponseDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class DeleteResultDto {
+        @Schema(description = "질문 카테고리 id", example = "1")
+        private Long id;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class General {
         private Long id;
         private String name;

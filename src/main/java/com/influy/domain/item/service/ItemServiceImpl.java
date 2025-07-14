@@ -1,5 +1,6 @@
 package com.influy.domain.item.service;
 
+import com.influy.domain.ai.service.AiService;
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
 import com.influy.domain.image.converter.ImageConverter;
@@ -41,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
-    private final QuestionCategoryService questionCategoryService;
+    private final AiService aiService;
 
     @Override
     @Transactional
@@ -56,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
         createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
-        questionCategoryService.generate(item);
+        aiService.generate(item);
 
         return item;
     }

@@ -7,6 +7,7 @@ import com.influy.domain.image.entity.Image;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,8 +56,10 @@ public class ItemConverter {
     }
 
     public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems) {
+        List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
+
         List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
-                .map(item -> toDetailPreviewDto(item, likeItems.contains(item.getId())))
+                .map(item -> toDetailPreviewDto(item, safeLikeItems.contains(item.getId())))
                 .toList();
 
         return ItemResponseDto.DetailPreviewPageDto.builder()

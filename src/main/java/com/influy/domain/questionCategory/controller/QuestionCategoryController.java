@@ -19,27 +19,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("seller/items/{itemId}/questions/categories")//로그인 구현 시 sellerID 삭제
 @RequiredArgsConstructor
 @Tag(name ="질문 카테고리")
 public class QuestionCategoryController {
 
     private final QuestionCategoryService questionCategoryService;
 
-    @PostMapping
-    @Operation(summary = "질문 카테고리 추가",description = "특정 아이템에 질문 카테고리를 추가합니다")
-    public ApiResponse<QuestionCategoryResponseDto.General> createCategory(@PathVariable("itemId") Long itemId,
-                                                                           @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
-                                                                           @RequestBody QuestionCategoryRequestDto.Create request) {
-
-        QuestionCategory category = questionCategoryService.createCategory(sellerId,itemId,request);
-        QuestionCategoryResponseDto.General body = QuestionCategoryConverter.toGeneralDTO(category,0,0);
-
-        return ApiResponse.onSuccess(body);
-    }
+//    @PostMapping
+//    @Operation(summary = "질문 카테고리 추가",description = "특정 아이템에 질문 카테고리를 추가합니다")
+//    public ApiResponse<QuestionCategoryResponseDto.General> createCategory(@PathVariable("itemId") Long itemId,
+//                                                                           @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+//                                                                           @RequestBody QuestionCategoryRequestDto.AddDto request) {
+//
+//        QuestionCategory category = questionCategoryService.createCategory(sellerId,itemId,request);
+//        QuestionCategoryResponseDto.General body = QuestionCategoryConverter.toGeneralDTO(category,0,0);
+//
+//        return ApiResponse.onSuccess(body);
+//    }
 
     //질문 카테고리 리스트+질문 2개 조회
-    @GetMapping
+    @GetMapping("seller/items/{itemId}/questions/categories")
     @Operation(summary = "질문 카테고리 리스트+질문2개 조회",description = "질문 카테고리 리스트와 함께 해당 카테고리의 최신 질문 2개를 제공")
     public ApiResponse<List<QuestionCategoryResponseDto.Preview>> getCategoriesAnd2Question(@PathVariable("itemId") Long itemId,
                                                                                             @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
@@ -61,4 +60,21 @@ public class QuestionCategoryController {
         return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
     }
 
+    @PatchMapping("seller/items/{itemId}/question-categories")
+    @Operation(summary = "질문 카테고리 수정 (한번에 하나)")
+    public ApiResponse<QuestionCategoryResponseDto.ViewDto> update(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+                                                                     @PathVariable("itemId") Long itemId,
+                                                                     @RequestBody QuestionCategoryRequestDto.UpdateDto request) {
+        QuestionCategory questionCategory = questionCategoryService.update(sellerId, itemId, request);
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
+    }
+
+    @DeleteMapping("seller/items/{itemId}/question-categories")
+    @Operation(summary = "질문 카테고리 삭제 (한번에 하나)")
+    public ApiResponse<QuestionCategoryResponseDto.DeleteResultDto> delete(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+                                                                           @PathVariable("itemId") Long itemId,
+                                                                           @RequestBody QuestionCategoryRequestDto.DeleteDto request) {
+        questionCategoryService.delete(sellerId, itemId, request);
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toDeleteResultDto(request.getId()));
+    }
 }

@@ -5,6 +5,7 @@ import com.influy.domain.question.entity.Question;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class QuestionCategory extends BaseEntity {
     private Item item;
 
     @NotBlank
+    @Setter
     private String category;
 
     @OneToMany(mappedBy = "questionCategory", cascade = CascadeType.ALL)
