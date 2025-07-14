@@ -42,7 +42,6 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
-    private final AiService aiService;
 
     @Override
     @Transactional
@@ -57,7 +56,6 @@ public class ItemServiceImpl implements ItemService {
         createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
-        aiService.generate(item);
 
         return item;
     }

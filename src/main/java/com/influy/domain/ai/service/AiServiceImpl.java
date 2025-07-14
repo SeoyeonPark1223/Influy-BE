@@ -34,7 +34,7 @@ public class AiServiceImpl implements AiService {
 
     @Override
     @Transactional
-    public void generate(Item item) {
+    public void generateCategory(Item item) {
         // 상품 이름 + 상품 카테고리 (최대 3개) + 상품 한줄 소개 + 코멘트
         // 상품 관련 6개 질문 카테고리를 ai로 생성
 
@@ -91,7 +91,11 @@ public class AiServiceImpl implements AiService {
                 .map(String::trim)
                 .forEach(defaultCatSet::add);
 
-        List<Map<String, String>> result = defaultCatSet.stream()
+        LinkedHashSet<String> mergedSet = new LinkedHashSet<>();
+        mergedSet.addAll(categories);
+        mergedSet.addAll(defaultCatSet);
+
+        List<Map<String, String>> result = mergedSet.stream()
                 .map(cat -> Map.of("category", cat))
                 .collect(Collectors.toList());
 

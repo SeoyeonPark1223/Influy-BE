@@ -22,6 +22,15 @@ public class QuestionCategoryResponseDto {
 
     @Getter
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GenerateResultDto {
+        @Schema(description = "질문 카테고리 리스트")
+        private List<ViewDto> viewList;
+    }
+
+    @Getter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PageDto {
@@ -45,15 +54,6 @@ public class QuestionCategoryResponseDto {
 
         @Schema(description = "질문 카테고리", example = "사이즈")
         private String category;
-
-        @Schema(description = "답장 미완료인 질문 cnt", example = "3")
-        private Integer pendingCnt;
-
-        @Schema(description = "답장 완료된 질문 cnt", example = "2")
-        private Integer answeredCnt;
-
-        @Schema(description = "전체 질문 cnt", example = "5")
-        private Integer totalCnt;
     }
 
     @Builder @Getter

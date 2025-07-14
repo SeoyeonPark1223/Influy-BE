@@ -28,6 +28,9 @@ public class ItemResponseDto {
         @Schema(description = "아이템 id", example = "1")
         private Long itemId;
 
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
         @Schema(description = "대표 사진", example = "xxxx.png")
         private String MainImg;
 

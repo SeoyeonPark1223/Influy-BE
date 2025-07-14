@@ -1,5 +1,6 @@
 package com.influy.domain.questionCategory.controller;
 
+import com.influy.domain.ai.service.AiService;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
@@ -15,6 +16,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -23,13 +26,21 @@ public class QuestionCategoryController {
 
     private final QuestionCategoryService questionCategoryService;
 
+    @PostMapping("seller/items/{itemId}/question-categories/generate")
+    @Operation(summary = "질문 카테고리 (대분류) ai 생성")
+    public ApiResponse<QuestionCategoryResponseDto.GenerateResultDto> generateCategory(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+                                                                                       @PathVariable("itemId") Long itemId) {
+        List<QuestionCategory> questionCategoryList = questionCategoryService.generateCategory(sellerId, itemId);
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toGenerateResultDto(questionCategoryList));
+    }
+
     @PostMapping("seller/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 추가 (한번에 하나)")
     public ApiResponse<QuestionCategoryResponseDto.ViewDto> add(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
                                                                      @PathVariable("itemId") Long itemId,
                                                                 @RequestBody QuestionCategoryRequestDto.AddDto request) {
         QuestionCategory questionCategory = questionCategoryService.add(sellerId, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory, 0, 0, 0));
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
     }
 
     @PatchMapping("seller/items/{itemId}/question-categories")
@@ -38,7 +49,7 @@ public class QuestionCategoryController {
                                                                      @PathVariable("itemId") Long itemId,
                                                                      @RequestBody QuestionCategoryRequestDto.UpdateDto request) {
         QuestionCategory questionCategory = questionCategoryService.update(sellerId, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory, 0, 0, 0));
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
     }
 
     @DeleteMapping("seller/items/{itemId}/question-categories")
@@ -53,7 +64,7 @@ public class QuestionCategoryController {
     @GetMapping("seller/{sellerId}/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)")
     public ApiResponse<QuestionCategoryResponseDto.PageDto> getPage(@PathVariable("sellerId") Long sellerId,
-                                                                @PathVariable("itemId") Long itemId,
+                                                                    @PathVariable("itemId") Long itemId,
                                                                     @Valid @ParameterObject PageRequestDto pageRequest) {
         Page<QuestionCategory> questionCategoryPage = questionCategoryService.getPage(sellerId, itemId, pageRequest);
         return ApiResponse.onSuccess(QuestionCategoryConverter.toPageDto(questionCategoryPage));

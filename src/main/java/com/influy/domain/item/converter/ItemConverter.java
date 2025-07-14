@@ -43,6 +43,7 @@ public class ItemConverter {
     public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked) {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
+                .sellerId(item.getSeller().getId())
                 .MainImg(item.getImageList().get(0).getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())

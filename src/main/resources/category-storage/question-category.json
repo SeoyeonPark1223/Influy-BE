@@ -1,4 +1,14 @@
 [ {
+  "category" : "착용감"
+}, {
+  "category" : "코디 팁"
+}, {
+  "category" : "소재 관리"
+}, {
+  "category" : "핏 비교"
+}, {
+  "category" : "컬러 매치"
+}, {
   "category" : "진행 일정"
 }, {
   "category" : "결제"
@@ -6,20 +16,4 @@
   "category" : "배송"
 }, {
   "category" : "기타"
-}, {
-  "category" : "착용감"
-}, {
-  "category" : "코디 팁"
-}, {
-  "category" : "소재 관리"
-}, {
-  "category" : "사이즈 가이드"
-}, {
-  "category" : "스타일링 활용"
-}, {
-  "category" : "색상 매칭"
-}, {
-  "category" : "활동성"
-}, {
-  "category" : "컬러 매칭"
 } ]

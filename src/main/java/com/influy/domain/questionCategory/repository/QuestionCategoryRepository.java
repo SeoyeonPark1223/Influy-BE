@@ -1,5 +1,6 @@
 package com.influy.domain.questionCategory.repository;
 
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface QuestionCategoryRepository extends JpaRepository<QuestionCategory, Long> {
@@ -22,4 +25,6 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     ORDER BY COUNT(q.id) DESC
 """)
     Page<QuestionCategory> findCategoriesWithQuestionCount(@Param("itemId") Long itemId, Pageable pageable);
+
+    List<QuestionCategory> findAllByItem(Item item);
 }

@@ -1,5 +1,6 @@
 package com.influy.domain.questionCategory.service;
 
+import com.influy.domain.ai.service.AiService;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     private final ItemRepository itemRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
     private final SellerProfileRepository sellerRepository;
+    private final AiService aiService;
 
     @Override
     @Transactional
@@ -79,6 +83,14 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
         // 정렬 순서: 질문 많은 순
         Pageable pageable = pageRequest.toPageable();
         return questionCategoryRepository.findCategoriesWithQuestionCount(itemId, pageable);
+    }
+
+    @Override
+    @Transactional
+    public List<QuestionCategory> generateCategory(Long sellerId, Long itemId) {
+        Item item = checkSellerAndItem(sellerId, itemId);
+        aiService.generateCategory(item);
+        return questionCategoryRepository.findAllByItem(item);
     }
 
     private Item checkSellerAndItem(Long sellerId, Long itemId) {

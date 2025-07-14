@@ -1,12 +1,10 @@
 package com.influy.domain.questionCategory.entity;
 
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;

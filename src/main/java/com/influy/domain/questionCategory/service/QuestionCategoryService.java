@@ -5,6 +5,8 @@ import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.global.common.PageRequestDto;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 
 public interface QuestionCategoryService {
     QuestionCategory add(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request);
@@ -14,4 +16,6 @@ public interface QuestionCategoryService {
     void delete(Long sellerId, Long itemId, QuestionCategoryRequestDto.DeleteDto request);
 
     Page<QuestionCategory> getPage(Long sellerId, Long itemId, PageRequestDto pageRequest);
+
+    List<QuestionCategory> generateCategory(Long sellerId, Long itemId);
 }

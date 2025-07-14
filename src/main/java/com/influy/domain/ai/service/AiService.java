@@ -3,5 +3,5 @@ package com.influy.domain.ai.service;
 import com.influy.domain.item.entity.Item;
 
 public interface AiService {
-    void generate(Item item);
+    void generateCategory(Item item);
 }

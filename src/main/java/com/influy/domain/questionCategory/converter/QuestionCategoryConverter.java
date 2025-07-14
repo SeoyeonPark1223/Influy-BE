@@ -17,13 +17,10 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.ViewDto toViewDto(QuestionCategory questionCategory, Integer pending, Integer answered, Integer total) {
+    public static QuestionCategoryResponseDto.ViewDto toViewDto(QuestionCategory questionCategory) {
         return QuestionCategoryResponseDto.ViewDto.builder()
                 .id(questionCategory.getId())
                 .category(questionCategory.getCategory())
-                .pendingCnt(pending)
-                .answeredCnt(answered)
-                .totalCnt(total)
                 .build();
     }
 
@@ -35,21 +32,7 @@ public class QuestionCategoryConverter {
 
     public static QuestionCategoryResponseDto.PageDto toPageDto(Page<QuestionCategory> questionCategoryPage) {
         List<QuestionCategoryResponseDto.ViewDto> questionCategoryList = questionCategoryPage.stream()
-                .map(category -> {
-                    int pending = category.getQuestionTagList().stream()
-                            .flatMap(tag -> tag.getQuestionList().stream())
-                            .filter(q -> !q.getIsAnswered())
-                            .mapToInt(q -> 1)
-                            .sum();
-
-                    int answered = category.getQuestionTagList().stream()
-                            .flatMap(tag -> tag.getQuestionList().stream())
-                            .filter(q -> q.getIsAnswered())
-                            .mapToInt(q -> 1)
-                            .sum();
-
-                    return QuestionCategoryConverter.toViewDto(category, pending, answered, pending + answered);
-                })
+                .map(QuestionCategoryConverter::toViewDto)
                 .toList();
 
         return QuestionCategoryResponseDto.PageDto.builder()
@@ -62,17 +45,6 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-//    public static QuestionCategoryResponseDto.General toGeneralDTO(QuestionCategory category,
-//                                                                   Integer pending,
-//                                                                   Integer answered) {
-//        return QuestionCategoryResponseDto.General.builder()
-//                .id(category.getId())
-//                .name(category.getCategory())
-//                .pendingCnt(pending)
-//                .answeredCnt(answered)
-//                .build();
-//    }
-
     //JPQL result to Preview
     public static QuestionCategoryResponseDto.Preview toPreviewDTO(JPQLQuestionDTO result) {
         return QuestionCategoryResponseDto.Preview.builder()
@@ -83,5 +55,13 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
+    public static QuestionCategoryResponseDto.GenerateResultDto toGenerateResultDto(List<QuestionCategory> questionCategoryList) {
+        List<QuestionCategoryResponseDto.ViewDto> viewList = questionCategoryList.stream()
+                .map(QuestionCategoryConverter::toViewDto)
+                .toList();
 
+        return QuestionCategoryResponseDto.GenerateResultDto.builder()
+                .viewList(viewList)
+                .build();
+    }
 }
