@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/seller")
-public class FaqRestController {
+public class FaqCategoryRestController {
     private final FaqCategoryService faqCategoryService;
 
     @PostMapping("/items/{itemId}/faq-categories")
