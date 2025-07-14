@@ -124,6 +124,7 @@ public class MemberController {
         MemberResponseDTO.MemberProfile body = MemberConverter.toMemberDTO(updatedMember);
 
         return ApiResponse.onSuccess(body);
+    }
 
     @PostMapping("/register/duplicate-check")
     @Operation(summary = "유저네임(id) 중복 확인")
