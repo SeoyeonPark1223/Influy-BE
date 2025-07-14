@@ -100,8 +100,6 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
         if (!faqCategory.getItem().getId().equals(item.getId())) throw new GeneralException(ErrorStatus.INVALID_FAQ_ITEM_RELATION);
 
         if (request.getCategory() != null) faqCategory.setCategory(request.getCategory());
-        faqCategoryRepository.save(faqCategory);
-
         return faqCategory;
     }
 
@@ -130,7 +128,6 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
             }
             faqCategory.setCategoryOrder(i + 1);
             updatedList.add(faqCategory);
-            faqCategoryRepository.save(faqCategory);
         }
 
         return updatedList;
