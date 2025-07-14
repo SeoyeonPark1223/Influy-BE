@@ -1,33 +1,20 @@
 package com.influy.domain.questionCategory.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
-import com.influy.domain.member.repository.MemberRepository;
-import com.influy.domain.question.converter.QuestionConverter;
-import com.influy.domain.question.dto.JPQLQuestionDTO;
-import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
-import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
-import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)

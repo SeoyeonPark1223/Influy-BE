@@ -1,6 +1,5 @@
 package com.influy.domain.questionCategory.dto;
 
-import com.influy.domain.faqCategory.dto.FaqCategoryResponseDto;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

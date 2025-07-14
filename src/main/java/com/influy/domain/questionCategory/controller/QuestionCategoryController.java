@@ -1,7 +1,5 @@
 package com.influy.domain.questionCategory.controller;
 
-import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
-import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
@@ -15,10 +13,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
