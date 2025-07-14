@@ -66,6 +66,9 @@ public class Item extends BaseEntity {
     @Builder.Default
     private Boolean isArchived = false; //보관 여부
 
+    @Builder.Default
+    private Boolean isTalkBoxOpened = false;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<FaqCategory> faqCategoryList = new ArrayList<>();

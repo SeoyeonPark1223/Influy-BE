@@ -29,6 +29,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     @Transactional
     public QuestionCategory add(Long sellerId, Long itemId, QuestionCategoryRequestDto.AddDto request) {
         Item item = checkSellerAndItem(sellerId, itemId);
+        if (item.getIsTalkBoxOpened()) throw new GeneralException(ErrorStatus.TALKBOX_ALREADY_OPENED);
 
         // 중복 체크
         boolean exists = questionCategoryRepository.existsByItemIdAndCategory(itemId, request.getCategory());
@@ -45,6 +46,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     @Transactional
     public QuestionCategory update(Long sellerId, Long itemId, QuestionCategoryRequestDto.UpdateDto request) {
         Item item = checkSellerAndItem(sellerId, itemId);
+        if (item.getIsTalkBoxOpened()) throw new GeneralException(ErrorStatus.TALKBOX_ALREADY_OPENED);
 
         QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
@@ -61,6 +63,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     @Transactional
     public void delete(Long sellerId, Long itemId, QuestionCategoryRequestDto.DeleteDto request) {
         Item item = checkSellerAndItem(sellerId, itemId);
+        if (item.getIsTalkBoxOpened()) throw new GeneralException(ErrorStatus.TALKBOX_ALREADY_OPENED);
 
         QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
