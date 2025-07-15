@@ -8,11 +8,11 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 
 public interface SellerProfileService {
 
-    SellerProfile getSeller(Long sellerId);
+    SellerProfile getSellerProfile(Long memberId);
 
-    SellerProfile updateSeller(Long sellerId, SellerProfileRequestDTO.UpdateProfile requestBody);
+    SellerProfile updateSeller(SellerProfile sellerProfile, SellerProfileRequestDTO.UpdateProfile requestBody);
 
-    SellerProfile updateItemSortType(Long sellerId, ItemSortType sortBy);
+    SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy);
 
     void checkItemMatchSeller(Long sellerId, Long itemId);
 

@@ -40,7 +40,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
     @Transactional
     public QuestionCategory createCategory(Long sellerId, Long itemId, QuestionCategoryRequestDTO.Create request) {
         //자격 검증
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {
@@ -59,7 +59,7 @@ public class QuestionCategoryServiceIml implements QuestionCategoryService{
     @Override
     public Page<QuestionCategory> getCategoryList(Long sellerId, Long itemId, Pageable pageable) {
         //자격 검증
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {

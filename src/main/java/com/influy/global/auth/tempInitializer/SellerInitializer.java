@@ -6,8 +6,10 @@ import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
+import com.influy.domain.sellerProfile.service.SellerProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -22,7 +24,7 @@ import java.util.List;
 public class SellerInitializer implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
+    private final SellerProfileService sellerProfileService;
     private final ObjectMapper objectMapper;
 
 
@@ -39,10 +41,8 @@ public class SellerInitializer implements CommandLineRunner {
             MemberRequestDTO.SellerJoin dto = objectMapper.readValue(inputStream, new TypeReference<MemberRequestDTO.SellerJoin>() {
             });
 
-            Member member = memberService.joinSeller(dto);
-
-            memberRepository.save(member);
-
+            Member member = MemberConverter.toMember(dto.getUserInfo(), MemberRole.SELLER, "최서연");
+            sellerProfileService.createSellerProfile(memberRepository.save(member),dto);
         }
     }
 

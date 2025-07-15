@@ -1,6 +1,7 @@
 package com.influy.global.auth.service;
 
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
 import java.util.Objects;
@@ -28,16 +31,17 @@ import static com.influy.global.util.StaticValues.REFRESH_EXPIRE;
 @RequiredArgsConstructor
 public class KakaoAuthServiceImpl implements AuthService {
 
-
-    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final MemberRepository memberRepository;
 
     @Value("${kakao.rest-api-key}")
     private String kakaoRestApiKey;
     @Value("${social.redirect-uri}")
     private String redirectUri;
+    @Value("${kakao.admin-key}")
+    private String kakaoAdminKey;
 
     @Override
     public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response) {
@@ -63,7 +67,7 @@ public class KakaoAuthServiceImpl implements AuthService {
 
         //멤버 찾아 서비스 토큰 발급(카카오 토큰과 다름)
         try {
-            Member member = memberService.findByKakaoId(kakaoId);
+            Member member = memberRepository.findByKakaoId(kakaoId).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
             //토큰 발급
             TokenPair tokenPair = issueToken(member);
@@ -127,7 +131,7 @@ public class KakaoAuthServiceImpl implements AuthService {
         // 2. refreshToken에서 id 추출
         Long memberId = jwtTokenProvider.getId(refreshToken);
 
-        Member member = memberService.findById(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 3. Redis에 저장된 refreshToken과 비교
         if(!redisService.getValue(member.getUsername()).equals(refreshToken)){
@@ -146,6 +150,28 @@ public class KakaoAuthServiceImpl implements AuthService {
         // 로그아웃 시 refreshToken을 redis에서 삭제하고 accessToken을 redis에 저장
         redisService.deleteValue(member.getUsername()); // 재로그인 방지
         redisService.setValue(accessToken, "logout", jwtTokenProvider.getExpirationTime(accessToken)); // AccessToken을 블랙리스트에 저장
+    }
+
+    @Override
+    public AuthRequestDTO.KakaoUserProfile getUserProfile(Long kakaoId) {
+        RestClient restClient = RestClient.create();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "KakaoAK " + kakaoAdminKey);
+        headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", kakaoId.toString());
+        body.add("property_keys", "[\"kakao_account.profile\"]");
+
+        return restClient.post()
+                .uri("https://kapi.kakao.com/v2/user/me")
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .body(body)
+                .retrieve()
+                .body(AuthRequestDTO.KakaoUserProfile.class);
     }
 
 }

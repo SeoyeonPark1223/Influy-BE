@@ -31,7 +31,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = page.toPageable(sort);
 
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
         return announcementRepository.findAllBySeller(seller,pageable);
     }
 
@@ -39,7 +39,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public Announcement addAnnouncementOf(Long sellerId, AnnouncementRequestDTO requestDTO) {
 
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
 
@@ -52,7 +52,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, Long sellerId, Boolean isPrimary) {
 
 
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
@@ -66,7 +66,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     //최상단 공지 조회
     public Optional<Announcement> getPrimaryAnnouncementOf(Long sellerId) {
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Optional<Announcement> announcement = Optional.ofNullable(seller.getPrimaryAnnouncement());
 
@@ -80,7 +80,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public void deleteAnnouncement(Long sellerId, Long announcementId) {
 
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
@@ -96,7 +96,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Integer getTotalAnnouncementsOf(Long sellerId) {
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
         return announcementRepository.countBySeller(seller);
     }
 }
