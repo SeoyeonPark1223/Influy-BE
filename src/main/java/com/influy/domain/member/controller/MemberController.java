@@ -5,7 +5,9 @@ import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
+import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.BaseCode;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -35,13 +37,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final SellerProfileService sellerProfileService;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
 
     //일반 유저 가입
     @PostMapping("/register/user")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
-        Member member = memberService.joinUser(requestBody);
+        Member member = memberService.joinUser(requestBody, MemberRole.USER);
         TokenPair tokenPair = authService.issueToken(member);
         AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
@@ -53,6 +56,7 @@ public class MemberController {
     public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinSeller(requestBody);
         TokenPair tokenPair = authService.issueToken(member);
+
         AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
@@ -73,7 +77,7 @@ public class MemberController {
 
     }
 
-    @PatchMapping("/logout")
+    @PostMapping("/logout")
     public ApiResponse<SuccessStatus> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
 
         authService.signOut(request,userDetails.getMember());

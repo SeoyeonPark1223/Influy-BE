@@ -28,10 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item createItem(Long sellerId, ItemRequestDto.DetailDto request) {
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
@@ -72,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItem(Long sellerId, Long itemId) {
-        SellerProfile seller = sellerService.getSeller(sellerId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));

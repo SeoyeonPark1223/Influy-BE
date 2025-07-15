@@ -19,11 +19,15 @@ public enum ErrorStatus implements BaseCode {
     //멤버 에러 응답
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER NOT FOUND", "멤버를 찾을 수 없습니다."),
     MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "MEMBER ALREADY EXIST", "이미 존재하는 멤버입니다."),
-    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "DUPLICATE USERNAME", "중복된 아이디입니다."),
+    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "USERNAME ALREADY EXISTS", "중복된 아이디입니다."),
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 이메일입니다."),
+    YOUYUBE_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 유튜브 계정입니다."),
+    TIKTOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 틱톡 계정입니다."),
+    INSTAGRAM_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 인스타 계정입니다."),
 
 
     //공지
-    ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ANNOUNCEMENT401", "요청하신 공지를 찾을 수 없습니다."),
+    ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ANNOUNCEMENT NOT FOUND", "요청하신 공지를 찾을 수 없습니다."),
 
 
     // 찜 관련 응답
@@ -65,7 +69,8 @@ public enum ErrorStatus implements BaseCode {
 
     //API 요청 관련 에러 응답
     NEED_TO_SIGN_UP(HttpStatus.OK,"NEED_TO_SIGN_UP" ,"회원이 아닙니다." ),
-    GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." );
+    GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." ),
+    GET_KAKAO_USER_PROFILE_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO USER PROFILE FAILED" ,"카카오 유저 정보를 조회하는 과정에서 문제가 일어났습니다." );
 
 
 

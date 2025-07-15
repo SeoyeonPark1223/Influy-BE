@@ -73,8 +73,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("authorities: {}", authentication.getAuthorities()); // 여기 비어있으면 문제
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            filterChain.doFilter(request,response);
+
         }
+        filterChain.doFilter(request,response);
     }
 
     //요청의 헤더로부터 토큰 추출하는 함수

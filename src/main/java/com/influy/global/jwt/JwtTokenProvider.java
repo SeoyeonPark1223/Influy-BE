@@ -2,7 +2,10 @@ package com.influy.global.jwt;
 
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
+import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,7 +31,7 @@ import static com.influy.global.util.StaticValues.REFRESH_EXPIRE;
 @Slf4j
 public class JwtTokenProvider {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     /**
      * 토큰 생성, 토큰 검증, ID 추출
@@ -86,7 +89,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         Long id = getId(token);
-        Member member = memberService.findById(id);
+        Member member = memberRepository.findById(id).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
         UserDetails userDetails = new CustomUserDetails(member);
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(

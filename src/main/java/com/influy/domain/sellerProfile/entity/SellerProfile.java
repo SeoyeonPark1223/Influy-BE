@@ -40,12 +40,16 @@ public class SellerProfile extends BaseEntity {
     private String backgroundImg;
 
     //@Embedded 고려
+    @Column(unique = true)
     private String instagram;
 
+    @Column(unique = true)
     private String tiktok;
 
+    @Column(unique = true)
     private String youtube;
 
+    @Column(unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -94,9 +98,6 @@ public class SellerProfile extends BaseEntity {
         }
         if(requestBody.getEmail()!=null){
             this.email = requestBody.getEmail();
-        }
-        if(requestBody.getIsPublic()!=null){
-            this.isPublic = requestBody.getIsPublic();
         }
 
         return this;

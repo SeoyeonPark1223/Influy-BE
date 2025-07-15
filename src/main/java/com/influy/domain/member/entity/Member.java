@@ -31,6 +31,8 @@ public class Member extends BaseEntity {
     @NotNull
     private String nickname; // 보여질 이름
 
+    private String kakaoNickname;
+
     private String profileImg;
 
     @NotNull

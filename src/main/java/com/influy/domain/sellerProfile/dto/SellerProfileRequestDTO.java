@@ -1,5 +1,6 @@
 package com.influy.domain.sellerProfile.dto;
 
+import com.influy.domain.member.dto.MemberRequestDTO;
 import lombok.Getter;
 
 public class SellerProfileRequestDTO {
@@ -11,10 +12,8 @@ public class SellerProfileRequestDTO {
 
     @Getter
     public static class UpdateProfile{
-        private String nickname;
+        private MemberRequestDTO.UpdateProfile profile;
         private String backgroundImg;
-        private String profileImg;
-        private Boolean isPublic;
         private String email;
         private String instagram;
         private String tiktok;

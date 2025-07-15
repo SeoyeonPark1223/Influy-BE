@@ -6,4 +6,10 @@ import java.util.Optional;
 
 public interface SellerProfileRepository extends JpaRepository<SellerProfile, Long> {
     Optional<SellerProfile> findById(Long id);
+
+    Optional<SellerProfile> findByMemberId(Long memberId);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByInstagram(String instagram);
 }
