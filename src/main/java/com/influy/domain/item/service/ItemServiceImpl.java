@@ -14,7 +14,6 @@ import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
-import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
