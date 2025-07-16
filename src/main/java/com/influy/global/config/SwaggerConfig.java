@@ -6,11 +6,15 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${social.redirect-uri}")
+    private String redirectUri;
     @Bean
     public OpenAPI InfluyAPI() {
         Info info = new Info()
@@ -18,7 +22,8 @@ public class SwaggerConfig {
                 .description("""
                         ### INFLUY API 명세 문서입니다.
                         - #### API 관련 버그 및 수정 소요, 제안 등이 있다면 <a href="https://github.com/INFLUY/Influy-BE">BE 깃허브</a> 이슈에 등록해주시면 감사하겠습니다.
-                        """)
+                        """+
+                        "- #### 카카오 로그인 url: https://kauth.kakao.com/oauth/authorize?client_id=a208249d69627b4ccffff588db18bcb9&redirect_uri="+redirectUri+"&response_type=code")
                 .version("1.0.0");
 
         String jwtSchemeName = "JWT TOKEN";

@@ -1,6 +1,5 @@
 package com.influy.domain.item.service;
 
-import com.influy.domain.ai.service.AiService;
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
 import com.influy.domain.image.converter.ImageConverter;
@@ -234,4 +233,7 @@ public class ItemServiceImpl implements ItemService {
             item.getItemCategoryList().add(itemCategory);
         }
     }
+
+
+
 }

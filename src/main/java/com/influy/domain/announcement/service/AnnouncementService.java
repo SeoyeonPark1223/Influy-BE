@@ -6,10 +6,12 @@ import com.influy.global.common.PageRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface AnnouncementService {
     Page<Announcement> getAnnouncementsOf(Long sellerId, PageRequestDto pageable);
 
-    Announcement getPrimaryAnnouncementOf(Long sellerId);
+    Optional<Announcement> getPrimaryAnnouncementOf(Long sellerId);
 
     Announcement addAnnouncementOf(Long sellerId, AnnouncementRequestDTO requestDTO);
 

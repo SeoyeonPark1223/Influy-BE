@@ -4,6 +4,8 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.repository.MemberRepository;
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.converter.SellerProfileConverter;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
@@ -20,29 +22,32 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SellerProfileServiceImpl implements SellerProfileService {
 
-    private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
     private final SellerProfileRepository sellerProfileRepository;
 
-    public SellerProfile getSeller(Long sellerId){
-        return sellerRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+    public SellerProfile getSellerProfile(Long memberId){
+        return sellerProfileRepository.findByMemberId(memberId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public SellerProfile updateSeller(SellerProfile sellerProfile, SellerProfileRequestDTO.UpdateProfile request) {
+        if(request.getProfile()!=null){
+            Member member = sellerProfile.getMember();
+            member.updateProfile(request.getProfile());
+        }
+        return sellerProfile.setProfile(request);
     }
 
     @Transactional
-    public SellerProfile updateSeller(Long sellerId, SellerProfileRequestDTO.UpdateProfile requestBody) {
-        SellerProfile seller = getSeller(sellerId);
-        return seller.setProfile(requestBody);
-    }
+    public SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy) {
 
-    @Transactional
-    public SellerProfile updateItemSortType(Long sellerId, ItemSortType sortBy) {
-        SellerProfile seller = getSeller(sellerId);
-        return seller.setItemSortType(sortBy);
+        return sellerProfile.setItemSortType(sortBy);
     }
 
     @Override
     public void checkItemMatchSeller(Long sellerId, Long itemId) {
-        SellerProfile seller = getSeller(sellerId);
+        SellerProfile seller = getSellerProfile(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if(!item.getSeller().equals(seller)) {
@@ -51,6 +56,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     }
 
     @Override
+    @Transactional
     public SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
 
         SellerProfile sellerProfile = SellerProfileConverter.toSellerProfile(member,request);

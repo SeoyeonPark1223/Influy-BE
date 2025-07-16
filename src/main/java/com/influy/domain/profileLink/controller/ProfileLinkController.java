@@ -59,7 +59,7 @@ public class ProfileLinkController {
 
     //링크 삭제
 
-    @PostMapping("/seller/market-links/{linkId}")
+    @DeleteMapping("/seller/market-links/{linkId}")
     @Operation(summary = "링크 삭제",description = "링크를 삭제합니다.")
     public ApiResponse<String> deleteLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
                                           @PathVariable("linkId") Long linkId){
