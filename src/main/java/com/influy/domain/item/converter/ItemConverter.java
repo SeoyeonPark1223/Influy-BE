@@ -4,6 +4,7 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
@@ -40,7 +41,7 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked) {
+    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked, MemberRole memberRole) {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .sellerId(item.getSeller().getId())
@@ -53,14 +54,15 @@ public class ItemConverter {
                 .tagline(item.getTagline())
                 .currentStatus(item.getItemStatus())
                 .liked(liked)
+                .talkBoxInfo(memberRole==MemberRole.SELLER ? toTalkBoxInfoDto(item):null)
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems) {
+    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole) {
         List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
 
         List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
-                .map(item -> toDetailPreviewDto(item, safeLikeItems.contains(item.getId())))
+                .map(item -> toDetailPreviewDto(item, safeLikeItems.contains(item.getId()), memberRole))
                 .toList();
 
         return ItemResponseDto.DetailPreviewPageDto.builder()
@@ -70,6 +72,14 @@ public class ItemConverter {
                 .totalElements(itemPage.getTotalElements())
                 .isFirst(itemPage.isFirst())
                 .isLast(itemPage.isLast())
+                .build();
+    }
+
+    public static ItemResponseDto.TalkBoxInfoDto toTalkBoxInfoDto(Item item) {
+        return ItemResponseDto.TalkBoxInfoDto.builder()
+                .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .waitingCnt(0)
+                .completedCnt(0)
                 .build();
     }
 

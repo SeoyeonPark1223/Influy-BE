@@ -7,6 +7,7 @@ import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
@@ -72,7 +73,7 @@ public class LikeConverter {
     public static LikeResponseDto.ViewItemLikeDto toViewItemLikeDto(Like like) {
         return LikeResponseDto.ViewItemLikeDto.builder()
                 .targetType(like.getTargetType())
-                .itemPreviewDto(like.getItem() != null ? ItemConverter.toDetailPreviewDto(like.getItem(), true) : null)
+                .itemPreviewDto(like.getItem() != null ? ItemConverter.toDetailPreviewDto(like.getItem(), true, MemberRole.USER) : null)
                 .build();
     }
 

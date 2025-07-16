@@ -1,6 +1,7 @@
 package com.influy.domain.item.dto;
 
 import com.influy.domain.item.entity.ItemStatus;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,7 +58,26 @@ public class ItemResponseDto {
 
         @Schema(description = "찜 여부", example = "false")
         private Boolean liked;
+
+        @Schema(description = "셀러일 경우 톡박스 관련 정보")
+        private TalkBoxInfoDto talkBoxInfo;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkBoxInfoDto {
+        @Schema(description = "톡박스 오픈 상태 [INITIAL, OPENED, CLOSED]", example = "INITIAL")
+        private TalkBoxOpenStatus talkBoxOpenStatus;
+
+        @Schema(description = "응답 대기 개수", example = "123")
+        private Integer waitingCnt;
+
+        @Schema(description = "응답 완료 개수", example = "123")
+        private Integer completedCnt;
+    }
+
 
     @Getter
     @Builder

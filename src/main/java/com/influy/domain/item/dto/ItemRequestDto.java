@@ -1,6 +1,7 @@
 package com.influy.domain.item.dto;
 
 import com.influy.domain.item.entity.ItemStatus;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

@@ -13,6 +13,7 @@ import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -166,10 +168,15 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
+        MemberRole memberRole = MemberRole.SELLER;
+
         List<Long> likeItems = null;
         if (memberId != null) {
             Optional<Member> optionalMember = memberRepository.findById(memberId);
             if (optionalMember.isPresent()) {
+                if (optionalMember.get().getRole() == MemberRole.USER) {
+                    memberRole = MemberRole.USER;
+                }
                 likeItems = optionalMember.get()
                         .getLikeList()
                         .stream()
@@ -205,7 +212,7 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         }
 
-        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems);
+        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole);
     }
 
     private void createImageList(ItemRequestDto.DetailDto request, Item item) {
