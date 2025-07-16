@@ -1,6 +1,7 @@
 package com.influy.domain.item.dto;
 
 import com.influy.domain.item.entity.ItemStatus;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,9 @@ public class ItemResponseDto {
         @Schema(description = "아이템 id", example = "1")
         private Long itemId;
 
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
         @Schema(description = "대표 사진", example = "xxxx.png")
         private String MainImg;
 
@@ -54,7 +58,26 @@ public class ItemResponseDto {
 
         @Schema(description = "찜 여부", example = "false")
         private Boolean liked;
+
+        @Schema(description = "셀러일 경우 톡박스 관련 정보")
+        private TalkBoxInfoDto talkBoxInfo;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkBoxInfoDto {
+        @Schema(description = "톡박스 오픈 상태 [INITIAL, OPENED, CLOSED]", example = "INITIAL")
+        private TalkBoxOpenStatus talkBoxOpenStatus;
+
+        @Schema(description = "응답 대기 개수", example = "123")
+        private Integer waitingCnt;
+
+        @Schema(description = "응답 완료 개수", example = "123")
+        private Integer completedCnt;
+    }
+
 
     @Getter
     @Builder
@@ -103,6 +126,12 @@ public class ItemResponseDto {
 
         @Schema(description = "보관 여부 (보관: true, 게시: false)", example = "false")
         private Boolean isArchived;
+
+        @Schema(description = "정가", example = "100000")
+        private Long regularPrice;
+
+        @Schema(description = "할인가", example = "80000")
+        private Long salePrice;
 
         @Schema(description = "아이템 사진 리스트, 대표사진은 리스트 맨 처음 순서로", example = "[xxx.png, xxxxx.png, xxxxxx.png]")
         private List<String> itemImgList;

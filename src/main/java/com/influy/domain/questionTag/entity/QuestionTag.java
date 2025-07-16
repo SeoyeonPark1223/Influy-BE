@@ -1,8 +1,8 @@
-package com.influy.domain.questionCategory.entity;
+package com.influy.domain.questionTag.entity;
 
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.questionTag.entity.QuestionTag;
-import com.influy.global.common.BaseEntity;
+import com.influy.domain.question.entity.Question;
+import com.influy.domain.questionCategory.entity.QuestionCategory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -15,20 +15,19 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionCategory extends BaseEntity {
+public class QuestionTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "question_category_id")
+    private QuestionCategory questionCategory;
 
     @NotBlank
-    @Setter
-    private String category;
+    private String tag;
 
-    @OneToMany(mappedBy = "questionCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "questionTag", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<QuestionTag> questionTagList = new ArrayList<>();
+    private List<Question> questionList = new ArrayList<>();
 }

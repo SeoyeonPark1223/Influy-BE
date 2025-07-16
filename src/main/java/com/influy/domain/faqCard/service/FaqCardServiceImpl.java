@@ -2,11 +2,13 @@ package com.influy.domain.faqCard.service;
 
 import com.influy.domain.faqCard.converter.FaqCardConverter;
 import com.influy.domain.faqCard.dto.FaqCardRequestDto;
+import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.repository.FaqCardRepository;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -27,6 +29,7 @@ public class FaqCardServiceImpl implements FaqCardService {
     private final FaqCategoryRepository faqCategoryRepository;
     private final FaqCardRepository faqCardRepository;
     private final SellerProfileRepository sellerRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -111,6 +114,17 @@ public class FaqCardServiceImpl implements FaqCardService {
         faqCategory.getFaqCardList().remove(faqCard);
         seller.getFaqCardList().remove(faqCard);
         faqCardRepository.delete(faqCard);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FaqCardResponseDto.ItemInfoDto getItemInfo(Long sellerId, Long itemId) {
+        sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+
+        return FaqCardConverter.toItemInfoDto(item);
     }
 
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {

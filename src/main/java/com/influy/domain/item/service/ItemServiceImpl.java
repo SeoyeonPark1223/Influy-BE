@@ -12,6 +12,7 @@ import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -28,8 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +41,13 @@ public class ItemServiceImpl implements ItemService {
     private final SellerProfileRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
-    private final SellerProfileServiceImpl sellerService;
     private final MemberRepository memberRepository;
 
     @Override
     @Transactional
     public Item createItem(Long sellerId, ItemRequestDto.DetailDto request) {
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+        SellerProfile seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
 
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
@@ -70,7 +74,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItem(Long sellerId, Long itemId) {
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+        SellerProfile seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -162,10 +167,15 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
+        MemberRole memberRole = MemberRole.SELLER;
+
         List<Long> likeItems = null;
         if (memberId != null) {
             Optional<Member> optionalMember = memberRepository.findById(memberId);
             if (optionalMember.isPresent()) {
+                if (optionalMember.get().getRole() == MemberRole.USER) {
+                    memberRole = MemberRole.USER;
+                }
                 likeItems = optionalMember.get()
                         .getLikeList()
                         .stream()
@@ -201,7 +211,7 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         }
 
-        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems);
+        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole);
     }
 
     private void createImageList(ItemRequestDto.DetailDto request, Item item) {

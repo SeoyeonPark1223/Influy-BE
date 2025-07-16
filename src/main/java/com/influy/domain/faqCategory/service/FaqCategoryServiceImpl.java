@@ -57,13 +57,13 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FaqCategory> getPage(Long sellerId, Long itemId, PageRequestDto pageRequest) {
+    public List<FaqCategory> getList(Long sellerId, Long itemId) {
         if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         if (!itemRepository.existsById(itemId)) throw new GeneralException(ErrorStatus.ITEM_NOT_FOUND);
 
-        Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "categoryOrder"));
+        Sort sort = Sort.by(Sort.Direction.ASC, "categoryOrder");
 
-        return faqCategoryRepository.findAllByItemId(itemId, pageable);
+        return faqCategoryRepository.findAllByItemId(itemId, sort);
     }
 
     @Override
@@ -112,6 +112,8 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         List<Long> idList= request.getIds();
+        if (idList.size() != faqCategoryRepository.countAllByItemId(itemId)) throw new GeneralException(ErrorStatus.UPDATE_ORDER_INVALID_FORMAT);
+
         List<FaqCategory> updatedList = new ArrayList<>();
 
         Map<Long, FaqCategory> updateMap = faqCategoryRepository.findAllByItem(item).stream()

@@ -24,10 +24,10 @@ public class CategoryInitializer implements CommandLineRunner {
         if (categoryRepository.count() == 0) {
             // JAR 내부 classpath에서 JSON 파일 로드
             try (InputStream inputStream = getClass().getClassLoader()
-                    .getResourceAsStream("category-storage/category.json")) {
+                    .getResourceAsStream("category-storage/item-category.json")) {
 
                 if (inputStream == null) {
-                    throw new IOException("category.json 파일을 찾을 수 없습니다.");
+                    throw new IOException("item-category.json 파일을 찾을 수 없습니다.");
                 }
 
                 // JSON 파일을 Java 객체(List<Category>)로 변환

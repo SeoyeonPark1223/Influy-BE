@@ -2,7 +2,6 @@ package com.influy.domain.question.converter;
 
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
-import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
 import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
