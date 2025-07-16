@@ -15,9 +15,23 @@ public enum ErrorStatus implements BaseCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
-    
+
+    //멤버 에러 응답
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER NOT FOUND", "멤버를 찾을 수 없습니다."),
+    MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "MEMBER ALREADY EXIST", "이미 존재하는 멤버입니다."),
+    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "USERNAME ALREADY EXISTS", "중복된 아이디입니다."),
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 이메일입니다."),
+    YOUYUBE_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 유튜브 계정입니다."),
+    TIKTOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 틱톡 계정입니다."),
+    INSTAGRAM_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 인스타 계정입니다."),
+
+
     //공지
-    ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ANNOUNCEMENT401", "요청하신 공지를 찾을 수 없습니다."),
+    ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ANNOUNCEMENT NOT FOUND", "요청하신 공지를 찾을 수 없습니다."),
+
+
+    // 찜 관련 응답
+    LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "LIKE NOT FOUND", "찜을 찾을 수 없습니다."),
 
     // 셀러 에러 응답
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
@@ -44,7 +58,20 @@ public enum ErrorStatus implements BaseCode {
     QUESTION_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION CATEGORY NOT FOUND", "질문 카테고리를 찾을 수 없습니다."),
 
     // 정렬 관련 응답
-    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식은 CREATE_DATE, END_DATE 입니다.");
+    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬이 아닙니다."),
+
+    // redis 관련 응답
+    REDIS_KEY_NOT_FOUND(HttpStatus.NOT_FOUND,"REDIS KEY NOT FOUND" ,"REDIS 키를 찾을 수 없습니다." ),
+
+    //토큰 관련 응답
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"EXPIRED TOKEN" ,"만료된 토큰입니다." ),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID TOKEN","유효하지 않은 토큰입니다." ),
+
+    //API 요청 관련 에러 응답
+    NEED_TO_SIGN_UP(HttpStatus.OK,"NEED_TO_SIGN_UP" ,"회원이 아닙니다." ),
+    GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." ),
+    GET_KAKAO_USER_PROFILE_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO USER PROFILE FAILED" ,"카카오 유저 정보를 조회하는 과정에서 문제가 일어났습니다." );
+
 
 
     private final HttpStatus httpStatus;

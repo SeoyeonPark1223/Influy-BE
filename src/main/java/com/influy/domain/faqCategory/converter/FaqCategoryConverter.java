@@ -10,19 +10,11 @@ import java.util.List;
 
 public class FaqCategoryConverter {
 
-    public static FaqCategoryResponseDto.AddResultDto toAddResultDto(List<FaqCategory> faqCategoryList) {
-        List<FaqCategoryResponseDto.ViewDto> addList = faqCategoryList.stream()
-                .map(FaqCategoryConverter::toViewDto).toList();
-
-        return FaqCategoryResponseDto.AddResultDto.builder()
-                .addList(addList)
-                .build();
-    }
-
     public static FaqCategoryResponseDto.ViewDto toViewDto(FaqCategory faqCategory) {
         return FaqCategoryResponseDto.ViewDto.builder()
                 .id(faqCategory.getId())
                 .category(faqCategory.getCategory())
+                .categoryOrder(faqCategory.getCategoryOrder())
                 .build();
     }
 
@@ -41,32 +33,30 @@ public class FaqCategoryConverter {
                 .build();
     }
 
-    public static FaqCategoryResponseDto.DeleteResultDto toDeleteResultDto(List<FaqCategoryRequestDto.DeleteDto> faqCategoryIdList) {
-        List<Long> idList = faqCategoryIdList.stream()
-                .map(FaqCategoryRequestDto.DeleteDto::getId)
-                .toList();
-
+    public static FaqCategoryResponseDto.DeleteResultDto toDeleteResultDto(FaqCategoryRequestDto.DeleteDto request) {
         return FaqCategoryResponseDto.DeleteResultDto.builder()
-                .idList(idList)
+                .id(request.getId())
                 .build();
     }
 
-    public static FaqCategory toFaqCategory(FaqCategoryRequestDto.AddDto request, Item item) {
+    public static FaqCategory toFaqCategory(FaqCategoryRequestDto.AddDto request, Item item, Integer nextNum) {
         return FaqCategory.builder()
                 .item(item)
                 .category(request.getCategory())
+                .categoryOrder(nextNum)
                 .build();
     }
 
-    public static FaqCategoryResponseDto.UpdateResultDto toUpdateResultDto(List<FaqCategory> faqCategoryList) {
+    public static FaqCategoryResponseDto.UpdateOrderResultDto toUpdateOrderResultDto(List<FaqCategory> faqCategoryList) {
         List<FaqCategoryResponseDto.ViewDto> updatedList = faqCategoryList.stream()
                 .map(f -> FaqCategoryResponseDto.ViewDto.builder()
                         .id(f.getId())
                         .category(f.getCategory())
+                        .categoryOrder(f.getCategoryOrder())
                         .build())
                 .toList();
 
-        return FaqCategoryResponseDto.UpdateResultDto.builder()
+        return FaqCategoryResponseDto.UpdateOrderResultDto.builder()
                 .updatedList(updatedList)
                 .build();
     }
