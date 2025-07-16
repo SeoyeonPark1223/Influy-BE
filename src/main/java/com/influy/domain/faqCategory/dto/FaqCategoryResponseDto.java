@@ -28,15 +28,11 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PageDto {
+    public static class ListDto {
         @Schema(description = "faq 카테고리 리스트")
         private List<ViewDto> viewList;
 
         private Integer listSize;
-        private Integer totalPage;
-        private Long totalElements;
-        private Boolean isFirst;
-        private Boolean isLast;
     }
 
     @Getter

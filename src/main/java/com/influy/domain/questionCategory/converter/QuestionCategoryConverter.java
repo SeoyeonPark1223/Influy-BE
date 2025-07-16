@@ -2,38 +2,62 @@ package com.influy.domain.questionCategory.converter;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.question.dto.JPQLQuestionDTO;
-import com.influy.domain.question.dto.QuestionResponseDTO;
-import com.influy.domain.question.entity.Question;
-import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDTO;
-import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDTO;
+import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
+import org.springframework.data.domain.Page;
 
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 public class QuestionCategoryConverter {
 
-    public static QuestionCategory toEntity(Item item, QuestionCategoryRequestDTO.Create request) {
+    public static QuestionCategory toQuestionCategory(Item item, String category) {
         return QuestionCategory.builder()
-                .category(request.getName())
+                .category(category)
                 .item(item)
                 .build();
     }
 
-    public static QuestionCategoryResponseDTO.General toGeneralDTO(QuestionCategory category,
-                                                                   Integer pending,
-                                                                   Integer answered) {
-        return QuestionCategoryResponseDTO.General.builder()
-                .id(category.getId())
-                .name(category.getCategory())
-                .pendingCnt(pending)
-                .answeredCnt(answered)
+    public static QuestionCategoryResponseDto.ViewDto toViewDto(QuestionCategory questionCategory) {
+        return QuestionCategoryResponseDto.ViewDto.builder()
+                .id(questionCategory.getId())
+                .category(questionCategory.getCategory())
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.DeleteResultDto toDeleteResultDto(Long id) {
+        return QuestionCategoryResponseDto.DeleteResultDto.builder()
+                .id(id)
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
+        return QuestionCategoryResponseDto.ViewWithCntDto.builder()
+                .id(questionCategory.getId())
+                .category(questionCategory.getCategory())
+                .questionCnt(questionCnt)
+                .unCheckedCnt(unCheckedCnt)
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.ListDto toListDto(List<QuestionCategory> questionCategoryList, Map<Long, Integer> questionCntMap, Map<Long, Integer> unCheckedCntMap) {
+        List<QuestionCategoryResponseDto.ViewWithCntDto> qcList = questionCategoryList.stream()
+                .map(qc -> toViewWithCntDto(
+                        qc,
+                        questionCntMap.getOrDefault(qc.getId(), 0),
+                        unCheckedCntMap.getOrDefault(qc.getId(), 0)
+                ))
+                .toList();
+
+        return QuestionCategoryResponseDto.ListDto.builder()
+                .viewList(qcList)
+                .listSize(qcList.size())
                 .build();
     }
 
     //JPQL result to Preview
-    public static QuestionCategoryResponseDTO.Preview toPreviewDTO(JPQLQuestionDTO result) {
-        return QuestionCategoryResponseDTO.Preview.builder()
+    public static QuestionCategoryResponseDto.Preview toPreviewDTO(JPQLQuestionDTO result) {
+        return QuestionCategoryResponseDto.Preview.builder()
                 .id(result.getCategoryId())
                 .name(result.getCategoryName())
                 .answeredCnt(0)
@@ -41,5 +65,13 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
+    public static QuestionCategoryResponseDto.GenerateResultDto toGenerateResultDto(List<QuestionCategory> questionCategoryList) {
+        List<QuestionCategoryResponseDto.ViewDto> viewList = questionCategoryList.stream()
+                .map(QuestionCategoryConverter::toViewDto)
+                .toList();
 
+        return QuestionCategoryResponseDto.GenerateResultDto.builder()
+                .viewList(viewList)
+                .build();
+    }
 }

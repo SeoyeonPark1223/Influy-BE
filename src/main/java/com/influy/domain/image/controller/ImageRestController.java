@@ -29,7 +29,6 @@ public class ImageRestController {
                     "발급된 PresignedURL로 PUT 요청을 하여 S3에 이미지를 업로드합니다. " +
                     "이미지 업로드에 성공하면 해당 imageURL이 활성화됩니다.")
     ApiResponse<ImageResponseDto.UploadResultDto> uploadImg (@RequestBody @Valid ImageRequestDto.UploadDto request) {
-        URL imgUrl = imageService.uploadImg(request);
-        return ApiResponse.onSuccess(ImageConverter.toUploadResultDto(imgUrl));
+        return ApiResponse.onSuccess(imageService.uploadImg(request));
     }
 }

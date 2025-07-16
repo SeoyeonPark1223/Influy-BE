@@ -12,6 +12,9 @@ public class ImageResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UploadResultDto {
+        @Schema(description = "presignedURL", example = "https://influy-s3...")
+        private String presignedUrl;
+
         @Schema(description = "정상적으로 업로드되면 활성화될 imageURL", example = "https://influy-s3...")
         private String imgUrl;
     }

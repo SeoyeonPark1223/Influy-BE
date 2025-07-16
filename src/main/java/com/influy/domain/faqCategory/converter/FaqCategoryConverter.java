@@ -18,18 +18,14 @@ public class FaqCategoryConverter {
                 .build();
     }
 
-    public static FaqCategoryResponseDto.PageDto toPageDto(Page<FaqCategory> faqCategoryPage) {
-        List<FaqCategoryResponseDto.ViewDto> faqCategoryList = faqCategoryPage.stream()
+    public static FaqCategoryResponseDto.ListDto toListDto(List<FaqCategory> faqCategoryList) {
+        List<FaqCategoryResponseDto.ViewDto> fcList = faqCategoryList.stream()
                 .map(FaqCategoryConverter::toViewDto)
                 .toList();
 
-        return FaqCategoryResponseDto.PageDto.builder()
-                .viewList(faqCategoryList)
-                .listSize(faqCategoryPage.getContent().size())
-                .totalPage(faqCategoryPage.getTotalPages())
-                .totalElements(faqCategoryPage.getTotalElements())
-                .isFirst(faqCategoryPage.isFirst())
-                .isLast(faqCategoryPage.isLast())
+        return FaqCategoryResponseDto.ListDto.builder()
+                .viewList(fcList)
+                .listSize(fcList.size())
                 .build();
     }
 
