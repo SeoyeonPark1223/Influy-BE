@@ -7,6 +7,7 @@ import com.influy.domain.questionCategory.entity.QuestionCategory;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 public class QuestionCategoryConverter {
 
@@ -30,18 +31,27 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.PageDto toPageDto(Page<QuestionCategory> questionCategoryPage) {
-        List<QuestionCategoryResponseDto.ViewDto> questionCategoryList = questionCategoryPage.stream()
-                .map(QuestionCategoryConverter::toViewDto)
+    public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
+        return QuestionCategoryResponseDto.ViewWithCntDto.builder()
+                .id(questionCategory.getId())
+                .category(questionCategory.getCategory())
+                .questionCnt(questionCnt)
+                .unCheckedCnt(unCheckedCnt)
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.ListDto toListDto(List<QuestionCategory> questionCategoryList, Map<Long, Integer> questionCntMap, Map<Long, Integer> unCheckedCntMap) {
+        List<QuestionCategoryResponseDto.ViewWithCntDto> qcList = questionCategoryList.stream()
+                .map(qc -> toViewWithCntDto(
+                        qc,
+                        questionCntMap.getOrDefault(qc.getId(), 0),
+                        unCheckedCntMap.getOrDefault(qc.getId(), 0)
+                ))
                 .toList();
 
-        return QuestionCategoryResponseDto.PageDto.builder()
-                .viewList(questionCategoryList)
-                .listSize(questionCategoryPage.getContent().size())
-                .totalPage(questionCategoryPage.getTotalPages())
-                .totalElements(questionCategoryPage.getTotalElements())
-                .isFirst(questionCategoryPage.isFirst())
-                .isLast(questionCategoryPage.isLast())
+        return QuestionCategoryResponseDto.ListDto.builder()
+                .viewList(qcList)
+                .listSize(qcList.size())
                 .build();
     }
 

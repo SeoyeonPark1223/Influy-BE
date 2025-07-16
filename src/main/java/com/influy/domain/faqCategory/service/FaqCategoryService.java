@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface FaqCategoryService {
     FaqCategory add(Long sellerId, Long itemId, FaqCategoryRequestDto.AddDto request);
-    Page<FaqCategory> getPage(Long sellerId, Long itemId, PageRequestDto pageRequest);
+    List<FaqCategory> getList(Long sellerId, Long itemId);
     void delete(Long sellerId, Long itemId, FaqCategoryRequestDto.DeleteDto request);
     FaqCategory update(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateDto request);
     List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateOrderDto request);

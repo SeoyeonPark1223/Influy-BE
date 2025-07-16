@@ -62,11 +62,9 @@ public class QuestionCategoryController {
     }
 
     @GetMapping("seller/{sellerId}/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)")
-    public ApiResponse<QuestionCategoryResponseDto.PageDto> getPage(@PathVariable("sellerId") Long sellerId,
-                                                                    @PathVariable("itemId") Long itemId,
-                                                                    @Valid @ParameterObject PageRequestDto pageRequest) {
-        Page<QuestionCategory> questionCategoryPage = questionCategoryService.getPage(sellerId, itemId, pageRequest);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toPageDto(questionCategoryPage));
+    @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)", description = "미확인인 질문 개수는 질문 파트 개발 이후 수정할 예정입니다.")
+    public ApiResponse<QuestionCategoryResponseDto.ListDto> getList(@PathVariable("sellerId") Long sellerId,
+                                                                    @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(questionCategoryService.getList(sellerId, itemId));
     }
 }

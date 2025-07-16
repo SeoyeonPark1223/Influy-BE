@@ -35,11 +35,10 @@ public class FaqCategoryRestController {
 
     @GetMapping("/{sellerId}/items/{itemId}/faq-categories")
     @Operation(summary = "개별 상품의 faq 카테고리 리스트 조회 (순서 기준 정렬)")
-    public ApiResponse<FaqCategoryResponseDto.PageDto> getPage (@PathVariable("sellerId") Long sellerId,
-                                                                @PathVariable("itemId") Long itemId,
-                                                                @Valid @ParameterObject PageRequestDto pageRequest) {
-        Page<FaqCategory> faqCategoryPage = faqCategoryService.getPage(sellerId, itemId, pageRequest);
-        return ApiResponse.onSuccess(FaqCategoryConverter.toPageDto(faqCategoryPage));
+    public ApiResponse<FaqCategoryResponseDto.ListDto> getList (@PathVariable("sellerId") Long sellerId,
+                                                                @PathVariable("itemId") Long itemId) {
+        List<FaqCategory> faqCategoryList = faqCategoryService.getList(sellerId, itemId);
+        return ApiResponse.onSuccess(FaqCategoryConverter.toListDto(faqCategoryList));
     }
 
     @DeleteMapping("/items/{itemId}/faq-categories")

@@ -67,7 +67,8 @@ public class Item extends BaseEntity {
     private Boolean isArchived = false; //보관 여부
 
     @Builder.Default
-    private Boolean isTalkBoxOpened = false;
+    @Enumerated(EnumType.STRING)
+    private TalkBoxOpenStatus talkBoxOpenStatus = TalkBoxOpenStatus.INITIAL; // [INITIAL, OPENED, CLOSED]
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

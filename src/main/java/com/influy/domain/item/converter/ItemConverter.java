@@ -44,7 +44,7 @@ public class ItemConverter {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .sellerId(item.getSeller().getId())
-                .MainImg(item.getImageList().get(0).getImageLink())
+                .MainImg(item.getImageList().getFirst().getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(item.getSeller().getMember().getUsername())
@@ -91,6 +91,8 @@ public class ItemConverter {
                 .currentStatus(item.getItemStatus())
                 .marketLink(item.getMarketLink())
                 .isArchived(item.getIsArchived())
+                .regularPrice(item.getRegularPrice())
+                .salePrice(item.getSalePrice())
                 .itemImgList(itemImgLinkList)
                 .itemCategoryList(itemCategoryList)
                 .build();

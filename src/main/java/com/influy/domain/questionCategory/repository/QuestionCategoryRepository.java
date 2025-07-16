@@ -23,8 +23,16 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     WHERE qc.item.id = :itemId
     GROUP BY qc
     ORDER BY COUNT(q.id) DESC
-""")
-    Page<QuestionCategory> findCategoriesWithQuestionCount(@Param("itemId") Long itemId, Pageable pageable);
+    """)
+    List<QuestionCategory> findQuestionCategories(@Param("itemId") Long itemId);
+
+    @Query("""
+    SELECT COUNT(q)
+    FROM QuestionTag qt
+    LEFT JOIN Question q ON q.questionTag = qt
+    WHERE qt.questionCategory.id = :questionCategoryId
+    """)
+    int countQuestionsByCategoryId(@Param("questionCategoryId") Long questionCategoryId);
 
     List<QuestionCategory> findAllByItem(Item item);
 }

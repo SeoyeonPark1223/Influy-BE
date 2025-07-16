@@ -107,6 +107,12 @@ public class ItemResponseDto {
         @Schema(description = "보관 여부 (보관: true, 게시: false)", example = "false")
         private Boolean isArchived;
 
+        @Schema(description = "정가", example = "100000")
+        private Long regularPrice;
+
+        @Schema(description = "할인가", example = "80000")
+        private Long salePrice;
+
         @Schema(description = "아이템 사진 리스트, 대표사진은 리스트 맨 처음 순서로", example = "[xxx.png, xxxxx.png, xxxxxx.png]")
         private List<String> itemImgList;
 

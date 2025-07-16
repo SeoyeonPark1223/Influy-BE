@@ -50,7 +50,7 @@ public enum ErrorStatus implements BaseCode {
     //질문관리창 관련 응당
     QUESTION_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION CATEGORY NOT FOUND", "질문 카테고리를 찾을 수 없습니다."),
     INVALID_QUESTION_ITEM_RELATION(HttpStatus.BAD_REQUEST, "INVALID QUESTION ITEM RELATION", "해당 질문 카테고리의 아이템을 찾을 수 없습니다."),
-    TALKBOX_ALREADY_OPENED(HttpStatus.BAD_REQUEST, "TALKBOX ALREADY OPENED", "톡박스가 열린 상태에서 해당 작업을 할 수 없습니다."),
+    TALKBOX_ALREADY_OPENED(HttpStatus.BAD_REQUEST, "TALKBOX ALREADY OPENED", "톡박스가 최초로 열린 이후에는 질문 카테고릴 수정할 수 없습니다."),
 
     // 정렬 관련 응답
     UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬 방식이 아닙니다.");
