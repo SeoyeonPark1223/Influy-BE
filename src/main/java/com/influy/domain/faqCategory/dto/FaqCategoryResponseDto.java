@@ -13,21 +13,15 @@ public class FaqCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddResultDto {
-        @Schema(description = "추가된 faq 카테고리 리스트")
-        private List<ViewDto> addList;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class ViewDto {
         @Schema(description = "faq 카테고리 id", example = "1")
         private Long id;
 
         @Schema(description = "faq 카테고리", example = "상품구성")
         private String category;
+
+        @Schema(description = "faq 카테고리 순서", example = "1")
+        private Integer categoryOrder;
     }
 
     @Getter
@@ -50,16 +44,16 @@ public class FaqCategoryResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeleteResultDto {
-        @Schema(description = "삭제된 faq 카테고리 id 리스트", example = "[1, 2]")
-        private List<Long> idList;
+        @Schema(description = "삭제된 faq 카테고리 id", example = "1")
+        private Long id;
     }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateResultDto {
-        @Schema(description = "업데이트된 faq 카테고리 리스트", example = "[1, 2]")
+    public static class UpdateOrderResultDto {
+        @Schema(description = "업데이트된 faq 카테고리 리스트")
         private List<ViewDto> updatedList;
     }
 }

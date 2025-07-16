@@ -30,10 +30,17 @@ public class SellerProfileConverter {
     }
 
     public static SellerProfile toSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
+        String instagramLink = request.getInstagram().replaceAll("https://www.instagram.com/","");
+        int targetIndex = instagramLink.indexOf("?");
+
+        String instagram = instagramLink.substring(0, targetIndex);
+
+
+
         return SellerProfile.builder()
                 .member(member)
                 .email(request.getEmail())
-                .instagram(request.getInstagram())
+                .instagram(instagram)
                 .build();
     }
 }
