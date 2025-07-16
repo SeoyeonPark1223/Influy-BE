@@ -39,7 +39,7 @@ public class AiServiceImpl implements AiService {
         // 상품 관련 6개 질문 카테고리를 ai로 생성
 
         try {
-            String prompt = buildPrompt(item);
+            String prompt = buildPromptCategory(item);
             String response = chatClient.prompt()
                     .user(prompt)
                     .call()
@@ -60,7 +60,7 @@ public class AiServiceImpl implements AiService {
         }
     }
 
-    private String buildPrompt(Item item) throws IOException{
+    private String buildPromptCategory(Item item) throws IOException{
         try {
             String template = Files.readString(Paths.get(PROMPT_FILE_PATH));
             return template
