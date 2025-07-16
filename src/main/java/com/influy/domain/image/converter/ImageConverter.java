@@ -18,9 +18,10 @@ public class ImageConverter {
                 .build();
     }
 
-    public static ImageResponseDto.UploadResultDto toUploadResultDto(URL imgURL) {
+    public static ImageResponseDto.UploadResultDto toUploadResultDto(URL presignedUrl, String imgURL) {
         return ImageResponseDto.UploadResultDto.builder()
-                .imgUrl(imgURL.toString())
+                .presignedUrl(presignedUrl.toString())
+                .imgUrl(imgURL)
                 .build();
     }
 
