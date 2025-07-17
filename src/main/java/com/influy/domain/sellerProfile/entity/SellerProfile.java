@@ -25,6 +25,7 @@ public class SellerProfile extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Nullable
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
