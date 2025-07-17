@@ -2,8 +2,8 @@ package com.influy.domain.ai.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.influy.domain.ai.service.converter.AiConverter;
-import com.influy.domain.ai.service.dto.AiRequestDTO;
+import com.influy.domain.ai.converter.AiConverter;
+import com.influy.domain.ai.dto.AiRequestDTO;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -12,6 +12,7 @@ import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +37,8 @@ public class AiServiceImpl implements AiService {
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionTagRepository questionTagRepository;
 
-    private static final String PROMPT_FILE_PATH = "src/main/resources/category-storage/prompt-question-category.txt";
-    private static final String JSON_FILE_PATH = "src/main/resources/category-storage/question-category.json";
+    private static final String CATEGORY_PROMPT_FILE_PATH = "src/main/resources/category-storage/aiQuestionCategory/prompt-question-category.txt";
+    private static final String CATEGORY_JSON_FILE_PATH = "src/main/resources/category-storage/question-category.json";
 
     @Override
     @Transactional
@@ -79,12 +80,28 @@ public class AiServiceImpl implements AiService {
         List<AiRequestDTO.Question> questionDTOs = ectQuestionTag.getQuestionList().stream().map(AiConverter::toAiQuestionDTO).toList();
 
         //4. ai Client 호출
+        try{
+            String prompt = buildPromptClassifyQuestion(content, questionCategory.getName(),questionTagDTOs,questionDTOs);
+            String response = chatClient.prompt()
+                    .user(prompt)
+                    .call()
+                    .content();
+
+            //응답 정제
+        }catch (Exception e){
+            throw new RuntimeException("Failed to process AI response", e);
+        }
         return "";
+    }
+
+    private String buildPromptClassifyQuestion(String content, @NotBlank String name, List<AiRequestDTO.QuestionTag> questionTagDTOs, List<AiRequestDTO.Question> questionDTOs) {
+
+        return null;
     }
 
     private String buildPromptCategory(Item item) throws IOException{
         try {
-            String template = Files.readString(Paths.get(PROMPT_FILE_PATH));
+            String template = Files.readString(Paths.get(CATEGORY_PROMPT_FILE_PATH));
             return template
                     .replace("{{name}}", item.getName())
                     .replace("{{categories}}", item.getItemCategoryList().stream()
@@ -98,7 +115,7 @@ public class AiServiceImpl implements AiService {
     }
 
     private void saveToJson(List<String> categories) throws IOException {
-        File file = new File(JSON_FILE_PATH);
+        File file = new File(CATEGORY_JSON_FILE_PATH);
 
         List<Map<String, String>> defaultCat = new ArrayList<>();
         if (!file.exists()) throw new IOException("Failed to read question-category.json file");
@@ -125,7 +142,7 @@ public class AiServiceImpl implements AiService {
     }
 
     private void saveToRepository(Item item) throws IOException {
-        File file = new File(JSON_FILE_PATH);
+        File file = new File(CATEGORY_JSON_FILE_PATH);
         if (!file.exists()) throw new IOException("question-category.json file not found");
 
         List<Map<String, String>> categoryList = objectMapper.readValue(file, new TypeReference<>() {});

@@ -1,4 +1,4 @@
-package com.influy.domain.ai.service.dto;
+package com.influy.domain.ai.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

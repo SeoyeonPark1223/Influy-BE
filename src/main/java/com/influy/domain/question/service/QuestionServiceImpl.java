@@ -1,18 +1,11 @@
 package com.influy.domain.question.service;
 
 import com.influy.domain.ai.service.AiService;
-import com.influy.domain.ai.service.converter.AiConverter;
-import com.influy.domain.ai.service.dto.AiRequestDTO;
-import com.influy.domain.item.entity.Item;
-import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
-import com.influy.domain.questionTag.converter.QuestionTagConverter;
-import com.influy.domain.questionTag.dto.QuestionTagResponseDTO;
-import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
@@ -21,8 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

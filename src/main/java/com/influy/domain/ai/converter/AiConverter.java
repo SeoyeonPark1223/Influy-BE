@@ -1,6 +1,6 @@
-package com.influy.domain.ai.service.converter;
+package com.influy.domain.ai.converter;
 
-import com.influy.domain.ai.service.dto.AiRequestDTO;
+import com.influy.domain.ai.dto.AiRequestDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
 
