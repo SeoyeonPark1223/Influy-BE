@@ -38,7 +38,7 @@ public class SellerProfileController {
 
     //프로필 수정
     @PatchMapping("/profile")
-    @Operation(summary = "셀러가 본인 프로필 수정 API", description = "수정한 필드만 보내면 됨")
+    @Operation(summary = "셀러가 본인 프로필 수정 API", description = "수정한 필드만 보내면 됨. 유저 프로필은 회원쪽 api 사용하세요")
     public ApiResponse<SellerProfileResponseDTO.SellerProfile> updateSellerProfile(@RequestBody SellerProfileRequestDTO.UpdateProfile requestBody,
                                                                                    @AuthenticationPrincipal CustomUserDetails userDetails){
 
