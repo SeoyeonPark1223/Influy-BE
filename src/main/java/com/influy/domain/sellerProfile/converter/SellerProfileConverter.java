@@ -13,8 +13,12 @@ public class SellerProfileConverter {
 
     public static SellerProfileResponseDTO.SellerProfile toSellerProfileDTO(SellerProfile seller) {
 
+        Member member = seller.getMember();
         return SellerProfileResponseDTO.SellerProfile.builder()
-                .id(seller.getId())
+                .nickname(member.getNickname())
+                .profileImg(member.getProfileImg())
+                .id(member.getId())
+                .sellerId(seller.getId())
                 .backgroundImg(seller.getBackgroundImg())
                 .isPublic(seller.getIsPublic())
                 .itemSortType(seller.getItemSortType())
