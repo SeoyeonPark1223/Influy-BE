@@ -3,6 +3,7 @@ package com.influy.domain.member.dto;
 import com.influy.domain.member.entity.MemberRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Null;
 import lombok.Getter;
 
 public class MemberRequestDTO {
@@ -20,8 +21,14 @@ public class MemberRequestDTO {
         private UserJoin userInfo;
         @Schema(description = "이메일", example = "influy@naver.com")
         private String email;
-        @Schema(description = "인스타그램", example = "@rapper_mj")
+        @Schema(description = "인스타그램", example = "https://www.instagram.com/계정?랜덤문자열")
         private String instagram;
+        @Nullable
+        @Schema(description = "틱톡", example = "서버단 제약은 없음")
+        private String tiktok;
+        @Nullable
+        @Schema(description = "유튜브", example = "서버단 제약은 없음")
+        private String youtube;
     }
     @Getter
     public static class UsernameDuplicateCheck{
