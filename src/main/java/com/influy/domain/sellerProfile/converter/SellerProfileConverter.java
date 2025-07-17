@@ -14,10 +14,21 @@ public class SellerProfileConverter {
     public static SellerProfileResponseDTO.SellerProfile toSellerProfileDTO(SellerProfile seller) {
 
         Member member = seller.getMember();
+        //가짜 셀러일 경우 null 반환
+        String nickname = null;
+        String profileImageUrl =null;
+        Long memberId = null;
+
+        if(member != null) {
+            nickname = member.getNickname();
+            memberId = member.getId();
+            profileImageUrl = member.getProfileImg();
+        }
+
         return SellerProfileResponseDTO.SellerProfile.builder()
-                .nickname(member.getNickname())
-                .profileImg(member.getProfileImg())
-                .id(member.getId())
+                .nickname(nickname)
+                .profileImg(profileImageUrl)
+                .id(memberId)
                 .sellerId(seller.getId())
                 .backgroundImg(seller.getBackgroundImg())
                 .isPublic(seller.getIsPublic())
