@@ -2,10 +2,16 @@ package com.influy.domain.ai.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.influy.domain.ai.service.converter.AiConverter;
+import com.influy.domain.ai.service.dto.AiRequestDTO;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
+import com.influy.domain.questionTag.entity.QuestionTag;
+import com.influy.domain.questionTag.repository.QuestionTagRepository;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +34,7 @@ public class AiServiceImpl implements AiService {
     private final ObjectMapper objectMapper;
     private final ChatClient chatClient;
     private final QuestionCategoryRepository questionCategoryRepository;
+    private final QuestionTagRepository questionTagRepository;
 
     private static final String PROMPT_FILE_PATH = "src/main/resources/category-storage/prompt-question-category.txt";
     private static final String JSON_FILE_PATH = "src/main/resources/category-storage/question-category.json";
@@ -58,6 +65,21 @@ public class AiServiceImpl implements AiService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to process AI response", e);
         }
+    }
+
+    @Override
+    public String classifyQuestion(String content, QuestionCategory questionCategory) {
+
+        //2. AI에게 넘길 대분류 카테고리의 전체 questionTag를 DTO로 변환한 리스트
+        List<AiRequestDTO.QuestionTag> questionTagDTOs = questionCategory.getQuestionTagList().stream().map(AiConverter::toAiQuestionTagDTO).toList();
+
+        //3. 기타 소분류에 포함된 질문 목록 추출
+        QuestionTag ectQuestionTag = questionTagRepository.findByQuestionCategoryAndName(questionCategory,"기타")
+                .orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_TAG_NOT_FOUND));
+        List<AiRequestDTO.Question> questionDTOs = ectQuestionTag.getQuestionList().stream().map(AiConverter::toAiQuestionDTO).toList();
+
+        //4. ai Client 호출
+        return "";
     }
 
     private String buildPromptCategory(Item item) throws IOException{
