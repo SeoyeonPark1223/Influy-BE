@@ -33,6 +33,13 @@ public class FaqCardRestController {
         return ApiResponse.onSuccess(FaqCardConverter.toQuestionCardPageDto(questionCardPage));
     }
 
+    @GetMapping("/{sellerId}/items/{itemId}/faq/item-info")
+    @Operation(summary = "faq 카드 등록시 아이템 정보 조회")
+    public ApiResponse<FaqCardResponseDto.ItemInfoDto> getItemInfo(@PathVariable("sellerId") Long sellerId,
+                                                                   @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(faqCardService.getItemInfo(sellerId, itemId));
+    }
+
     @PostMapping("/items/{itemId}/faq")
     @Operation(summary = "faq 카테고리별 faq 카드 등록")
     public ApiResponse<FaqCardResponseDto.CreateResultDto> create(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,

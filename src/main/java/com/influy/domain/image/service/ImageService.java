@@ -1,9 +1,10 @@
 package com.influy.domain.image.service;
 
 import com.influy.domain.image.dto.ImageRequestDto;
+import com.influy.domain.image.dto.ImageResponseDto;
 
 import java.net.URL;
 
 public interface ImageService {
-    URL uploadImg(ImageRequestDto.UploadDto request);
+    ImageResponseDto.UploadResultDto uploadImg(ImageRequestDto.UploadDto request);
 }

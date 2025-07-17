@@ -4,9 +4,11 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,10 +41,11 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked) {
+    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked, MemberRole memberRole) {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
-                .MainImg(item.getImageList().get(0).getImageLink())
+                .sellerId(item.getSeller().getId())
+                .MainImg(item.getImageList().getFirst().getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(item.getSeller().getMember().getUsername())
@@ -51,12 +54,15 @@ public class ItemConverter {
                 .tagline(item.getTagline())
                 .currentStatus(item.getItemStatus())
                 .liked(liked)
+                .talkBoxInfo(memberRole==MemberRole.SELLER ? toTalkBoxInfoDto(item):null)
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems) {
+    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole) {
+        List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
+
         List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
-                .map(item -> toDetailPreviewDto(item, likeItems.contains(item.getId())))
+                .map(item -> toDetailPreviewDto(item, safeLikeItems.contains(item.getId()), memberRole))
                 .toList();
 
         return ItemResponseDto.DetailPreviewPageDto.builder()
@@ -66,6 +72,14 @@ public class ItemConverter {
                 .totalElements(itemPage.getTotalElements())
                 .isFirst(itemPage.isFirst())
                 .isLast(itemPage.isLast())
+                .build();
+    }
+
+    public static ItemResponseDto.TalkBoxInfoDto toTalkBoxInfoDto(Item item) {
+        return ItemResponseDto.TalkBoxInfoDto.builder()
+                .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .waitingCnt(0)
+                .completedCnt(0)
                 .build();
     }
 
@@ -87,6 +101,8 @@ public class ItemConverter {
                 .currentStatus(item.getItemStatus())
                 .marketLink(item.getMarketLink())
                 .isArchived(item.getIsArchived())
+                .regularPrice(item.getRegularPrice())
+                .salePrice(item.getSalePrice())
                 .itemImgList(itemImgLinkList)
                 .itemCategoryList(itemCategoryList)
                 .build();

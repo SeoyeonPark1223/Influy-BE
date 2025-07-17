@@ -72,7 +72,7 @@ public class JwtTokenProvider {
     //토큰 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -81,7 +81,7 @@ public class JwtTokenProvider {
 
     //id 추출
     public Long getId(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
+        Claims claims = Jwts.parser().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody();
         return Long.valueOf(claims.getSubject());
     }
@@ -102,6 +102,6 @@ public class JwtTokenProvider {
     }
 
     public Long getExpirationTime(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
+        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
     }
 }
