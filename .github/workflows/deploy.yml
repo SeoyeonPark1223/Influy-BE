@@ -7,6 +7,7 @@ on:
 
 jobs:
   build-with-docker:
+    if: github.repository == 'INFLUY/INFLUY-BE' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
