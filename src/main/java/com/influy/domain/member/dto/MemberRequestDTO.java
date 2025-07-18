@@ -6,6 +6,8 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Null;
 import lombok.Getter;
 
+import java.util.List;
+
 public class MemberRequestDTO {
     @Getter
     public static class UserJoin {
@@ -14,6 +16,10 @@ public class MemberRequestDTO {
 
         @Schema(description = "멤버의 카카오 회원 번호", example = "1234567890")
         private Long kakaoId;
+
+        @Nullable
+        @Schema(description = "관심 카테고리 id 리스트", example = "[1,2,5,9]")
+        private List<Long> interestedCategories;
 
     }
     @Getter
