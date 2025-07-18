@@ -10,12 +10,18 @@ import java.util.List;
 
 public class MemberConverter {
     public static Member toMember(MemberRequestDTO.UserJoin requestDTO, MemberRole role, String kakaoNickname) {
+
+        String username = requestDTO.getUsername();
+        if(!username.startsWith("@")){
+            username = "@"+username;
+        }
+
         //각 롤에 따라 프로필 생성로직
         return Member.builder()
                 .kakaoId(requestDTO.getKakaoId())
-                .nickname(requestDTO.getUsername()) //기본값이 username과 동일
+                .nickname(username) //초기값이 username과 동일
                 .role(role)
-                .username(requestDTO.getUsername())
+                .username(username)
                 .kakaoNickname(kakaoNickname)
                 .build();
     }

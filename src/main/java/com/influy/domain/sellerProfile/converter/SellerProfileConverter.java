@@ -45,7 +45,7 @@ public class SellerProfileConverter {
     }
 
     public static SellerProfile toSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
-        String instagramLink = request.getInstagram().replaceAll("https://www.instagram.com/","");
+        String instagramLink = request.getInstagram().replaceAll("https://www.instagram.com/","").replaceAll("https://instagram.com/","");
         int targetIndex = instagramLink.contains("?") ? instagramLink.indexOf("?") : instagramLink.length();
 
         String instagram = instagramLink.substring(0, targetIndex);
