@@ -1,6 +1,7 @@
 package com.influy.domain.category.entity;
 
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.memberCategory.entity.MemberCategory;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +21,11 @@ public class Category extends BaseEntity {
 
     private String category;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     List<ItemCategory> itemCategoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    List<MemberCategory> memberCategories = new ArrayList<>();
 }

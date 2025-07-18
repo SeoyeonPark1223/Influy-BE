@@ -56,6 +56,8 @@ public class SellerProfileConverter {
                 .member(member)
                 .email(request.getEmail())
                 .instagram(instagram)
+                .tiktok(request.getTiktok())
+                .youtube(request.getYoutube())
                 .build();
     }
 }

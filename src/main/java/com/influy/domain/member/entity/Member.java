@@ -3,6 +3,7 @@ package com.influy.domain.member.entity;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.managerProfile.entity.ManagerProfile;
 import com.influy.domain.member.dto.MemberRequestDTO;
+import com.influy.domain.memberCategory.entity.MemberCategory;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
@@ -10,7 +11,6 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +58,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Question> questionList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<MemberCategory> memberCategories = new ArrayList<>();
 
     //추후에 인자 -> dto로 변경
     public Member updateProfile(MemberRequestDTO.UpdateProfile request) {
