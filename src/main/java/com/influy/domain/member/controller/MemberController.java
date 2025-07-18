@@ -37,13 +37,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
-    private final SellerProfileService sellerProfileService;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
 
     //일반 유저 가입
     @PostMapping("/register/user")
-    @Operation(summary = "유저 가입")
+    @Operation(summary = "유저 가입", description = "유저의 경우 관심 카테고리 리스트 안보내면 BAD REQUEST 뜹니다")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinUser(requestBody, MemberRole.USER);
         TokenPair tokenPair = authService.issueToken(member);
@@ -54,7 +53,7 @@ public class MemberController {
         return ApiResponse.onSuccess(body);
     }
     @PostMapping("/register/seller")
-    @Operation(summary = "셀러 가입")
+    @Operation(summary = "셀러 가입", description = "셀러는 관심 카테고리 안보내도 됩니다(null/필드 생략 가능)")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinSeller(requestBody);
         TokenPair tokenPair = authService.issueToken(member);
