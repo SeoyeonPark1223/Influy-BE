@@ -60,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
         //관심 카테고리 설정
         if(role.equals(MemberRole.USER)) {
             if(requestBody.getInterestedCategories()==null){
-                throw new GeneralException(ErrorStatus.BAD_REQUEST);
+                throw new GeneralException(ErrorStatus.REQUIRES_INTERESTED_CATEGORY);
             }
             List<Long> ids = requestBody.getInterestedCategories();
             interestedItemCategories = categoryRepository.findAllById(ids);
