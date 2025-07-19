@@ -16,14 +16,20 @@ public enum ErrorStatus implements BaseCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
-    //멤버 에러 응답
+    /**
+     * 멤버 관련 응답
+     */
+    //1. 전역 상황
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER NOT FOUND", "멤버를 찾을 수 없습니다."),
+
+    //2. 회원가입/프로필 수정
     MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "MEMBER ALREADY EXIST", "이미 존재하는 멤버입니다."),
     USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "USERNAME ALREADY EXISTS", "중복된 아이디입니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 이메일입니다."),
     YOUYUBE_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 유튜브 계정입니다."),
     TIKTOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 틱톡 계정입니다."),
     INSTAGRAM_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 인스타 계정입니다."),
+    REQUIRES_INTERESTED_CATEGORY(HttpStatus.BAD_REQUEST, "REQUIRES INTERESTED CATEGORY", "관심 카테고리 리스트는 필수입니다"),
 
 
     //공지

@@ -13,8 +13,23 @@ public class SellerProfileConverter {
 
     public static SellerProfileResponseDTO.SellerProfile toSellerProfileDTO(SellerProfile seller) {
 
+        Member member = seller.getMember();
+        //가짜 셀러일 경우 null 반환
+        String nickname = null;
+        String profileImageUrl =null;
+        Long memberId = null;
+
+        if(member != null) {
+            nickname = member.getNickname();
+            memberId = member.getId();
+            profileImageUrl = member.getProfileImg();
+        }
+
         return SellerProfileResponseDTO.SellerProfile.builder()
-                .id(seller.getId())
+                .nickname(nickname)
+                .profileImg(profileImageUrl)
+                .id(memberId)
+                .sellerId(seller.getId())
                 .backgroundImg(seller.getBackgroundImg())
                 .isPublic(seller.getIsPublic())
                 .itemSortType(seller.getItemSortType())
@@ -30,7 +45,7 @@ public class SellerProfileConverter {
     }
 
     public static SellerProfile toSellerProfile(Member member, MemberRequestDTO.SellerJoin request) {
-        String instagramLink = request.getInstagram().replaceAll("https://www.instagram.com/","");
+        String instagramLink = request.getInstagram().replaceAll("https://www.instagram.com/","").replaceAll("https://instagram.com/","");
         int targetIndex = instagramLink.contains("?") ? instagramLink.indexOf("?") : instagramLink.length();
 
         String instagram = instagramLink.substring(0, targetIndex);
@@ -41,6 +56,8 @@ public class SellerProfileConverter {
                 .member(member)
                 .email(request.getEmail())
                 .instagram(instagram)
+                .tiktok(request.getTiktok())
+                .youtube(request.getYoutube())
                 .build();
     }
 }
