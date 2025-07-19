@@ -37,12 +37,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
-    private final SellerProfileService sellerProfileService;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
 
     //일반 유저 가입
     @PostMapping("/register/user")
+    @Operation(summary = "유저 가입", description = "유저의 경우 관심 카테고리 리스트 안보내면 BAD REQUEST 뜹니다")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinUser(requestBody, MemberRole.USER);
         TokenPair tokenPair = authService.issueToken(member);
@@ -53,6 +53,7 @@ public class MemberController {
         return ApiResponse.onSuccess(body);
     }
     @PostMapping("/register/seller")
+    @Operation(summary = "셀러 가입", description = "셀러는 관심 카테고리 안보내도 됩니다(null/필드 생략 가능)")
     public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinSeller(requestBody);
         TokenPair tokenPair = authService.issueToken(member);
@@ -78,6 +79,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "헤더에 accessToken 필수")
     public ApiResponse<SuccessStatus> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
 
         authService.signOut(request,userDetails.getMember());
@@ -87,6 +89,7 @@ public class MemberController {
 
 
     @GetMapping("/{memberId}/profile")
+    @Operation(summary = "유저용 프로필 조회", description = "셀러용은 셀러쪽 api 사용하세요")
     public ApiResponse<MemberResponseDTO.MemberProfile> getMemberProfile(@PathVariable("memberId") Long memberId){
 
         Member member = memberService.findById(memberId);
@@ -97,7 +100,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "멤버 탈퇴 임시 API")
+    @Operation(summary = "멤버 탈퇴 API")
     public ApiResponse<SuccessStatus> deleteMember( @AuthenticationPrincipal CustomUserDetails userDetails){
         Member member = userDetails.getMember();
         memberService.deleteMember(member);
@@ -107,7 +110,7 @@ public class MemberController {
     }
 
     @PatchMapping("/profile")
-    @Operation(summary = "프로필 수정 API", description = "닉네임과 프로필 사진 수정 API")
+    @Operation(summary = "유저용 프로필 수정 API", description = "셀러도 사용할 수 있지만 유저와 공통된 필드만 있으니 셀러는 셀러쪽 api 사용합니다")
     public ApiResponse<MemberResponseDTO.MemberProfile> patchMember(@RequestBody MemberRequestDTO.UpdateProfile request,
                                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -119,7 +122,7 @@ public class MemberController {
     }
 
     @PatchMapping("/username")
-    @Operation(summary = "유저네임(id) 수정 API", description = "유저의 아이디만 수정하는 API")
+    @Operation(summary = "유저네임(id) 수정 API", description = "유저/셀러의 아이디 수정하는 API")
     public ApiResponse<MemberResponseDTO.MemberProfile> updateUsername(@RequestBody MemberRequestDTO.UpdateUsername request,
                                                                        @AuthenticationPrincipal CustomUserDetails userDetails){
 
