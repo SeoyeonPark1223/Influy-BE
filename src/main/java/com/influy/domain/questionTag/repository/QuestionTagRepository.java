@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionTagRepository extends JpaRepository<QuestionTag, Long> {
-    Optional<QuestionTag> findByQuestionCategoryAndName(QuestionCategory questionCategory, String 기타);
+    Optional<QuestionTag> findByQuestionCategoryAndName(QuestionCategory questionCategory, String name);
 }

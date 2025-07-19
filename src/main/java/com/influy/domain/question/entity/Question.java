@@ -43,4 +43,9 @@ public class Question extends BaseEntity {
 
     @Builder.Default
     private Integer itemPeriod=1;
+
+    public Question updateTag(QuestionTag questionTag) {
+        this.questionTag = questionTag;
+        return this;
+    }
 }

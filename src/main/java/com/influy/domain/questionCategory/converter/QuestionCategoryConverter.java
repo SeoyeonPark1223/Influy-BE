@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class QuestionCategoryConverter {
 
-    public static QuestionCategory toQuestionCategory(Item item, String category) {
+    public static QuestionCategory toQuestionCategory(Item item, String name) {
         return QuestionCategory.builder()
-                .category(category)
+                .name(name)
                 .item(item)
                 .build();
     }
@@ -21,7 +21,7 @@ public class QuestionCategoryConverter {
     public static QuestionCategoryResponseDto.ViewDto toViewDto(QuestionCategory questionCategory) {
         return QuestionCategoryResponseDto.ViewDto.builder()
                 .id(questionCategory.getId())
-                .category(questionCategory.getCategory())
+                .category(questionCategory.getName())
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class QuestionCategoryConverter {
     public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
         return QuestionCategoryResponseDto.ViewWithCntDto.builder()
                 .id(questionCategory.getId())
-                .category(questionCategory.getCategory())
+                .category(questionCategory.getName())
                 .questionCnt(questionCnt)
                 .unCheckedCnt(unCheckedCnt)
                 .build();

@@ -4,15 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.influy.domain.ai.converter.AiConverter;
 import com.influy.domain.ai.dto.AiRequestDTO;
+import com.influy.domain.ai.dto.AiResponseDTO;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
+import com.influy.domain.questionTag.converter.QuestionTagConverter;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.LinkedHashSet;
+
+import static com.influy.global.util.StaticValues.DEFAULT_QUESTION_CATEGORIES;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +38,7 @@ public class AiServiceImpl implements AiService {
 
     private static final String CATEGORY_PROMPT_FILE_PATH = "src/main/resources/category-storage/aiQuestionCategory/prompt-question-category.txt";
     private static final String CATEGORY_JSON_FILE_PATH = "src/main/resources/category-storage/question-category.json";
+    private static final String QUESTION_CLASSIFICATION_FILE_PATH = "src/main/resources/category-storage/aiQuestionClassification/system-prompt.txt";
 
     @Override
     @Transactional
@@ -61,8 +61,7 @@ public class AiServiceImpl implements AiService {
 
             System.out.println(cleanResponse);
             List<String> aiCategories = objectMapper.readValue(cleanResponse, new TypeReference<>() {});
-            saveToJson(aiCategories); // json 파일에 추가
-            saveToRepository(item); // repository에 저장
+            saveToRepository(item, aiCategories); // repository에 저장
         } catch (IOException e) {
             throw new RuntimeException("Failed to process AI response", e);
         }
@@ -75,28 +74,49 @@ public class AiServiceImpl implements AiService {
         List<AiRequestDTO.QuestionTag> questionTagDTOs = questionCategory.getQuestionTagList().stream().map(AiConverter::toAiQuestionTagDTO).toList();
 
         //3. 기타 소분류에 포함된 질문 목록 추출
-        QuestionTag ectQuestionTag = questionTagRepository.findByQuestionCategoryAndName(questionCategory,"기타")
+        QuestionTag etcQuestionTag = questionTagRepository.findByQuestionCategoryAndName(questionCategory,"기타")
                 .orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_TAG_NOT_FOUND));
-        List<AiRequestDTO.Question> questionDTOs = ectQuestionTag.getQuestionList().stream().map(AiConverter::toAiQuestionDTO).toList();
+        List<AiRequestDTO.Question> questionDTOs = etcQuestionTag.getQuestionList().stream().map(AiConverter::toAiQuestionDTO).toList();
 
         //4. ai Client 호출
         try{
             String prompt = buildPromptClassifyQuestion(content, questionCategory.getName(),questionTagDTOs,questionDTOs);
+            System.out.println(prompt);
             String response = chatClient.prompt()
-                    .user(prompt)
+                    .system(prompt)
                     .call()
                     .content();
 
-            //응답 정제
+            //응답 정제(json 코드 블럭으로 줄 경우)
+            String cleanResponse = response
+                    .replaceAll("(?s)```json", "")
+                    .replaceAll("```", "")
+                    .trim();
+
+            System.out.println(cleanResponse);
+            AiResponseDTO.QuestionClassification result = objectMapper.readValue(cleanResponse, AiResponseDTO.QuestionClassification.class);
+
+
         }catch (Exception e){
             throw new RuntimeException("Failed to process AI response", e);
         }
         return "";
     }
 
-    private String buildPromptClassifyQuestion(String content, @NotBlank String name, List<AiRequestDTO.QuestionTag> questionTagDTOs, List<AiRequestDTO.Question> questionDTOs) {
+    private String buildPromptClassifyQuestion(String content, String questionCategoryName,
+                                               List<AiRequestDTO.QuestionTag> questionTagDTOs,
+                                               List<AiRequestDTO.Question> questionDTOs) throws IOException {
 
-        return null;
+        try {
+            String template = Files.readString(Paths.get(QUESTION_CLASSIFICATION_FILE_PATH));
+            return template
+                    .replace("{{questioncategoryname}}", questionCategoryName)
+                    .replace("{{questiontagdtolist}}", objectMapper.writeValueAsString(questionTagDTOs))
+                    .replace("{{questiondtolist}}", objectMapper.writeValueAsString(questionDTOs))
+                    .replace("{{content}}", content);
+        } catch (IOException e) {
+            throw new IOException("Failed to read prompt text", e);
+        }
     }
 
     private String buildPromptCategory(Item item) throws IOException{
@@ -114,44 +134,19 @@ public class AiServiceImpl implements AiService {
         }
     }
 
-    private void saveToJson(List<String> categories) throws IOException {
-        File file = new File(CATEGORY_JSON_FILE_PATH);
+    private void saveToRepository(Item item, List<String> aiCategories) throws IOException {
 
-        List<Map<String, String>> defaultCat = new ArrayList<>();
-        if (!file.exists()) throw new IOException("Failed to read question-category.json file");
-        else if (file.exists() && file.length() > 0) defaultCat = objectMapper.readValue(file, new TypeReference<>() {});
+        //기본 대분류
+        List<String> defaultCategoryList = Arrays.stream(DEFAULT_QUESTION_CATEGORIES).toList();
+        //ai 생성 카테고리에 더하기
+        aiCategories.addAll(defaultCategoryList);
 
+        for (String name:aiCategories) {
 
-        Set<String> defaultCatSet = defaultCat.stream()
-                .map(map -> map.get("category"))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-        categories.stream()
-                .map(String::trim)
-                .forEach(defaultCatSet::add);
-
-        LinkedHashSet<String> mergedSet = new LinkedHashSet<>();
-        mergedSet.addAll(categories);
-        mergedSet.addAll(defaultCatSet);
-
-        List<Map<String, String>> result = mergedSet.stream()
-                .map(cat -> Map.of("category", cat))
-                .collect(Collectors.toList());
-
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, result);
-    }
-
-    private void saveToRepository(Item item) throws IOException {
-        File file = new File(CATEGORY_JSON_FILE_PATH);
-        if (!file.exists()) throw new IOException("question-category.json file not found");
-
-        List<Map<String, String>> categoryList = objectMapper.readValue(file, new TypeReference<>() {});
-
-        for (Map<String, String> entry : categoryList) {
-            String cat = entry.get("category").trim();
-
-            if (!questionCategoryRepository.existsByCategory(cat)) {
-                QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, cat);
+            if (!questionCategoryRepository.existsByItemIdAndName(item.getId(), name.trim())) {
+                QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, name.trim());
+                //각 카테고리마다 기타 태그 기본으로 생성
+                category.getQuestionTagList().add(QuestionTagConverter.toQuestionTag("기타", category, new ArrayList<>()));
                 questionCategoryRepository.save(category);
             }
         }
