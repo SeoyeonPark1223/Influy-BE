@@ -9,11 +9,10 @@ import java.util.List;
 
 public class QuestionTagConverter {
 
-    public static QuestionTag toQuestionTag(String name, QuestionCategory category, List<Question> questions){
+    public static QuestionTag toQuestionTag(String name, QuestionCategory category){
         return QuestionTag.builder()
                 .name(name)
                 .questionCategory(category)
-                .questionList(questions)
                 .build();
     }
 

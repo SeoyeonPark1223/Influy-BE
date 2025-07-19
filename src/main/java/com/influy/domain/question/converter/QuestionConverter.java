@@ -3,6 +3,7 @@ package com.influy.domain.question.converter;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
+import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
@@ -10,11 +11,12 @@ import java.sql.Timestamp;
 
 public class QuestionConverter {
 
-    public static Question toQuestion(SellerProfile to, Member from, String content){
+    public static Question toQuestion(SellerProfile to, Member from, String content, QuestionTag questionTag){
         return Question.builder()
                 .seller(to)
                 .member(from)
                 .content(content)
+                .questionTag(questionTag)
                 .build();
     }
 

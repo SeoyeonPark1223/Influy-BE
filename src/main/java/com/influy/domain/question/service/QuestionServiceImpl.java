@@ -2,11 +2,14 @@ package com.influy.domain.question.service;
 
 import com.influy.domain.ai.service.AiService;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
+import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +42,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Question createQuestion(Member member, Long questionCategoryId, String content) {
+    @Transactional
+    public Question createQuestion(Member member, SellerProfile seller, Long questionCategoryId, String content) {
 
         QuestionCategory questionCategory = questionCategoryRepository.findById(questionCategoryId)
                 .orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
 
-        String answer = aiService.classifyQuestion(content, questionCategory);
+        QuestionTag questionTag = aiService.classifyQuestion(content, questionCategory);
+        Question question = QuestionConverter.toQuestion(seller,member,content, questionTag);
+        questionRepository.save(question);
 
         return null;
     }

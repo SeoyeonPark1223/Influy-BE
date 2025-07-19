@@ -77,6 +77,10 @@ public enum ErrorStatus implements BaseCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"EXPIRED TOKEN" ,"만료된 토큰입니다." ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID TOKEN","유효하지 않은 토큰입니다." ),
 
+    //AI 관련 응답
+    AI_RESPONSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AI RESPONSE ERROR" ,"AI 응답 생성에 실패했거나 응답 형식에 문제가 있습니다." ),
+    AI_CLASSIFICATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AI CLASSIFICATION ERROR" ,"AI가 존재하지 않는 태그를 이용해 분류를 시도했습니다." ),
+
     //API 요청 관련 에러 응답
     NEED_TO_SIGN_UP(HttpStatus.OK,"NEED_TO_SIGN_UP" ,"회원이 아닙니다." ),
     GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." ),

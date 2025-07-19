@@ -26,10 +26,10 @@ public class SellerProfileController {
     //프로필 조회
     @GetMapping("/{sellerId}/profile")//로그인 구현 이후 엔드포인트 변경
     @Operation(summary = "셀러 프로필 조회 API", description = "아무나 사용할 수 있는 조회 API")
-    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@PathVariable("sellerId") Long memberId){
+    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@PathVariable("sellerId") Long sellerId){
 
         //로그인 구현 이후 SellerProfile 객체 반환
-        SellerProfile seller = sellerService.getSellerProfile(memberId);
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(seller);
 

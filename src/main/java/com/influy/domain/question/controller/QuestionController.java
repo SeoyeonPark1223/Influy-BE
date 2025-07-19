@@ -1,6 +1,7 @@
 package com.influy.domain.question.controller;
 
 
+import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
@@ -33,6 +34,7 @@ public class QuestionController {
     private final MemberService memberService;
     private final SellerProfileService sellerService;
     private final QuestionService questionService;
+    private final ItemService itemService;
 
     @GetMapping("seller/items/{itemId}/questions/{questionCategoryId}")
     @Operation(summary = "각 카테고리별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
@@ -60,13 +62,16 @@ public class QuestionController {
 
     }
 
-    @PostMapping("user/items/{itemId}/questions/{questionCategoryId}")
+    @PostMapping("user/items/{sellerId}/questions/{questionCategoryId}")
     @Operation(summary = "질문 작성", description = "질문 작성 API")
     public ApiResponse<Object> postQuestion(@RequestBody QuestionRequestDTO.Create request, @AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @PathVariable("itemId") Long itemId, @PathVariable("questionCategoryId") Long questionCategoryId){
+                                            @PathVariable("sellerId") Long sellerId, @PathVariable("questionCategoryId") Long questionCategoryId){
 
         Member member = memberService.findById(userDetails.getId());
-        Question question = questionService.createQuestion(member, questionCategoryId,request.getContent());
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+
+        Question question = questionService.createQuestion(member, seller, questionCategoryId,request.getContent());
+
 
 
         return null;
