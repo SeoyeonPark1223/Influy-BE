@@ -18,6 +18,9 @@ import com.influy.domain.questionTag.service.QuestionTagService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ai.chat.client.ChatClient;
@@ -55,7 +58,6 @@ public class AiServiceImpl implements AiService {
         try {
             String prompt = buildPromptCategory(item);
             String cleanResponse = callAIClient(prompt);
-            System.out.println(cleanResponse);
             List<String> aiCategories = objectMapper.readValue(cleanResponse, new TypeReference<>() {});
             updateQuestionsToNewTag(item, aiCategories); // repository에 저장
         } catch (IOException e) {
@@ -84,18 +86,14 @@ public class AiServiceImpl implements AiService {
         try{
             String prompt = buildPromptClassifyQuestion(content, questionCategory.getName(),questionTagDTOs,questionDTOs);
             String cleanResponse = callAIClient(prompt);
-            System.out.println(cleanResponse);
+
 
             AiResponseDTO.QuestionClassification result = objectMapper.readValue(cleanResponse, AiResponseDTO.QuestionClassification.class);
-            System.out.println("매핑"+result.getTargetQuestion().getNewTagName());
             QuestionTag createdTag = null;
             if(result.getTargetQuestion().getNewTagId()==-1L){
                 String tagName = result.getTargetQuestion().getNewTagName();
                 //-1이면 새로운 태그 생성, 저장까지 완료
                 createdTag = questionTagService.createTag(tagName, questionCategory);
-
-                System.out.println("저장까지 성공:"+createdTag.getId());
-
             }
 
             //4. for문 돌며 get(tagid)해서 update 작업
@@ -142,7 +140,6 @@ public class AiServiceImpl implements AiService {
 
     private String callAIClient(String prompt) {
 
-        System.out.println(prompt);
         String response = chatClient.prompt()
                 .system(prompt)
                 .call()

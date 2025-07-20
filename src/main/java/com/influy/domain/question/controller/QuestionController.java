@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -36,10 +37,10 @@ public class QuestionController {
     private final QuestionService questionService;
     private final ItemService itemService;
 
-    @GetMapping("seller/items/{itemId}/questions/{questionCategoryId}")
-    @Operation(summary = "각 카테고리별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
+    @GetMapping("seller/items/{itemId}/questions/{questionTagId}")
+    @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
     public ApiResponse<QuestionResponseDTO.GeneralPage> getQuestions(@PathVariable("itemId") Long itemId,
-                                                                     @PathVariable("questionCategoryId") Long questionCategoryId,
+                                                                     @PathVariable("questionTagId") Long questionTagId,
                                                                      @AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @RequestParam(value = "isAnswered",defaultValue = "true") Boolean isAnswered,
                                                                      @ParameterObject Pageable pageable) {
@@ -53,9 +54,12 @@ public class QuestionController {
             throw new GeneralException(ErrorStatus.FORBIDDEN);
         }
 
+        SellerProfile seller = member.getSellerProfile();
+        Page<Question> questions = questionService.getQuestionsByTag(questionTagId, seller, isAnswered, pageable);
 
-        Page<Question> questions = questionService.getQuestionsByCategory(questionCategoryId, isAnswered, pageable);
-        QuestionResponseDTO.GeneralPage body = QuestionConverter.toGeneralPageDTO(questions);
+        //<memberId,질문 횟수> Map
+        Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions);
+        QuestionResponseDTO.GeneralPage body = QuestionConverter.toGeneralPageDTO(questions, nthQuestions);
 
         return ApiResponse.onSuccess(body);
 
@@ -64,17 +68,19 @@ public class QuestionController {
 
     @PostMapping("user/items/{sellerId}/questions/{questionCategoryId}")
     @Operation(summary = "질문 작성", description = "질문 작성 API")
-    public ApiResponse<Object> postQuestion(@RequestBody QuestionRequestDTO.Create request, @AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @PathVariable("sellerId") Long sellerId, @PathVariable("questionCategoryId") Long questionCategoryId){
+    public ApiResponse<QuestionResponseDTO.General> postQuestion(@RequestBody QuestionRequestDTO.Create request, @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                 @PathVariable("sellerId") Long sellerId, @PathVariable("questionCategoryId") Long questionCategoryId){
 
         Member member = memberService.findById(userDetails.getId());
         SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Question question = questionService.createQuestion(member, seller, questionCategoryId,request.getContent());
+        Long nthQuestion = questionService.getTimesMemberAskedSeller(member, seller);
+        QuestionResponseDTO.General body = QuestionConverter.toGeneralDTO(question, nthQuestion);
 
 
 
-        return null;
+        return ApiResponse.onSuccess(body);
     }
 
 }

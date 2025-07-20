@@ -41,9 +41,6 @@ public class Question extends BaseEntity {
     @Builder.Default
     private Boolean isAnswered=false;
 
-    @Builder.Default
-    private Integer itemPeriod=1;
-
     public Question updateTag(QuestionTag questionTag) {
         this.questionTag = questionTag;
         return this;

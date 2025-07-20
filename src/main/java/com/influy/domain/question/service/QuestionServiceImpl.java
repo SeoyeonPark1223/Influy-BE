@@ -3,6 +3,7 @@ package com.influy.domain.question.service;
 import com.influy.domain.ai.service.AiService;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.converter.QuestionConverter;
+import com.influy.domain.question.dto.jpql.JPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -18,6 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -29,16 +34,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<Question> getQuestionList(QuestionCategory category, Pageable pageable) {
-        return questionRepository.findAllByQuestionCategory(category,pageable);
+        return null;
     }
 
     @Override
-    public Page<Question> getQuestionsByCategory(Long questionCategoryId, Boolean isAnswered, Pageable pageable) {
+    public Page<Question> getQuestionsByTag(Long questionTagId, SellerProfile seller, Boolean isAnswered, Pageable pageable) {
 
-        QuestionCategory questionCategory = questionCategoryRepository.findById(questionCategoryId).orElseThrow(
-                ()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
 
-        return questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategory,isAnswered,pageable);
+        return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
     }
 
     @Override
@@ -50,9 +53,28 @@ public class QuestionServiceImpl implements QuestionService {
 
         QuestionTag questionTag = aiService.classifyQuestion(content, questionCategory);
         Question question = QuestionConverter.toQuestion(seller,member,content, questionTag);
-        questionRepository.save(question);
 
-        return null;
+
+        return questionRepository.save(question);
+    }
+
+    @Override
+    public Long getTimesMemberAskedSeller(Member member, SellerProfile seller) {
+        return questionRepository.countByMemberAndSeller(member,seller);
+    }
+
+    //멤버 id별 seller에 대한 질문 횟수 구하는 메서드
+    @Override
+    public Map<Long, Long> getNthQuestionMap(SellerProfile seller, Page<Question> questions) {
+        List<Long> memberIds = questions.stream()
+                .map(q -> q.getMember().getId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<JPQLResult.MemberQuestionCount> counts = questionRepository.countQuestionsBySellerAndMemberIds(seller, memberIds);
+
+        return counts.stream()
+                .collect(Collectors.toMap(JPQLResult.MemberQuestionCount::getMemberId, JPQLResult.MemberQuestionCount::getCnt));
     }
 
 
