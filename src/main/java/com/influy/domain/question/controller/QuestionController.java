@@ -7,12 +7,14 @@ import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.service.QuestionService;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,7 +40,5 @@ public class QuestionController {
         QuestionResponseDTO.GeneralPage body = QuestionConverter.toGeneralPageDTO(questions);
 
         return ApiResponse.onSuccess(body);
-
-
     }
 }

@@ -13,4 +13,28 @@ public class AnswerResponseDto {
     public static class AnswerListDto {
 
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnswerResultDto {
+
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteResultDto {
+
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QnAListDto {
+
+    }
 }
