@@ -12,6 +12,7 @@ public class AnswerConverter {
         return AnswerResponseDto.AnswerResultDto.builder()
                 .questionId(answer.getQuestion().getId())
                 .answerType(answer.getAnswerType())
+                .answerId(answer.getId())
                 .build();
     }
 

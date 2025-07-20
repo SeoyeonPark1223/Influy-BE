@@ -4,7 +4,10 @@ import com.influy.domain.answer.converter.AnswerConverter;
 import com.influy.domain.answer.dto.AnswerRequestDto;
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
+import com.influy.domain.answer.entity.AnswerType;
 import com.influy.domain.answer.service.AnswerService;
+import com.influy.domain.faqCard.dto.FaqCardRequestDto;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.jwt.CustomUserDetails;
@@ -40,25 +43,16 @@ public class AnswerRestController {
     }
 
     @PostMapping("/questions/{questionTagId}/{questionId}/answers")
-    @Operation(summary = "개별질문 답변 작성")
+    @Operation(summary = "개별질문 답변 작성 (INDIVIDUAL, FAQ 선택)")
     public ApiResponse<AnswerResponseDto.AnswerResultDto> createIndividualAnswer(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                  @PathVariable("itemId") Long itemId,
                                                                                  @PathVariable("questionCategoryId") Long questionCategoryId,
                                                                                  @PathVariable("questionTagId") Long questionTagId,
                                                                                  @PathVariable("questionId") Long questionId,
-                                                                                 @RequestBody @Valid AnswerRequestDto.AnswerIndividualDto request) {
-        Answer answer = answerService.createIndividualAnswer(userDetails, itemId, questionCategoryId, questionTagId, questionId, request);
+                                                                                 @RequestBody @Valid AnswerRequestDto.AnswerIndividualDto request,
+                                                                                 @RequestParam(name = "answerType", defaultValue = "INDIVIDUAL") AnswerType answerType) {
+        Answer answer = answerService.createIndividualAnswer(userDetails, itemId, questionCategoryId, questionTagId, questionId, request, answerType);
         return ApiResponse.onSuccess(AnswerConverter.toAnswerResultDto(answer));
-    }
-
-    @PostMapping("/questions/{questionTagId}/{questionId}/answers-faq")
-    @Operation(summary = "개별질문을 faq로 등록")
-    public ApiResponse<AnswerResponseDto.AnswerResultDto> toFaq(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                @PathVariable("itemId") Long itemId,
-                                                                @PathVariable("questionCategoryId") Long questionCategoryId,
-                                                                @PathVariable("questionTagId") Long questionTagId,
-                                                                @PathVariable("questionId") Long questionId) {
-        return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
     @DeleteMapping("/questions")

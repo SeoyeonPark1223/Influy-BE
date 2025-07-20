@@ -24,9 +24,13 @@ public class AnswerResponseDto {
         @Schema(description = "답변한 질문 id", example = "1")
         private Long questionId;
 
-        @Schema(description = "답변 타입", example = "AnswerType.INDIVIDUAL")
+        @Schema(description = "답변 id", example = "1")
+        private Long answerId;
+
+        @Schema(description = "답변 타입 [COMMON, INDIVIDUAL, FAQ", example = "INDIVIDUAL")
         private AnswerType answerType;
     }
+
 
     @Getter
     @Builder
