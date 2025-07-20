@@ -28,7 +28,7 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "seller_id")
     private SellerProfile seller;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Question> questionList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private Question question;
 }

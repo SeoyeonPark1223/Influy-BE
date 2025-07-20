@@ -41,6 +41,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 셀러 에러 응답
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
+    SELLER_REQUIRED(HttpStatus.BAD_REQUEST, "SELLER REQUIRED", "셀러만 사용할 수 있습니다."),
     
     //링크 인 바이오 관련 응답
     LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK NOT FOUND", "링크를 찾을 수 없습니다."),
@@ -66,6 +67,7 @@ public enum ErrorStatus implements BaseCode {
     INVALID_QUESTION_ITEM_RELATION(HttpStatus.BAD_REQUEST, "INVALID QUESTION ITEM RELATION", "해당 질문 카테고리의 아이템을 찾을 수 없습니다."),
     TALKBOX_ALREADY_OPENED(HttpStatus.BAD_REQUEST, "TALKBOX ALREADY OPENED", "톡박스가 최초로 열린 이후에는 질문 카테고릴 수정할 수 없습니다."),
     TALKBOX_CLOSED(HttpStatus.BAD_REQUEST, "TALKBOX CLOSED", "톡박스가 닫혀있습니다."),
+    QUESTION_INVALID_RELATION(HttpStatus.BAD_REQUEST, "QUESTION INVALID RELATION", "해당 질문을 조회할 수 없습니다."),
 
     // 정렬 관련 응답
     UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬이 아닙니다."),

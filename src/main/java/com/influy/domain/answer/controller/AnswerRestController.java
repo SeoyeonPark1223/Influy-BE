@@ -1,6 +1,7 @@
 package com.influy.domain.answer.controller;
 
 import com.influy.domain.answer.converter.AnswerConverter;
+import com.influy.domain.answer.dto.AnswerRequestDto;
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.answer.service.AnswerService;
@@ -9,6 +10,7 @@ import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +45,9 @@ public class AnswerRestController {
                                                                                  @PathVariable("itemId") Long itemId,
                                                                                  @PathVariable("questionCategoryId") Long questionCategoryId,
                                                                                  @PathVariable("questionTagId") Long questionTagId,
-                                                                                 @PathVariable("questionId") Long questionId) {
-        Answer answer = answerService.createIndividualAnswer(userDetails, itemId, questionCategoryId, questionTagId, questionId);
+                                                                                 @PathVariable("questionId") Long questionId,
+                                                                                 @RequestBody @Valid AnswerRequestDto.AnswerIndividualDto request) {
+        Answer answer = answerService.createIndividualAnswer(userDetails, itemId, questionCategoryId, questionTagId, questionId, request);
         return ApiResponse.onSuccess(AnswerConverter.toAnswerResultDto(answer));
     }
 

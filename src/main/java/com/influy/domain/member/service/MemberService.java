@@ -3,9 +3,8 @@ package com.influy.domain.member.service;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.multipart.MultipartFile;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.global.jwt.CustomUserDetails;
 
 public interface MemberService {
     Member joinUser(MemberRequestDTO.UserJoin requestBody, MemberRole role);
@@ -24,4 +23,5 @@ public interface MemberService {
 
     Boolean checkUsername(String username);
 
+    SellerProfile checkSeller(CustomUserDetails userDetails);
 }

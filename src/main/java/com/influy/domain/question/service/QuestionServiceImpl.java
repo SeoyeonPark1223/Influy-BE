@@ -20,12 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
-    private final ItemRepository itemRepository;
-
-    @Override
-    public Page<Question> getQuestionList(QuestionCategory category, Pageable pageable) {
-        return questionRepository.findAllByQuestionCategory(category,pageable);
-    }
 
     @Override
     public Page<Question> getQuestionsByCategory(Long questionCategoryId, Boolean isAnswered, Pageable pageable) {
