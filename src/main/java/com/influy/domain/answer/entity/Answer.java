@@ -32,6 +32,7 @@ public class Answer extends BaseEntity {
     private Question question;
 
     @Nullable
+    @Setter
     @OneToOne(mappedBy = "answer")
     private FaqCard faqCard;
 }

@@ -1,5 +1,6 @@
 package com.influy.domain.faqCard.service;
 
+import com.influy.domain.answer.dto.AnswerRequestDto;
 import com.influy.domain.faqCard.converter.FaqCardConverter;
 import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
@@ -114,6 +115,18 @@ public class FaqCardServiceImpl implements FaqCardService {
         faqCategory.getFaqCardList().remove(faqCard);
         seller.getFaqCardList().remove(faqCard);
         faqCardRepository.delete(faqCard);
+    }
+
+    @Override
+    @Transactional
+    public FaqCard questionToFaq(SellerProfile seller, AnswerRequestDto.QuestionToFaqDto request) {
+        FaqCategory faqCategory = faqCategoryRepository.findById(request.getFaqCategoryId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
+
+        FaqCard faqCard = FaqCardConverter.toFaqCard(request, faqCategory, seller);
+        seller.getFaqCardList().add(faqCard);
+        faqCategory.getFaqCardList().add(faqCard);
+        return faqCardRepository.save(faqCard);
     }
 
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {

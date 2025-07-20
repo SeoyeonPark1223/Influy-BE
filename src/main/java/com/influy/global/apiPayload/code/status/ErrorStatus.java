@@ -68,6 +68,9 @@ public enum ErrorStatus implements BaseCode {
     TALKBOX_ALREADY_OPENED(HttpStatus.BAD_REQUEST, "TALKBOX ALREADY OPENED", "톡박스가 최초로 열린 이후에는 질문 카테고릴 수정할 수 없습니다."),
     TALKBOX_CLOSED(HttpStatus.BAD_REQUEST, "TALKBOX CLOSED", "톡박스가 닫혀있습니다."),
     QUESTION_INVALID_RELATION(HttpStatus.BAD_REQUEST, "QUESTION INVALID RELATION", "해당 질문을 조회할 수 없습니다."),
+    QUESTIONTAG_INVALID_RELATION(HttpStatus.BAD_REQUEST,"QUESTIONTAG INVALID RELATION", "해당 질문 태그를 조회할 수 없습니다."),
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER NOT FOUND", "해당 질문의 답변을 찾을 수 없습니다."),
+    INVALID_TALKBOX_REQUEST(HttpStatus.BAD_REQUEST, "INVALID TALKBOX REQUEST", "다시 INITIAL로 되돌릴 수 없습니다."),
 
     // 정렬 관련 응답
     UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬이 아닙니다."),
