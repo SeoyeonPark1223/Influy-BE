@@ -21,6 +21,9 @@ public class Answer extends BaseEntity {
     @NotBlank
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    private AnswerType answerType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private SellerProfile seller;

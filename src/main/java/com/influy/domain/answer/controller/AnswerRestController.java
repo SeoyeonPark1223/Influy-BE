@@ -1,6 +1,9 @@
 package com.influy.domain.answer.controller;
 
+import com.influy.domain.answer.converter.AnswerConverter;
 import com.influy.domain.answer.dto.AnswerResponseDto;
+import com.influy.domain.answer.entity.Answer;
+import com.influy.domain.answer.service.AnswerService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.jwt.CustomUserDetails;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/seller/items/{itemId}/talkbox/{questionCategoryId}")
 public class AnswerRestController {
+    private final AnswerService answerService;
+
     @GetMapping("/answers")
     @Operation(summary = "해당 태그를 가진 답변들 리스트 조회")
     public ApiResponse<AnswerResponseDto.AnswerListDto> getList(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -39,7 +44,8 @@ public class AnswerRestController {
                                                                                  @PathVariable("questionCategoryId") Long questionCategoryId,
                                                                                  @PathVariable("questionTagId") Long questionTagId,
                                                                                  @PathVariable("questionId") Long questionId) {
-        return ApiResponse.onSuccess(SuccessStatus._OK);
+        Answer answer = answerService.createIndividualAnswer(userDetails, itemId, questionCategoryId, questionTagId, questionId);
+        return ApiResponse.onSuccess(AnswerConverter.toAnswerResultDto(answer));
     }
 
     @PostMapping("/questions/{questionTagId}/{questionId}/answers-faq")
