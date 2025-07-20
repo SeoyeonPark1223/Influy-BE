@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseCode {
     TIKTOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 틱톡 계정입니다."),
     INSTAGRAM_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 인스타 계정입니다."),
     REQUIRES_INTERESTED_CATEGORY(HttpStatus.BAD_REQUEST, "REQUIRES INTERESTED CATEGORY", "관심 카테고리 리스트는 필수입니다"),
+    LOGIN_REQUIRED(HttpStatus.BAD_REQUEST, "LOGIN REQUIRED", "로그인이 필요한 서비스입니다."),
 
 
     //공지
@@ -41,6 +42,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 셀러 에러 응답
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
+    SELLER_REQUIRED(HttpStatus.BAD_REQUEST, "SELLER REQUIRED", "셀러만 사용할 수 있습니다."),
     
     //링크 인 바이오 관련 응답
     LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK NOT FOUND", "링크를 찾을 수 없습니다."),

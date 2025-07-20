@@ -7,12 +7,14 @@ import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.service.FaqCardService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "셀러 FAQ 카드", description = "셀러 FAQ 카드 관련 API")
@@ -42,11 +44,11 @@ public class FaqCardRestController {
 
     @PostMapping("/items/{itemId}/faq")
     @Operation(summary = "faq 카테고리별 faq 카드 등록")
-    public ApiResponse<FaqCardResponseDto.CreateResultDto> create(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCardResponseDto.CreateResultDto> create(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                   @PathVariable("itemId") Long itemId,
                                                                   @RequestParam(name = "faqCategoryId") Long faqCategoryId,
                                                                   @RequestBody @Valid FaqCardRequestDto.CreateDto request) {
-        FaqCard faqCard = faqCardService.create(sellerId, itemId, faqCategoryId, request);
+        FaqCard faqCard = faqCardService.create(userDetails, itemId, faqCategoryId, request);
         return ApiResponse.onSuccess(FaqCardConverter.toCreateResultDto(faqCard));
     }
 
@@ -71,30 +73,30 @@ public class FaqCardRestController {
 
     @PatchMapping("/items/{itemId}/faq/{faqCardId}")
     @Operation(summary = "각 faq 카드 수정")
-    public ApiResponse<FaqCardResponseDto.UpdateResultDto> update(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCardResponseDto.UpdateResultDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                   @PathVariable("itemId") Long itemId,
                                                                   @PathVariable("faqCardId") Long faqCardId,
                                                                   @RequestBody @Valid FaqCardRequestDto.UpdateDto request) {
-        FaqCard faqCard = faqCardService.update(sellerId, itemId, faqCardId, request);
+        FaqCard faqCard = faqCardService.update(userDetails, itemId, faqCardId, request);
         return ApiResponse.onSuccess(FaqCardConverter.toUpdateResultDto(faqCard));
     }
 
     @PatchMapping("/items/{itemId}/faq/{faqCardId}/pin")
     @Operation(summary = "각 faq 카드 상단 고정 여부 수정")
-    public ApiResponse<FaqCardResponseDto.QuestionCardDto> pinUpdate(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCardResponseDto.QuestionCardDto> pinUpdate(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @PathVariable("itemId") Long itemId,
                                                                      @PathVariable("faqCardId") Long faqCardId,
                                                                      @RequestParam(name = "isPinned", defaultValue = "false") boolean isPinned) {
-        FaqCard faqCard = faqCardService.pinUpdate(sellerId, itemId, faqCardId, isPinned);
+        FaqCard faqCard = faqCardService.pinUpdate(userDetails, itemId, faqCardId, isPinned);
         return ApiResponse.onSuccess(FaqCardConverter.toQuestionCardDto(faqCard));
     }
 
     @DeleteMapping("/items/{itemId}/faq/{faqCardId}")
     @Operation(summary = "각 faq 카드 삭제")
-    public ApiResponse<FaqCardResponseDto.DeleteResultDto> delete(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCardResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                   @PathVariable("itemId") Long itemId,
                                                                   @PathVariable("faqCardId") Long faqCardId) {
-        faqCardService.delete(sellerId, itemId, faqCardId);
+        faqCardService.delete(userDetails, itemId, faqCardId);
         return ApiResponse.onSuccess(FaqCardConverter.toDeleteResultDto(faqCardId));
     }
 }

@@ -9,12 +9,14 @@ import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.memberCategory.converter.MemberCategoryConverter;
 import com.influy.domain.memberCategory.entity.MemberCategory;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.service.AuthService;
+import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,8 +122,21 @@ public class MemberServiceImpl implements MemberService {
         return member.updateUsername(request.getUsername());
     }
 
-    @Override
     public Boolean checkUsername(String username) {
         return memberRepository.existsByUsername(username);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SellerProfile checkSeller (CustomUserDetails userDetails) {
+        Member member = memberRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        if (member.getRole() == MemberRole.SELLER) {
+            return sellerProfileRepository.findByMemberId(member.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        } else {
+            throw new GeneralException(ErrorStatus.SELLER_REQUIRED);
+        }
     }
 }

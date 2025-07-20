@@ -14,13 +14,14 @@ import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
-import com.influy.domain.sellerProfile.service.SellerProfileServiceImpl;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +40,12 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Override
     @Transactional
-    public Item createItem(Long sellerId, ItemRequestDto.DetailDto request) {
-        SellerProfile seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-
+    public Item create(CustomUserDetails userDetails, ItemRequestDto.DetailDto request) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
@@ -73,10 +70,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void deleteItem(Long sellerId, Long itemId) {
-        SellerProfile seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-
+    public void delete(CustomUserDetails userDetails, Long itemId) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
@@ -86,10 +81,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item updateItem(Long sellerId, Long itemId, ItemRequestDto.DetailDto request) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+    public Item update(CustomUserDetails userDetails, Long itemId, ItemRequestDto.DetailDto request) {
+        memberService.checkSeller(userDetails);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
@@ -120,11 +113,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item setAccess(Long sellerId, Long itemId, ItemRequestDto.AccessDto request) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
-
+    public Item setAccess(CustomUserDetails userDetails, Long itemId, ItemRequestDto.AccessDto request) {
+        memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
@@ -136,10 +126,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request) {
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+    public Item setStatus(CustomUserDetails userDetails, Long itemId, ItemRequestDto.StatusDto request) {
+        memberService.checkSeller(userDetails);
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));

@@ -8,12 +8,14 @@ import com.influy.domain.item.service.ItemService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "셀러 아이템", description = "셀러 아이템 관련 API")
@@ -25,9 +27,9 @@ public class ItemRestController {
 
     @PostMapping("/items")
     @Operation(summary = "셀러 상품 상세정보 작성 후 생성")
-    public ApiResponse<ItemResponseDto.ResultDto> createItem(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> create(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                              @RequestBody @Valid ItemRequestDto.DetailDto request) {
-        Item item = itemService.createItem(sellerId, request);
+        Item item = itemService.create(userDetails, request);
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
@@ -53,42 +55,42 @@ public class ItemRestController {
 
     @DeleteMapping("/items/{itemId}")
     @Operation(summary = "개별 상품 삭제")
-    public ApiResponse<ItemResponseDto.ResultDto> deleteItem(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                              @PathVariable("itemId") Long itemId) {
-        itemService.deleteItem(sellerId, itemId);
+        itemService.delete(userDetails, itemId);
         return ApiResponse.onSuccess(ItemConverter.toResultDto(itemId));
     }
 
     @PutMapping("/items/{itemId}")
     @Operation(summary = "개별 상품 상세정보 수정")
-    public ApiResponse<ItemResponseDto.DetailViewDto> updateItem(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<ItemResponseDto.DetailViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                  @PathVariable("itemId") Long itemId,
                                                                  @RequestBody @Valid ItemRequestDto.DetailDto request) {
-        Item item = itemService.updateItem(sellerId, itemId, request);
+        Item item = itemService.update(userDetails, itemId, request);
         return ApiResponse.onSuccess(ItemConverter.toDetailViewDto(item));
     }
 
     @PatchMapping("/items/{itemId}/access")
     @Operation(summary = "개별 상품 공개 범위 설정")
-    public ApiResponse<ItemResponseDto.ResultDto> setAccess(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> setAccess(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @PathVariable("itemId") Long itemId,
                                                             @RequestBody @Valid ItemRequestDto.AccessDto request) {
-        Item item = itemService.setAccess(sellerId, itemId, request);
+        Item item = itemService.setAccess(userDetails, itemId, request);
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
     @PatchMapping("/items/{itemId}/status")
     @Operation(summary = "개별 상품 표기 상태 설정 | DEFAULT, EXTEND, SOLD_OUT")
-    public ApiResponse<ItemResponseDto.ResultDto> setStatus(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<ItemResponseDto.ResultDto> setStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @PathVariable("itemId") Long itemId,
                                                             @RequestBody @Valid ItemRequestDto.StatusDto request) {
-        Item item = itemService.setStatus(sellerId, itemId, request);
+        Item item = itemService.setStatus(userDetails, itemId, request);
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @GetMapping("/items/count-access")
+    @GetMapping("/{sellerId}/items/count-access")
     @Operation(summary = "상품 공개/보관 개수 조회")
-    public ApiResponse<ItemResponseDto.CountDto> getCount(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<ItemResponseDto.CountDto> getCount(@PathVariable("sellerId") Long sellerId,
                                                           @RequestParam(name = "isArchived", defaultValue = "false") Boolean isArchived) {
         Integer count = itemService.getCount(sellerId, isArchived);
         return ApiResponse.onSuccess(ItemConverter.toCountDto(sellerId, count));

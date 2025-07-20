@@ -1,6 +1,5 @@
 package com.influy.domain.faqCategory.service;
 
-import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCard.repository.FaqCardRepository;
 import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.domain.faqCategory.dto.FaqCategoryRequestDto;
@@ -8,20 +7,17 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
-import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.SortDirection;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,12 +30,13 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
     private final ItemRepository itemRepository;
     private final FaqCategoryRepository faqCategoryRepository;
     private final FaqCardRepository faqCardRepository;
+    private final MemberService memberService;
 
 
     @Override
     @Transactional
-    public FaqCategory add(Long sellerId, Long itemId, FaqCategoryRequestDto.AddDto request) {
-        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+    public FaqCategory add(CustomUserDetails userDetails, Long itemId, FaqCategoryRequestDto.AddDto request) {
+        memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
@@ -68,8 +65,8 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional
-    public void delete(Long sellerId, Long itemId, FaqCategoryRequestDto.DeleteDto request) {
-        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+    public void delete(CustomUserDetails userDetails, Long itemId, FaqCategoryRequestDto.DeleteDto request) {
+        memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
@@ -89,8 +86,8 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional
-    public FaqCategory update(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateDto request) {
-        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
+    public FaqCategory update(CustomUserDetails userDetails, Long itemId, FaqCategoryRequestDto.UpdateDto request) {
+        memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
@@ -105,9 +102,8 @@ public class FaqCategoryServiceImpl implements FaqCategoryService {
 
     @Override
     @Transactional
-    public List<FaqCategory> updateOrderAll(Long sellerId, Long itemId, FaqCategoryRequestDto.UpdateOrderDto request) {
-        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-
+    public List<FaqCategory> updateOrderAll(CustomUserDetails userDetails, Long itemId, FaqCategoryRequestDto.UpdateOrderDto request) {
+        memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
