@@ -1,5 +1,6 @@
 package com.influy.domain.item.controller;
 
+import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
@@ -92,5 +93,12 @@ public class ItemRestController {
                                                           @RequestParam(name = "isArchived", defaultValue = "false") Boolean isArchived) {
         Integer count = itemService.getCount(sellerId, isArchived);
         return ApiResponse.onSuccess(ItemConverter.toCountDto(sellerId, count));
+    }
+
+    @GetMapping("/{sellerId}/items/{itemId}/item-overview")
+    @Operation(summary = "아이템 간략 정보 조회 [대표사진, 이름, 태그라인")
+    public ApiResponse<ItemResponseDto.ItemOverviewDto> getItemInfo(@PathVariable("sellerId") Long sellerId,
+                                                                   @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(itemService.getItemOverview(sellerId, itemId));
     }
 }

@@ -1,5 +1,6 @@
 package com.influy.domain.item.service;
 
+import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
@@ -16,4 +17,5 @@ public interface ItemService {
     Item setStatus(Long sellerId, Long itemId, ItemRequestDto.StatusDto request);
     Integer getCount(Long sellerId, Boolean isArchived);
     ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing, Long memberId);
+    ItemResponseDto.ItemOverviewDto getItemOverview(Long sellerId, Long itemId);
 }

@@ -116,17 +116,6 @@ public class FaqCardServiceImpl implements FaqCardService {
         faqCardRepository.delete(faqCard);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public FaqCardResponseDto.ItemInfoDto getItemInfo(Long sellerId, Long itemId) {
-        sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-
-        return FaqCardConverter.toItemInfoDto(item);
-    }
-
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {
         FaqCategory faqCategory = faqCategoryRepository.findById(faqCategoryId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));

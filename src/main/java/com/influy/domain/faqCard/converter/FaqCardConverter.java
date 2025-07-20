@@ -97,15 +97,6 @@ public class FaqCardConverter {
                 .build();
     }
 
-    public static FaqCardResponseDto.ItemInfoDto toItemInfoDto(Item item) {
-        return FaqCardResponseDto.ItemInfoDto.builder()
-                .id(item.getId())
-                .itemName(item.getName())
-                .tagline(item.getTagline())
-                .MainImg(item.getImageList().getFirst().getImageLink())
-                .build();
-    }
-
     private static String nonNull(String value) {
         return value != null ? value : "";
     }

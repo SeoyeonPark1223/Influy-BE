@@ -2,6 +2,8 @@ package com.influy.domain.item.service;
 
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
+import com.influy.domain.faqCard.converter.FaqCardConverter;
+import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
@@ -234,6 +236,15 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ItemResponseDto.ItemOverviewDto getItemOverview(Long sellerId, Long itemId) {
+        sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
+        return ItemConverter.toItemOverviewDto(item);
+    }
 
 }
