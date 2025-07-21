@@ -25,7 +25,7 @@ public class QuestionTag {
     private QuestionCategory questionCategory;
 
     @NotBlank
-    private String tag;
+    private String name;
 
     @OneToMany(mappedBy = "questionTag", cascade = CascadeType.ALL)
     @Builder.Default

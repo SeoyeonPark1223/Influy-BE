@@ -1,19 +1,14 @@
 package com.influy.domain.questionCategory.controller;
 
-import com.influy.domain.ai.service.AiService;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.global.apiPayload.ApiResponse;
-import com.influy.global.common.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

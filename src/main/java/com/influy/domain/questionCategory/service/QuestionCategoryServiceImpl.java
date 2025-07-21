@@ -37,7 +37,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
         if (item.getTalkBoxOpenStatus() != TalkBoxOpenStatus.INITIAL) throw new GeneralException(ErrorStatus.TALKBOX_ALREADY_OPENED);
 
         // 중복 체크
-        boolean exists = questionCategoryRepository.existsByItemIdAndCategory(itemId, request.getCategory());
+        boolean exists = questionCategoryRepository.existsByItemIdAndName(itemId, request.getCategory());
         if (exists) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_ALREADY_EXISTS);
 
         // 추가
@@ -59,7 +59,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
         if (!questionCategory.getItem().equals(item))
             throw new GeneralException(ErrorStatus.INVALID_QUESTION_ITEM_RELATION);
 
-        if (request.getCategory() != null) questionCategory.setCategory(request.getCategory());
+        if (request.getCategory() != null) questionCategory.setName(request.getCategory());
 
         return questionCategory;
     }
