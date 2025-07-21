@@ -65,8 +65,7 @@ public class AnswerServiceImpl implements AnswerService {
         QuestionTag questionTag = questionTagRepository.findValidQuestionTag(itemId, questionCategoryId, questionTagId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTIONTAG_INVALID_RELATION));
 
-        // 문제: questionId가 안주어짐
-        List<Answer> answerList = answerRepository.findAllByQuestion_QuestionTag(questionTag);
+        List<Answer> answerList = answerRepository.findAllByQuestionTagId(questionTagId);
         return AnswerConverter.toAnswerTagListDto(questionTag, answerList);
     }
 
@@ -115,12 +114,11 @@ public class AnswerServiceImpl implements AnswerService {
 
         // question에 대한 answer가 먼저 등록되어있다고 가정
         // 문제: 한 질문에 답변 여러개라 여러개가 조회됨
+        // 보류!!!!!!
         Answer answer = answerRepository.findByQuestion(question)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ANSWER_NOT_FOUND));
 
         FaqCard faqCard = faqCardService.questionToFaq(seller, request);
-        answer.setFaqCard(faqCard);
-        faqCard.setAnswer(answer);
 
         return AnswerConverter.toQuestionToFaqResultDto(question, answer.getId(), faqCard.getId());
     }

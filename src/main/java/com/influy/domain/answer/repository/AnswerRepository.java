@@ -11,12 +11,9 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("""
-    SELECT q FROM Question q
-    WHERE q.id = :questionId
-      AND q.questionTag.id = :questionTagId
-      AND q.questionTag.questionCategory.id = :questionCategoryId
-      AND q.questionTag.questionCategory.item.id = :itemId
-""")
-    List<Answer> findAllByQuestion_QuestionTag(QuestionTag questionTag);
+    SELECT a FROM Answer a
+    WHERE a.question.questionTag.id = :questionTagId
+    """)
+    List<Answer> findAllByQuestionTagId(Long questionTagId);
     Optional<Answer> findByQuestion(Question question);
 }
