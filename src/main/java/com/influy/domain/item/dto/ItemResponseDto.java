@@ -168,5 +168,8 @@ public class ItemResponseDto {
 
         @Schema(description = "대표 사진", example = "xxxx.png")
         private String mainImg;
+
+        @Schema(description = "해당 아이템 톡박스 오픈 여부", example = "OPEN")
+        private TalkBoxOpenStatus talkBoxOpenStatus;
     }
 }

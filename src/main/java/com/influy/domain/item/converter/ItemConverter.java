@@ -122,6 +122,7 @@ public class ItemConverter {
                 .itemName(item.getName())
                 .tagline(item.getTagline())
                 .mainImg(item.getImageList().getFirst().getImageLink())
+                .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
                 .build();
     }
 }
