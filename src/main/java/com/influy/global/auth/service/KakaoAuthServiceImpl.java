@@ -39,17 +39,16 @@ public class KakaoAuthServiceImpl implements AuthService {
     private String kakaoRestApiKey;
     @Value("${social.redirect-uri}")
     private String redirectUri;
+    private final String prodRedirectUri = "https://influy.com/oauth/kakap/callback";
     @Value("${kakao.admin-key}")
     private String kakaoAdminKey;
 
     @Override
-    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response, String redirectionUri) {
+    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response, Boolean redirectToLocal) {
 
         //배포 리디렉션은 기본적으로 프론트 로컬을 기본으로 하고,
         //로컬 리디렉션은 프론트 배포 주소를 기본으로 하도록 설정
-        if(redirectionUri==null){
-            redirectionUri = redirectUri;
-        }
+
 
         //토큰 받기 POST 요청
 
@@ -61,7 +60,7 @@ public class KakaoAuthServiceImpl implements AuthService {
                 .uri(uriBuilder -> uriBuilder.path("/oauth/token")
                         .queryParam("grant_type", "authorization_code")
                         .queryParam("client_id", kakaoRestApiKey)
-                        .queryParam("redirect_uri", redirectUri)
+                        .queryParam("redirect_uri", redirectToLocal ? redirectUri : prodRedirectUri)
                         .queryParam("code", code)
                         .build())
                 .retrieve()
