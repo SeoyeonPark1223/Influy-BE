@@ -2,7 +2,6 @@ package com.influy.global.auth.service;
 
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
-import com.influy.domain.member.service.MemberService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.auth.TokenPair;
@@ -44,8 +43,13 @@ public class KakaoAuthServiceImpl implements AuthService {
     private String kakaoAdminKey;
 
     @Override
-    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response) {
+    public AuthResponseDTO.KakaoLoginResponse SocialLogIn(String code, HttpServletResponse response, String redirectionUri) {
 
+        //배포 리디렉션은 기본적으로 프론트 로컬을 기본으로 하고,
+        //로컬 리디렉션은 프론트 배포 주소를 기본으로 하도록 설정
+        if(redirectionUri==null){
+            redirectionUri = redirectUri;
+        }
 
         //토큰 받기 POST 요청
 
