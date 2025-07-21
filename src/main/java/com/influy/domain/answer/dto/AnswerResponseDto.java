@@ -74,7 +74,7 @@ public class AnswerResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class QuestionToFaqResultDto {
+    public static class AnswerToFaqResultDto {
         @Schema(description = "질문 id", example = "1")
         private Long questionId;
 

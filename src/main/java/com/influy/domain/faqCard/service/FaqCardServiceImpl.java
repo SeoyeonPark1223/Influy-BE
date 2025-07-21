@@ -126,7 +126,7 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional
-    public FaqCard questionToFaq(SellerProfile seller, AnswerRequestDto.QuestionToFaqDto request) {
+    public FaqCard answerToFaq(SellerProfile seller, AnswerRequestDto.QuestionToFaqDto request) {
         FaqCategory faqCategory = faqCategoryRepository.findById(request.getFaqCategoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
 

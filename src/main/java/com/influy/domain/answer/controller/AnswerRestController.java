@@ -79,22 +79,21 @@ public class AnswerRestController {
 //        return ApiResponse.onSuccess(SuccessStatus._OK);
 //    }
 
-    @PostMapping("/{questionCategoryId}/questions/{questionTagId}/{questionId}/question-faq")
-    @Operation(summary = "질문 기반 faq 카드 등록")
-    public ApiResponse<AnswerResponseDto.QuestionToFaqResultDto> questionToFaq(@AuthenticationPrincipal CustomUserDetails userDetails,
+    @PostMapping("/{questionCategoryId}/answers/{answerId}/to-faq")
+    @Operation(summary = "답변 기반 faq 카드 등록")
+    public ApiResponse<AnswerResponseDto.AnswerToFaqResultDto> answerToFaq(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                          @PathVariable("itemId") Long itemId,
                                                                          @PathVariable("questionCategoryId") Long questionCategoryId,
-                                                                         @PathVariable("questionTagId") Long questionTagId,
-                                                                         @PathVariable("questionId") Long questionId,
+                                                                           @PathVariable("answerId") Long answerId,
                                                                          @RequestBody @Valid AnswerRequestDto.QuestionToFaqDto request) {
-        return ApiResponse.onSuccess(answerService.questionToFaq(userDetails, itemId, questionCategoryId, questionTagId, questionId, request));
+        return ApiResponse.onSuccess(answerService.answerToFaq(userDetails, itemId, questionCategoryId, answerId, request));
     }
 
-    @PostMapping("/answers/view-faq")
+    @PostMapping("/answers/{answerId}/view-faq")
     @Operation(summary = "답변 id로 faq 카드 조회")
     public ApiResponse<FaqCardResponseDto.FaqCardDto> viewFaqWithAnswerId(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                           @PathVariable("itemId") Long itemId,
-                                                                          @RequestParam("answerId") Long answerId) {
+                                                                          @PathVariable("answerId") Long answerId) {
         return ApiResponse.onSuccess(answerService.viewFaqWithAnswerId(userDetails, itemId, answerId));
     }
 

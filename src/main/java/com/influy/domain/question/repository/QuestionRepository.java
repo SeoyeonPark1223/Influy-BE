@@ -1,5 +1,6 @@
 package com.influy.domain.question.repository;
 
+import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import org.springframework.data.domain.Page;

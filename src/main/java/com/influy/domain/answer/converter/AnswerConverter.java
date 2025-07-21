@@ -53,8 +53,8 @@ public class AnswerConverter {
                 .build();
     }
 
-    public static AnswerResponseDto.QuestionToFaqResultDto toQuestionToFaqResultDto(Question question, Long answerId, Long faqCardId) {
-        return AnswerResponseDto.QuestionToFaqResultDto.builder()
+    public static AnswerResponseDto.AnswerToFaqResultDto toAnswerToFaqResultDto(Question question, Long answerId, Long faqCardId) {
+        return AnswerResponseDto.AnswerToFaqResultDto.builder()
                 .questionId(question.getId())
                 .questionContent(question.getContent())
                 .answerId(answerId)

@@ -106,21 +106,18 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public AnswerResponseDto.QuestionToFaqResultDto questionToFaq(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, Long questionTagId, Long questionId, AnswerRequestDto.QuestionToFaqDto request) {
+    public AnswerResponseDto.AnswerToFaqResultDto answerToFaq(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, Long answerId, AnswerRequestDto.QuestionToFaqDto request) {
         SellerProfile seller = memberService.checkSeller(userDetails);
         checkTalkBoxOpenStatus(itemId);
-        Question question = questionRepository.findValidQuestion(itemId, questionCategoryId, questionTagId, questionId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_INVALID_RELATION));
-
-        // question에 대한 answer가 먼저 등록되어있다고 가정
-        // 문제: 한 질문에 답변 여러개라 여러개가 조회됨
-        // 보류!!!!!!
-        Answer answer = answerRepository.findByQuestion(question)
+        Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ANSWER_NOT_FOUND));
+        Question question = answer.getQuestion();
 
-        FaqCard faqCard = faqCardService.questionToFaq(seller, request);
+        FaqCard faqCard = faqCardService.answerToFaq(seller, request);
+        answer.setFaqCard(faqCard);
+        faqCard.setAnswer(answer);
 
-        return AnswerConverter.toQuestionToFaqResultDto(question, answer.getId(), faqCard.getId());
+        return AnswerConverter.toAnswerToFaqResultDto(question, answer.getId(), faqCard.getId());
     }
 
     @Override
