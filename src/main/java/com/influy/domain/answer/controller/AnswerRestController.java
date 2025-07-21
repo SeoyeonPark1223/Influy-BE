@@ -69,15 +69,15 @@ public class AnswerRestController {
         return ApiResponse.onSuccess(answerService.delete(userDetails, itemId, questionCategoryId, request));
     }
 
-    @GetMapping("/{questionCategoryId}/questions/{questionTagId}/{questionId}")
-    @Operation(summary = "개별 질문 + 답변들 조회 (아직 구현 x)")
-    public ApiResponse<AnswerResponseDto.QnAListDto> viewQnA(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                             @PathVariable("itemId") Long itemId,
-                                                             @PathVariable("questionCategoryId") Long questionCategoryId,
-                                                             @PathVariable("questionTagId") Long questionTagId,
-                                                             @PathVariable("questionId") Long questionId) {
-        return ApiResponse.onSuccess(SuccessStatus._OK);
-    }
+//    @GetMapping("/{questionCategoryId}/questions/{questionTagId}/{questionId}")
+//    @Operation(summary = "개별 질문 + 답변들 조회 (아직 구현 x)")
+//    public ApiResponse<AnswerResponseDto.QnAListDto> viewQnA(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                                                             @PathVariable("itemId") Long itemId,
+//                                                             @PathVariable("questionCategoryId") Long questionCategoryId,
+//                                                             @PathVariable("questionTagId") Long questionTagId,
+//                                                             @PathVariable("questionId") Long questionId) {
+//        return ApiResponse.onSuccess(SuccessStatus._OK);
+//    }
 
     @PostMapping("/{questionCategoryId}/questions/{questionTagId}/{questionId}/question-faq")
     @Operation(summary = "질문 기반 faq 카드 등록")
@@ -100,9 +100,9 @@ public class AnswerRestController {
 
     @PostMapping("/open-status")
     @Operation(summary = "톡박스 오픈 여부 수정")
-    public ApiResponse<AnswerResponseDto.TalkBoxOpenStatusDto> openStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ApiResponse<AnswerResponseDto.TalkBoxOpenStatusDto> changeOpenStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                           @PathVariable("itemId") Long itemId,
                                                                           @RequestParam(name = "openStatus", defaultValue = "OPENED") TalkBoxOpenStatus openStatus) {
-        return ApiResponse.onSuccess(answerService.openStatus(userDetails, itemId, openStatus));
+        return ApiResponse.onSuccess(answerService.changeOpenStatus(userDetails, itemId, openStatus));
     }
 }

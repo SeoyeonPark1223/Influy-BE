@@ -6,9 +6,11 @@ import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,36 +25,36 @@ public class QuestionCategoryController {
 
     @PostMapping("seller/items/{itemId}/question-categories/generate")
     @Operation(summary = "질문 카테고리 (대분류) ai 생성")
-    public ApiResponse<QuestionCategoryResponseDto.GenerateResultDto> generateCategory(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+    public ApiResponse<QuestionCategoryResponseDto.GenerateResultDto> generateCategory(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                        @PathVariable("itemId") Long itemId) {
-        List<QuestionCategory> questionCategoryList = questionCategoryService.generateCategory(sellerId, itemId);
+        List<QuestionCategory> questionCategoryList = questionCategoryService.generateCategory(userDetails, itemId);
         return ApiResponse.onSuccess(QuestionCategoryConverter.toGenerateResultDto(questionCategoryList));
     }
 
     @PostMapping("seller/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 추가 (한번에 하나)")
-    public ApiResponse<QuestionCategoryResponseDto.ViewDto> add(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+    public ApiResponse<QuestionCategoryResponseDto.ViewDto> add(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @PathVariable("itemId") Long itemId,
                                                                 @RequestBody QuestionCategoryRequestDto.AddDto request) {
-        QuestionCategory questionCategory = questionCategoryService.add(sellerId, itemId, request);
+        QuestionCategory questionCategory = questionCategoryService.add(userDetails, itemId, request);
         return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
     }
 
     @PatchMapping("seller/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 수정 (한번에 하나)")
-    public ApiResponse<QuestionCategoryResponseDto.ViewDto> update(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+    public ApiResponse<QuestionCategoryResponseDto.ViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @PathVariable("itemId") Long itemId,
                                                                      @RequestBody QuestionCategoryRequestDto.UpdateDto request) {
-        QuestionCategory questionCategory = questionCategoryService.update(sellerId, itemId, request);
+        QuestionCategory questionCategory = questionCategoryService.update(userDetails, itemId, request);
         return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
     }
 
     @DeleteMapping("seller/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 삭제 (한번에 하나)")
-    public ApiResponse<QuestionCategoryResponseDto.DeleteResultDto> delete(@RequestParam(value="sellerId", defaultValue = "1") Long sellerId,
+    public ApiResponse<QuestionCategoryResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                            @PathVariable("itemId") Long itemId,
                                                                            @RequestBody QuestionCategoryRequestDto.DeleteDto request) {
-        questionCategoryService.delete(sellerId, itemId, request);
+        questionCategoryService.delete(userDetails, itemId, request);
         return ApiResponse.onSuccess(QuestionCategoryConverter.toDeleteResultDto(request.getId()));
     }
 

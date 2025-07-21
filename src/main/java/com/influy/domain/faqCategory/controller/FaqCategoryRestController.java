@@ -7,12 +7,14 @@ import com.influy.domain.faqCategory.service.FaqCategoryService;
 import com.influy.domain.faqCategory.converter.FaqCategoryConverter;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +28,10 @@ public class FaqCategoryRestController {
 
     @PostMapping("/items/{itemId}/faq-categories")
     @Operation(summary = "개별 상품의 faq 카테고리 추가 (한번에 하나)")
-    public ApiResponse<FaqCategoryResponseDto.ViewDto> add(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
-                                                                    @PathVariable("itemId") Long itemId,
-                                                                    @RequestBody FaqCategoryRequestDto.AddDto request) {
-        FaqCategory faqCategory = faqCategoryService.add(sellerId, itemId, request);
+    public ApiResponse<FaqCategoryResponseDto.ViewDto> add(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                           @PathVariable("itemId") Long itemId,
+                                                           @RequestBody FaqCategoryRequestDto.AddDto request) {
+        FaqCategory faqCategory = faqCategoryService.add(userDetails, itemId, request);
         return ApiResponse.onSuccess(FaqCategoryConverter.toViewDto(faqCategory));
     }
 
@@ -43,28 +45,28 @@ public class FaqCategoryRestController {
 
     @DeleteMapping("/items/{itemId}/faq-categories")
     @Operation(summary = "개별 상품의 faq 카테고리 삭제 (한번에 하나)")
-    public ApiResponse<FaqCategoryResponseDto.DeleteResultDto> delete(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                           @PathVariable("itemId") Long itemId,
                                                                           @RequestBody @Valid FaqCategoryRequestDto.DeleteDto request) {
-        faqCategoryService.delete(sellerId, itemId, request);
+        faqCategoryService.delete(userDetails, itemId, request);
         return ApiResponse.onSuccess(FaqCategoryConverter.toDeleteResultDto(request));
     }
 
     @PatchMapping("/items/{itemId}/faq-categories")
     @Operation(summary = "개별 상품의 faq 카테고리 이름 수정 (한번에 하나)")
-    public ApiResponse<FaqCategoryResponseDto.ViewDto> update(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.ViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                               @PathVariable("itemId") Long itemId,
                                                                               @RequestBody @Valid FaqCategoryRequestDto.UpdateDto request) {
-        FaqCategory faqCategory = faqCategoryService.update(sellerId, itemId, request);
+        FaqCategory faqCategory = faqCategoryService.update(userDetails, itemId, request);
         return ApiResponse.onSuccess(FaqCategoryConverter.toViewDto(faqCategory));
     }
 
     @PatchMapping("/items/{itemId}/faq-categories/order")
     @Operation(summary = "개별 상품의 faq 카테고리 순서 수정 (한번에 여러개 가능)")
-    public ApiResponse<FaqCategoryResponseDto.UpdateOrderResultDto> updateOrderAll(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<FaqCategoryResponseDto.UpdateOrderResultDto> updateOrderAll(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                    @PathVariable("itemId") Long itemId,
                                                                    @RequestBody @Valid FaqCategoryRequestDto.UpdateOrderDto request) {
-        List<FaqCategory> faqCategoryList = faqCategoryService.updateOrderAll(sellerId, itemId, request);
+        List<FaqCategory> faqCategoryList = faqCategoryService.updateOrderAll(userDetails, itemId, request);
         return ApiResponse.onSuccess(FaqCategoryConverter.toUpdateOrderResultDto(faqCategoryList));
     }
 }

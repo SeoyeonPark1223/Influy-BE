@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseCode {
     TIKTOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 틱톡 계정입니다."),
     INSTAGRAM_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 인스타 계정입니다."),
     REQUIRES_INTERESTED_CATEGORY(HttpStatus.BAD_REQUEST, "REQUIRES INTERESTED CATEGORY", "관심 카테고리 리스트는 필수입니다"),
+    LOGIN_REQUIRED(HttpStatus.BAD_REQUEST, "LOGIN REQUIRED", "로그인이 필요한 서비스입니다."),
 
 
     //공지

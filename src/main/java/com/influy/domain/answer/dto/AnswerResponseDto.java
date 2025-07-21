@@ -62,13 +62,13 @@ public class AnswerResponseDto {
         private List<Long> questionIdList;
     }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class QnAListDto {
-
-    }
+//    @Getter
+//    @Builder
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class QnAListDto {
+//
+//    }
 
     @Getter
     @Builder

@@ -65,6 +65,7 @@ public class AnswerServiceImpl implements AnswerService {
         QuestionTag questionTag = questionTagRepository.findValidQuestionTag(itemId, questionCategoryId, questionTagId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTIONTAG_INVALID_RELATION));
 
+        // 문제: questionId가 안주어짐
         List<Answer> answerList = answerRepository.findAllByQuestion_QuestionTag(questionTag);
         return AnswerConverter.toAnswerTagListDto(questionTag, answerList);
     }
@@ -113,6 +114,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_INVALID_RELATION));
 
         // question에 대한 answer가 먼저 등록되어있다고 가정
+        // 문제: 한 질문에 답변 여러개라 여러개가 조회됨
         Answer answer = answerRepository.findByQuestion(question)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ANSWER_NOT_FOUND));
 
@@ -136,7 +138,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public AnswerResponseDto.TalkBoxOpenStatusDto openStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus) {
+    public AnswerResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus) {
         memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));

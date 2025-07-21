@@ -17,5 +17,5 @@ public interface AnswerService {
     AnswerResponseDto.DeleteResultDto delete(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, AnswerRequestDto.DeleteDto request);
     AnswerResponseDto.QuestionToFaqResultDto questionToFaq(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, Long questionTagId, Long questionId, AnswerRequestDto.QuestionToFaqDto request);
     FaqCardResponseDto.FaqCardDto viewFaqWithAnswerId(CustomUserDetails userDetails, Long itemId, Long answerId);
-    AnswerResponseDto.TalkBoxOpenStatusDto openStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus);
+    AnswerResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus);
 }

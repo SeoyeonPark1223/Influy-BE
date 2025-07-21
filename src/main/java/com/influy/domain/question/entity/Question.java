@@ -48,5 +48,6 @@ public class Question extends BaseEntity {
     private Integer itemPeriod=1;
 
     @Setter
+    @Builder.Default
     private Boolean isHidden = false;
 }

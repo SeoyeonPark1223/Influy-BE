@@ -33,7 +33,7 @@ public class AnswerConverter {
         List<String> contentList = answerList.stream().map(Answer::getContent).toList();
 
         return AnswerResponseDto.AnswerTagListDto.builder()
-                .tag(questionTag.getTag())
+                .tag(questionTag.getName())
                 .answerList(contentList)
                 .build();
     }

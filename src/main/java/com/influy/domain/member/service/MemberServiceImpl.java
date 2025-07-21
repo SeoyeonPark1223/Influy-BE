@@ -122,7 +122,6 @@ public class MemberServiceImpl implements MemberService {
         return member.updateUsername(request.getUsername());
     }
 
-    @Override
     public Boolean checkUsername(String username) {
         return memberRepository.existsByUsername(username);
     }
