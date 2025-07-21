@@ -58,18 +58,17 @@ public class MemberServiceImpl implements MemberService {
         List<Category> interestedItemCategories= new ArrayList<>();
 
         //관심 카테고리 설정
-        if(role.equals(MemberRole.USER)) {
-            if(requestBody.getInterestedCategories()==null){
-                throw new GeneralException(ErrorStatus.REQUIRES_INTERESTED_CATEGORY);
-            }
-            List<Long> ids = requestBody.getInterestedCategories();
-            interestedItemCategories = categoryRepository.findAllById(ids);
-            //요청 들어온 카테고리 개수와 반환된 개수가 다르면 조회되지 않는 id가 있다는 뜻
-            if(interestedItemCategories.size()!= ids.size()){
-                throw new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND);
-            }
-            createMemberCategoryList(newMember,interestedItemCategories);
+        if(requestBody.getInterestedCategories()==null){
+            throw new GeneralException(ErrorStatus.REQUIRES_INTERESTED_CATEGORY);
         }
+        List<Long> ids = requestBody.getInterestedCategories();
+        interestedItemCategories = categoryRepository.findAllById(ids);
+        //요청 들어온 카테고리 개수와 반환된 개수가 다르면 조회되지 않는 id가 있다는 뜻
+        if(interestedItemCategories.size()!= ids.size()){
+            throw new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND);
+        }
+        createMemberCategoryList(newMember,interestedItemCategories);
+
 
 
         return memberRepository.save(newMember);

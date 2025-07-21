@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +44,7 @@ public class MemberController {
     //일반 유저 가입
     @PostMapping("/register/user")
     @Operation(summary = "유저 가입", description = "유저의 경우 관심 카테고리 리스트 안보내면 BAD REQUEST 뜹니다")
-    public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
+    public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@Valid @RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinUser(requestBody, MemberRole.USER);
         TokenPair tokenPair = authService.issueToken(member);
         AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
@@ -54,7 +55,7 @@ public class MemberController {
     }
     @PostMapping("/register/seller")
     @Operation(summary = "셀러 가입", description = "셀러는 관심 카테고리 안보내도 됩니다(null/필드 생략 가능)")
-    public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
+    public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@Valid @RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinSeller(requestBody);
         TokenPair tokenPair = authService.issueToken(member);
 
