@@ -46,9 +46,6 @@ public class KakaoAuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDTO.LoginResponse SocialLogIn(String code, HttpServletResponse response, Boolean redirectToLocal) {
 
-        //배포 리디렉션은 기본적으로 프론트 로컬을 기본으로 하고,
-        //로컬 리디렉션은 프론트 배포 주소를 기본으로 하도록 설정
-
 
         //토큰 받기 POST 요청
 
