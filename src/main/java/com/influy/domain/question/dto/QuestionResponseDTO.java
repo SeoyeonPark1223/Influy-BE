@@ -16,9 +16,10 @@ public class QuestionResponseDTO {
     @NoArgsConstructor
     public static class General {
         private Long id;
+        private Long memberId;
         private String nickname;
         private String content;
-        private Integer itemPeriod;
+        private Long nthQuestion;
         private LocalDateTime createdAt;
     }
 

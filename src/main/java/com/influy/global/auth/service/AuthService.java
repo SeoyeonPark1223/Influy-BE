@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
-    AuthResponseDTO.LoginResponse SocialLogIn(String code, HttpServletResponse response);
+    AuthResponseDTO.LoginResponse SocialLogIn(String code, HttpServletResponse response, Boolean redirectToLocal);
 
     Long GetSocialUserId(String accessToken);
 

@@ -3,8 +3,10 @@ package com.influy.global.auth.controller;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.auth.dto.AuthResponseDTO;
 import com.influy.global.auth.service.AuthService;
+import com.influy.global.jwt.CookieUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +21,12 @@ public class AuthController {
 
 
     @GetMapping("/kakao")
-    @Operation(summary = "카카오 서버에서 오는 redirect uri 받는 api 입니다. 프론트 사용 금지", description = "사용법: 최상단 명세서 설명란의 로그인 주소를 브라우저 주소창에 붙여넣기->응답으로 오는 카카오 아이디 복사->회원가입 api의 requestBody에 붙여넣기")
+    @Operation(summary = "카카로 로그인 후 토큰/회원가입 필요 메시지 get", description = "배포 서버는 기본적으로 프론트 로컬호스트로 redirect 하나, 바꾸고 싶을 경우 기재할 것. 단, 상단의 인가코드 받는 주소와 redirectUri가 동일해야함")
     public ApiResponse<AuthResponseDTO.LoginResponse> getKaKaoUser(@RequestParam("code") String code,
-                                                                   @RequestParam(name = "error", required = false) String error,
-                                                                   @RequestParam(name = "error_description", required = false) String description,
-                                                                   HttpServletResponse response) {
+                                                                        @RequestParam(name = "redirectToLocal", required = false, defaultValue = "true") Boolean redirectToLocal,
+                                                                        HttpServletResponse response) {
 
-        AuthResponseDTO.LoginResponse body =  authService.SocialLogIn(code,response);
+        AuthResponseDTO.LoginResponse body =  authService.SocialLogIn(code,response, redirectToLocal);
 
         return ApiResponse.onSuccess(body);
     }
