@@ -93,7 +93,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponseDto.DeleteResultDto delete(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, AnswerRequestDto.DeleteDto request) {
         memberService.checkSeller(userDetails);
-        checkTalkBoxOpenStatus(itemId);
 
         // 질문을 삭제하면 해당 질문의 모든 답변들도 삭제된다고 가정 (셀러 입장)
         List<Question> questionList= questionRepository.findAllById(request.getQuestionIdList());

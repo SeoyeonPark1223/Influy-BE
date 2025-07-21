@@ -47,10 +47,10 @@ public class QuestionCategoryResponseDto {
     @NoArgsConstructor
     public static class ViewWithCntDto {
         @Schema(description = "질문 카테고리 id", example = "1")
-        private Long id;
+        private Long questionCategoryId;
 
         @Schema(description = "질문 카테고리", example = "사이즈")
-        private String category;
+        private String questionCategoryName;
 
         @Schema(description = "해당 카테고리의 질문 개수", example = "6")
         private Integer questionCnt;
@@ -65,10 +65,10 @@ public class QuestionCategoryResponseDto {
     @NoArgsConstructor
     public static class ViewDto {
         @Schema(description = "질문 카테고리 id", example = "1")
-        private Long id;
+        private Long questionCategoryId;
 
         @Schema(description = "질문 카테고리", example = "사이즈")
-        private String category;
+        private String questionCategoryName;
     }
 
     @Builder @Getter

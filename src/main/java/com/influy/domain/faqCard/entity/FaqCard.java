@@ -43,10 +43,5 @@ public class FaqCard extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private SellerProfile seller;
-
-    @Nullable
-    @OneToOne
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
 }
 
