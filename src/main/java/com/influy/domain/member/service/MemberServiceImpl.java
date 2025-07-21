@@ -9,6 +9,7 @@ import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.memberCategory.converter.MemberCategoryConverter;
 import com.influy.domain.memberCategory.entity.MemberCategory;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -95,7 +96,8 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = joinUser(requestBody.getUserInfo(),MemberRole.SELLER);
-        sellerProfileService.createSellerProfile(member,requestBody);
+        SellerProfile sellerProfile = sellerProfileService.createSellerProfile(member,requestBody);
+        member.setSellerProfile(sellerProfile);
 
         return member;
     }

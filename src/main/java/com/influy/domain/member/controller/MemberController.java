@@ -7,11 +7,12 @@ import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
-import com.influy.domain.sellerProfile.service.SellerProfileService;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.BaseCode;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.code.status.SuccessStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.auth.TokenPair;
 import com.influy.global.auth.converter.AuthConverter;
 import com.influy.global.auth.dto.AuthResponseDTO;
@@ -26,10 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,22 +42,26 @@ public class MemberController {
     //일반 유저 가입
     @PostMapping("/register/user")
     @Operation(summary = "유저 가입", description = "유저의 경우 관심 카테고리 리스트 안보내면 BAD REQUEST 뜹니다")
-    public ApiResponse<AuthResponseDTO.IdAndToken> registerUser(@Valid @RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
+    public ApiResponse<AuthResponseDTO.UserIdAndToken> registerUser(@Valid @RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinUser(requestBody, MemberRole.USER);
         TokenPair tokenPair = authService.issueToken(member);
-        AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
+        AuthResponseDTO.UserIdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
         return ApiResponse.onSuccess(body);
     }
     @PostMapping("/register/seller")
-    @Operation(summary = "셀러 가입", description = "셀러는 관심 카테고리 안보내도 됩니다(null/필드 생략 가능)")
-    public ApiResponse<AuthResponseDTO.IdAndToken> registerSeller(@Valid @RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
+    @Operation(summary = "셀러 가입")
+    public ApiResponse<AuthResponseDTO.SellerIdAndToken> registerSeller(@Valid @RequestBody MemberRequestDTO.SellerJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinSeller(requestBody);
         TokenPair tokenPair = authService.issueToken(member);
 
-        AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
+        SellerProfile sellerProfile = member.getSellerProfile();
+        if(sellerProfile==null){
+            throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
+        }
+        AuthResponseDTO.SellerIdAndToken body = AuthConverter.toSellerIdAndToken(member.getId(), sellerProfile.getId(), tokenPair.accessToken());
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
@@ -67,11 +69,11 @@ public class MemberController {
     }
 
     @GetMapping("/auth/reissue")
-    public ApiResponse<AuthResponseDTO.IdAndToken> reissueToken(HttpServletRequest request, HttpServletResponse response){
+    public ApiResponse<AuthResponseDTO.UserIdAndToken> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
         TokenPair tokenPair = authService.reissueToken(request, response);
         Long memberId = jwtTokenProvider.getId(tokenPair.refreshToken());
-        AuthResponseDTO.IdAndToken body = AuthConverter.toIdAndTokenDto(memberId, tokenPair.accessToken());
+        AuthResponseDTO.UserIdAndToken body = AuthConverter.toIdAndTokenDto(memberId, tokenPair.accessToken());
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 

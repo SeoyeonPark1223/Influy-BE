@@ -4,15 +4,24 @@ import lombok.*;
 
 public class AuthResponseDTO {
 
-    public sealed interface KakaoLoginResponse permits IdAndToken,RequestSignUp{
+    public sealed interface KakaoLoginResponse permits UserIdAndToken,SellerIdAndToken,RequestSignUp{
 
     }
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static non-sealed class IdAndToken implements KakaoLoginResponse {
+    public static non-sealed class UserIdAndToken implements KakaoLoginResponse {
         private Long memberId;
+        private String accessToken;
+    }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static non-sealed class SellerIdAndToken implements KakaoLoginResponse {
+        private Long memberId;
+        private Long sellerId;
         private String accessToken;
     }
 
