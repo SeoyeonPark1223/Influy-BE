@@ -69,11 +69,19 @@ public class MemberController {
     }
 
     @GetMapping("/auth/reissue")
-    public ApiResponse<AuthResponseDTO.UserIdAndToken> reissueToken(HttpServletRequest request, HttpServletResponse response){
+    public ApiResponse<AuthResponseDTO.LoginResponse> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
         TokenPair tokenPair = authService.reissueToken(request, response);
         Long memberId = jwtTokenProvider.getId(tokenPair.refreshToken());
-        AuthResponseDTO.UserIdAndToken body = AuthConverter.toIdAndTokenDto(memberId, tokenPair.accessToken());
+        Member member = memberService.findById(memberId);
+
+        AuthResponseDTO.LoginResponse body = null;
+
+        if(member.getRole()==MemberRole.USER){
+            body = AuthConverter.toIdAndTokenDto(memberId, tokenPair.accessToken());
+        }else if(member.getRole()==MemberRole.SELLER){
+            body = AuthConverter.toSellerIdAndToken(memberId,member.getSellerProfile().getId(),tokenPair.accessToken());
+        }
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
