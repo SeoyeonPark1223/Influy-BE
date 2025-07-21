@@ -53,15 +53,6 @@ public class AnswerConverter {
                 .build();
     }
 
-    public static AnswerResponseDto.AnswerToFaqResultDto toAnswerToFaqResultDto(Question question, Long answerId, Long faqCardId) {
-        return AnswerResponseDto.AnswerToFaqResultDto.builder()
-                .questionId(question.getId())
-                .questionContent(question.getContent())
-                .answerId(answerId)
-                .faqCardId(faqCardId)
-                .build();
-    }
-
     public static AnswerResponseDto.TalkBoxOpenStatusDto toTalkBoxOpenStatusDto(Long itemId, TalkBoxOpenStatus openStatus) {
         return AnswerResponseDto.TalkBoxOpenStatusDto.builder()
                 .itemId(itemId)

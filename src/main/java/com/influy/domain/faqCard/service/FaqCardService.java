@@ -15,6 +15,5 @@ public interface FaqCardService {
     FaqCard update(CustomUserDetails userDetails, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request);
     FaqCard pinUpdate(CustomUserDetails userDetails, Long itemId, Long faqCardId, boolean isPinned);
     void delete(CustomUserDetails userDetails, Long itemId, Long faqCardId);
-    FaqCard answerToFaq(SellerProfile seller, AnswerRequestDto.QuestionToFaqDto request);
 }
 

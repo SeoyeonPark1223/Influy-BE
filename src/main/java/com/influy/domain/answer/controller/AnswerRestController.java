@@ -6,12 +6,8 @@ import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.answer.entity.AnswerType;
 import com.influy.domain.answer.service.AnswerService;
-import com.influy.domain.faqCard.dto.FaqCardRequestDto;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
-import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
-import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Tag(name = "셀러 톡박스 답변", description = "셀러 톡박스 답변 관련 API")
 @RestController
@@ -79,23 +74,6 @@ public class AnswerRestController {
 //        return ApiResponse.onSuccess(SuccessStatus._OK);
 //    }
 
-    @PostMapping("/{questionCategoryId}/answers/{answerId}/to-faq")
-    @Operation(summary = "답변 기반 faq 카드 등록")
-    public ApiResponse<AnswerResponseDto.AnswerToFaqResultDto> answerToFaq(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                         @PathVariable("itemId") Long itemId,
-                                                                         @PathVariable("questionCategoryId") Long questionCategoryId,
-                                                                           @PathVariable("answerId") Long answerId,
-                                                                         @RequestBody @Valid AnswerRequestDto.QuestionToFaqDto request) {
-        return ApiResponse.onSuccess(answerService.answerToFaq(userDetails, itemId, questionCategoryId, answerId, request));
-    }
-
-    @PostMapping("/answers/{answerId}/view-faq")
-    @Operation(summary = "답변 id로 faq 카드 조회")
-    public ApiResponse<FaqCardResponseDto.FaqCardDto> viewFaqWithAnswerId(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                          @PathVariable("itemId") Long itemId,
-                                                                          @PathVariable("answerId") Long answerId) {
-        return ApiResponse.onSuccess(answerService.viewFaqWithAnswerId(userDetails, itemId, answerId));
-    }
 
     @PostMapping("/open-status")
     @Operation(summary = "톡박스 오픈 여부 수정")

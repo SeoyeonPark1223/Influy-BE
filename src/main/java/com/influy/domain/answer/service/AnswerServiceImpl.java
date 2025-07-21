@@ -6,12 +6,6 @@ import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.answer.entity.AnswerType;
 import com.influy.domain.answer.repository.AnswerRepository;
-import com.influy.domain.faqCard.converter.FaqCardConverter;
-import com.influy.domain.faqCard.dto.FaqCardRequestDto;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
-import com.influy.domain.faqCard.entity.FaqCard;
-import com.influy.domain.faqCard.repository.FaqCardRepository;
-import com.influy.domain.faqCard.service.FaqCardService;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
@@ -39,8 +33,6 @@ public class AnswerServiceImpl implements AnswerService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionTagRepository questionTagRepository;
-    private final FaqCardService faqCardService;
-    private final FaqCardRepository faqCardRepository;
 
     @Override
     @Transactional
@@ -101,33 +93,6 @@ public class AnswerServiceImpl implements AnswerService {
         }
 
         return AnswerConverter.toDeleteResultDto(request.getQuestionIdList());
-    }
-
-    @Override
-    @Transactional
-    public AnswerResponseDto.AnswerToFaqResultDto answerToFaq(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, Long answerId, AnswerRequestDto.QuestionToFaqDto request) {
-        SellerProfile seller = memberService.checkSeller(userDetails);
-        checkTalkBoxOpenStatus(itemId);
-        Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ANSWER_NOT_FOUND));
-        Question question = answer.getQuestion();
-
-        FaqCard faqCard = faqCardService.answerToFaq(seller, request);
-        answer.setFaqCard(faqCard);
-        faqCard.setAnswer(answer);
-
-        return AnswerConverter.toAnswerToFaqResultDto(question, answer.getId(), faqCard.getId());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public FaqCardResponseDto.FaqCardDto viewFaqWithAnswerId(CustomUserDetails userDetails, Long itemId, Long answerId) {
-        memberService.checkSeller(userDetails);
-        Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ANSWER_NOT_FOUND));
-
-        FaqCard faqCard = faqCardRepository.findByAnswer(answer);
-        return FaqCardConverter.toFaqCardDto(faqCard);
     }
 
     @Override

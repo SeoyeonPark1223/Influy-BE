@@ -15,5 +15,4 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     WHERE a.question.questionTag.id = :questionTagId
     """)
     List<Answer> findAllByQuestionTagId(Long questionTagId);
-    Optional<Answer> findByQuestion(Question question);
 }

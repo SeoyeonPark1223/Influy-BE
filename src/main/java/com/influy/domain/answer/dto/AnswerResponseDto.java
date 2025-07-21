@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.swing.*;
 import java.util.List;
 
 public class AnswerResponseDto {
@@ -70,23 +69,6 @@ public class AnswerResponseDto {
 //
 //    }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AnswerToFaqResultDto {
-        @Schema(description = "질문 id", example = "1")
-        private Long questionId;
-
-        @Schema(description = "답변 id", example = "1")
-        private Long answerId;
-
-        @Schema(description = "faq id", example = "1")
-        private Long faqCardId;
-
-        @Schema(description = "질문 내용", example = "올랄라")
-        private String questionContent;
-    }
 
     @Getter
     @Builder

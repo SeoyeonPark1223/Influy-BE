@@ -34,9 +34,6 @@ import java.util.Objects;
 public class FaqCardServiceImpl implements FaqCardService {
     private final FaqCategoryRepository faqCategoryRepository;
     private final FaqCardRepository faqCardRepository;
-    private final SellerProfileRepository sellerRepository;
-    private final ItemRepository itemRepository;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
     @Override
@@ -122,18 +119,6 @@ public class FaqCardServiceImpl implements FaqCardService {
         faqCategory.getFaqCardList().remove(faqCard);
         seller.getFaqCardList().remove(faqCard);
         faqCardRepository.delete(faqCard);
-    }
-
-    @Override
-    @Transactional
-    public FaqCard answerToFaq(SellerProfile seller, AnswerRequestDto.QuestionToFaqDto request) {
-        FaqCategory faqCategory = faqCategoryRepository.findById(request.getFaqCategoryId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
-
-        FaqCard faqCard = FaqCardConverter.toFaqCard(request, faqCategory, seller);
-        seller.getFaqCardList().add(faqCard);
-        faqCategory.getFaqCardList().add(faqCard);
-        return faqCardRepository.save(faqCard);
     }
 
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {
