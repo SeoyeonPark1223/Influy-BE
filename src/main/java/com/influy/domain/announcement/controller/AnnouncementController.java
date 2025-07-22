@@ -40,16 +40,7 @@ public class AnnouncementController {
                                                                              @Valid @ParameterObject PageRequestDto pageable) {
 
         Page<Announcement> announcements = announcementService.getAnnouncementsOf(sellerId,pageable);
-
-        Page<AnnouncementResponseDTO.General> dto = announcements.map(AnnouncementConverter::toGeneralDTO);
-        AnnouncementResponseDTO.GeneralList body = AnnouncementResponseDTO.GeneralList.builder()
-                .announcements(dto.getContent())
-                .listSize(dto.getSize())
-                .totalElements(dto.getTotalElements())
-                .isFirst(dto.isFirst())
-                .isLast(dto.isLast())
-                .totalPage(dto.getTotalPages())
-                .build();
+        AnnouncementResponseDTO.GeneralList body = AnnouncementConverter.toListDTO(announcements);
 
         return ApiResponse.onSuccess(body);
     }

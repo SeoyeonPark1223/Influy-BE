@@ -57,7 +57,8 @@ public class ProfileLinkController {
     //링크 리스트 조회
     @GetMapping("/seller/{sellerId}/market-links")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
     @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다.")
-    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId){
+    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId,
+                                                                         @P){
 
         List<ProfileLink> profileLinks = profileLinkServiceImpl.getLinkListOf(sellerId);
 
