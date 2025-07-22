@@ -10,10 +10,6 @@ import java.util.List;
 
 public class SellerProfileConverter {
 
-    public static SellerProfile toSeller(SellerProfileRequestDTO.Join requestDTO) {
-        return null;
-    }
-
     public static SellerProfileResponseDTO.SellerProfile toSellerProfileDTO(SellerProfile seller) {
 
         Member member = seller.getMember();
