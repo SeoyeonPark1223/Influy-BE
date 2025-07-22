@@ -129,8 +129,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public SellerProfile checkSeller (CustomUserDetails userDetails) {
-        Member member = memberRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Member member = userDetails.getMember();
+        System.out.println(member.getRole());
 
         if (member.getRole() == MemberRole.SELLER) {
             return sellerProfileRepository.findByMemberId(member.getId())

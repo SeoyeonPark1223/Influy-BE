@@ -1,5 +1,6 @@
 package com.influy.domain.sellerProfile.controller;
 
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -21,16 +22,15 @@ import org.springframework.web.bind.annotation.*;
 public class SellerProfileController {
 
     private final SellerProfileService sellerService;
+    private final MemberService memberService;
 
 
     //프로필 조회
-    @GetMapping("/{sellerId}/profile")//로그인 구현 이후 엔드포인트 변경
+    @GetMapping("/{sellerId}/profile")
     @Operation(summary = "셀러 프로필 조회 API", description = "아무나 사용할 수 있는 조회 API")
     public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@PathVariable("sellerId") Long sellerId){
 
-        //로그인 구현 이후 SellerProfile 객체 반환
         SellerProfile seller = sellerService.getSellerProfile(sellerId);
-
         SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(seller);
 
         return ApiResponse.onSuccess(body);
@@ -42,18 +42,18 @@ public class SellerProfileController {
     public ApiResponse<SellerProfileResponseDTO.SellerProfile> updateSellerProfile(@RequestBody SellerProfileRequestDTO.UpdateProfile requestBody,
                                                                                    @AuthenticationPrincipal CustomUserDetails userDetails){
 
-        SellerProfile sellerProfile = sellerService.getSellerProfile(userDetails.getId());
+        SellerProfile sellerProfile = memberService.checkSeller(userDetails);
         SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(sellerService.updateSeller(sellerProfile,requestBody));
 
         return ApiResponse.onSuccess(body);
     }
 
-    @PutMapping
+    @PutMapping("/item-sort")
     @Operation(summary = "셀러 마켓 아이템 정렬방식 수정 API")
     public ApiResponse<SellerProfileResponseDTO.SortType> updateItemSort(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                          @RequestParam("sort-type") ItemSortType sortBy){
 
-        SellerProfile sellerProfile = sellerService.getSellerProfile(userDetails.getId());
+        SellerProfile sellerProfile = memberService.checkSeller(userDetails);
         SellerProfileResponseDTO.SortType body  = SellerProfileConverter.toSortTypeDTO(sellerService.updateItemSortType(sellerProfile,sortBy));
 
         return ApiResponse.onSuccess(body);

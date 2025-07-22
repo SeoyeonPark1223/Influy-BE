@@ -38,7 +38,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final ItemService itemService;
 
-    @GetMapping("seller/items/{itemId}/questions/{questionTagId}")
+    @GetMapping("seller/items/{itemId}/talkbox/{questionTagId}")
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
     public ApiResponse<QuestionResponseDTO.GeneralPage> getQuestions(@PathVariable("itemId") Long itemId,
                                                                      @PathVariable("questionTagId") Long questionTagId,
@@ -67,10 +67,14 @@ public class QuestionController {
 
     }
 
-    @PostMapping("user/items/{sellerId}/questions/{questionCategoryId}")
+    
+    //itemId 받게 수정하기
+    @PostMapping("user/items/{sellerId}/talkbox/{questionCategoryId}")
     @Operation(summary = "질문 작성", description = "질문 작성 API")
-    public ApiResponse<QuestionResponseDTO.General> postQuestion(@RequestBody QuestionRequestDTO.Create request, @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                 @PathVariable("sellerId") Long sellerId, @PathVariable("questionCategoryId") Long questionCategoryId){
+    public ApiResponse<QuestionResponseDTO.General> postQuestion(@RequestBody QuestionRequestDTO.Create request,
+                                                                 @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                 @PathVariable("sellerId") Long sellerId,
+                                                                 @PathVariable("questionCategoryId") Long questionCategoryId){
 
         Member member = memberService.findById(userDetails.getId());
         SellerProfile seller = sellerService.getSellerProfile(sellerId);
