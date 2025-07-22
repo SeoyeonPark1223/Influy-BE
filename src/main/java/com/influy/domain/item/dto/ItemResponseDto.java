@@ -172,4 +172,16 @@ public class ItemResponseDto {
         @Schema(description = "해당 아이템 톡박스 오픈 여부", example = "OPEN")
         private TalkBoxOpenStatus talkBoxOpenStatus;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkBoxOpenStatusDto {
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+
+        @Schema(description = "해당 톡박스 상태 [INITIAL, OPENED, CLOSED]", example = "OPENED")
+        private TalkBoxOpenStatus status;
+    }
 }

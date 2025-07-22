@@ -20,10 +20,4 @@ public class AnswerRequestDto {
         @Schema(description = "답변 내용", example = "이건 이거임당")
         private String answerContent;
     }
-
-    @Getter
-    public static class DeleteDto {
-        @Schema(description = "삭제할 질문 id 리스트 (1개도 가능)", example = "[1, 2]")
-        private List<Long> questionIdList;
-    }
 }

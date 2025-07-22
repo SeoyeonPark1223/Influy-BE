@@ -1,10 +1,12 @@
 package com.influy.domain.item.controller;
 
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
@@ -102,5 +104,13 @@ public class ItemRestController {
     public ApiResponse<ItemResponseDto.ItemOverviewDto> getItemInfo(@PathVariable("sellerId") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(itemService.getItemOverview(sellerId, itemId));
+    }
+
+    @PostMapping("/items/{itemId}/talkbox/open-status")
+    @Operation(summary = "톡박스 오픈 여부 수정")
+    public ApiResponse<ItemResponseDto.TalkBoxOpenStatusDto> changeOpenStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                @PathVariable("itemId") Long itemId,
+                                                                                @RequestParam(name = "openStatus", defaultValue = "OPENED") TalkBoxOpenStatus openStatus) {
+        return ApiResponse.onSuccess(itemService.changeOpenStatus(userDetails, itemId, openStatus));
     }
 }

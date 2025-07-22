@@ -1,5 +1,7 @@
 package com.influy.domain.item.service;
 
+import com.influy.domain.answer.converter.AnswerConverter;
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
 import com.influy.domain.faqCard.converter.FaqCardConverter;
@@ -10,6 +12,7 @@ import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
@@ -233,6 +236,19 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         return ItemConverter.toItemOverviewDto(item);
+    }
+
+    @Override
+    @Transactional
+    public ItemResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus) {
+        memberService.checkSeller(userDetails);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+
+        if (openStatus == TalkBoxOpenStatus.INITIAL) throw new GeneralException((ErrorStatus.INVALID_TALKBOX_REQUEST));
+        item.setTalkBoxOpenStatus(openStatus);
+
+        return ItemConverter.toTalkBoxOpenStatusDto(itemId, openStatus);
     }
 
     @Override

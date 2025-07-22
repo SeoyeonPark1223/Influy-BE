@@ -1,10 +1,12 @@
 package com.influy.domain.item.converter;
 
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
@@ -123,6 +125,13 @@ public class ItemConverter {
                 .tagline(item.getTagline())
                 .mainImg(item.getImageList().getFirst().getImageLink())
                 .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .build();
+    }
+
+    public static ItemResponseDto.TalkBoxOpenStatusDto toTalkBoxOpenStatusDto(Long itemId, TalkBoxOpenStatus openStatus) {
+        return ItemResponseDto.TalkBoxOpenStatusDto.builder()
+                .itemId(itemId)
+                .status(openStatus)
                 .build();
     }
 }

@@ -1,9 +1,11 @@
 package com.influy.domain.item.service;
 
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
@@ -21,6 +23,7 @@ public interface ItemService {
     Integer getCount(Long sellerId, Boolean isArchived);
     ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing, Long memberId);
     ItemResponseDto.ItemOverviewDto getItemOverview(Long sellerId, Long itemId);
+    ItemResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus);
 
     Item findById(Long itemId);
 }

@@ -22,10 +22,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT COUNT(q) AS cnt " +
             "FROM Question q " +
-            "JOIN q.item i " +
-            "JOIN i.seller s " +
-            "WHERE s = :seller AND q.member = :member " +
-            "GROUP BY q.member.id")
+            "LEFT JOIN q.item i " +
+            "LEFT JOIN i.seller s " +
+            "WHERE s = :seller AND q.member = :member ")
     Long countByMemberAndSeller(@Param("member") Member member, @Param("seller") SellerProfile seller);
 
     @Query("SELECT q.member.id AS memberId, COUNT(q) AS cnt " +
