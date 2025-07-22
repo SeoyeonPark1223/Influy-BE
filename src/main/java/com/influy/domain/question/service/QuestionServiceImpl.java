@@ -53,6 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         QuestionTag questionTag = aiService.classifyQuestion(content, questionCategory);
         Question question = QuestionConverter.toQuestion(seller,member,content, questionTag);
+        questionTag.getQuestionList().add(question);
 
 
         return questionRepository.save(question);

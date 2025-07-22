@@ -19,7 +19,6 @@ public class QuestionTagServiceImpl implements QuestionTagService{
     public QuestionTag createTag(String tagName, QuestionCategory questionCategory) {
 
         QuestionTag tag =  QuestionTagConverter.toQuestionTag(tagName,questionCategory);
-        System.out.println("컨버터까지 성공:"+tag.getName());
         return questionTagRepository.save(tag);
     }
 }
