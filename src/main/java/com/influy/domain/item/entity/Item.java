@@ -5,6 +5,7 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.like.entity.Like;
+import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
@@ -70,6 +71,10 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Answer> answerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Question> questionList = new ArrayList<>();
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

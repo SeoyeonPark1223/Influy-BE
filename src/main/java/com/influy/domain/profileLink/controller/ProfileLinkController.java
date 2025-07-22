@@ -1,14 +1,22 @@
 package com.influy.domain.profileLink.controller;
 
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.profileLink.converter.ProfileLinkConverter;
 import com.influy.domain.profileLink.dto.ProfileLinkRequestDTO;
 import com.influy.domain.profileLink.dto.ProfileLinkResponseDTO;
 import com.influy.domain.profileLink.entity.ProfileLink;
 import com.influy.domain.profileLink.service.ProfileLinkService;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +26,16 @@ import java.util.List;
 @Tag(name = "링크 인 바이오")
 public class ProfileLinkController {
     private final ProfileLinkService profileLinkServiceImpl;
+    private final SellerProfileService sellerService;
+    private final MemberService memberService;
     //링크 생성
     @PostMapping("/seller/market-links")
     @Operation(summary = "링크 추가",description = "링크를 추가합니다.")
-    public ApiResponse<ProfileLinkResponseDTO.General> createLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
+    public ApiResponse<ProfileLinkResponseDTO.General> createLink(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                   @RequestBody ProfileLinkRequestDTO request){
 
-        ProfileLink profileLink = profileLinkServiceImpl.createLinkOf(sellerId, request);
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        ProfileLink profileLink = profileLinkServiceImpl.createLinkOf(seller, request);
 
         ProfileLinkResponseDTO.General body = ProfileLinkConverter.toGeneralDTO(profileLink);
 
@@ -34,11 +45,12 @@ public class ProfileLinkController {
     //링크 수정
     @PatchMapping("/seller/market-links/{linkId}")
     @Operation(summary = "링크 수정",description = "링크를 수정합니다.")
-    public ApiResponse<ProfileLinkResponseDTO.General> updateLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
+    public ApiResponse<ProfileLinkResponseDTO.General> updateLink(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                   @PathVariable("linkId") Long linkId,
                                                                   @RequestBody ProfileLinkRequestDTO request){
 
-        ProfileLink profileLink = profileLinkServiceImpl.updateLinkOf(sellerId, linkId, request);
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        ProfileLink profileLink = profileLinkServiceImpl.updateLinkOf(seller, linkId, request);
 
         ProfileLinkResponseDTO.General body = ProfileLinkConverter.toGeneralDTO(profileLink);
 
@@ -47,7 +59,7 @@ public class ProfileLinkController {
 
     //링크 리스트 조회
     @GetMapping("/seller/{sellerId}/market-links")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
-    @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다.")
+    @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다. 최대 개수가 많지 않으므로 페이지네이션 X")
     public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId){
 
         List<ProfileLink> profileLinks = profileLinkServiceImpl.getLinkListOf(sellerId);
@@ -61,10 +73,11 @@ public class ProfileLinkController {
 
     @DeleteMapping("/seller/market-links/{linkId}")
     @Operation(summary = "링크 삭제",description = "링크를 삭제합니다.")
-    public ApiResponse<String> deleteLink(@RequestParam(value="sellerId",defaultValue = "1")Long sellerId,
+    public ApiResponse<String> deleteLink(@AuthenticationPrincipal CustomUserDetails userDetails,
                                           @PathVariable("linkId") Long linkId){
 
-        profileLinkServiceImpl.deleteLinkOf(sellerId,linkId);
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        profileLinkServiceImpl.deleteLinkOf(seller,linkId);
 
         return ApiResponse.onSuccess("삭제에 성공했습니다.");
     }

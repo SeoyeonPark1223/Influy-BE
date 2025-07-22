@@ -50,6 +50,7 @@ public class JwtTokenProvider {
 
     //accessToken 생성
     public String generateAccessToken(Long memberId, MemberRole role) {
+
         return Jwts.builder()
                 .setSubject(String.valueOf(memberId))
                 .claim("role", role.getAuthority())

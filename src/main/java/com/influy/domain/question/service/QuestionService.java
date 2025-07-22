@@ -1,5 +1,6 @@
 package com.influy.domain.question.service;
 
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -13,7 +14,7 @@ public interface QuestionService {
 
     Page<Question> getQuestionsByTag(Long questionTagId, SellerProfile sellerProfile, Boolean isAnswered, Pageable pageable);
 
-    Question createQuestion(Member member, SellerProfile seller, Long questionCategoryId, String content);
+    Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content);
 
     Long getTimesMemberAskedSeller(Member member, SellerProfile seller);
 
