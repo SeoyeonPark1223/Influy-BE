@@ -3,6 +3,7 @@ package com.influy.domain.question.repository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.dto.jpql.JPQLResult;
+import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -14,6 +15,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
@@ -30,4 +33,21 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
     Page<Question> findAllByQuestionTagIdAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable);
+    @Query("""
+    SELECT q
+    FROM Question q
+    JOIN q.questionTag qt
+    WHERE qt.questionCategory = :questionCategory
+    AND q.isAnswered = :isAnswered
+    """)
+    Page<Question> findAllByQuestionCategoryAndIsAnswered(QuestionCategory questionCategory, Boolean isAnswered, Pageable pageable);
+
+    @Query("""
+        SELECT q FROM Question q
+        WHERE q.id = :questionId
+          AND q.questionTag.id = :questionTagId
+          AND q.questionTag.questionCategory.id = :questionCategoryId
+          AND q.questionTag.questionCategory.item.id = :itemId
+    """)
+    Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
 }

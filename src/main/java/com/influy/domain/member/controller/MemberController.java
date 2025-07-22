@@ -113,7 +113,8 @@ public class MemberController {
     @DeleteMapping("/delete")
     @Operation(summary = "멤버 탈퇴 API")
     public ApiResponse<SuccessStatus> deleteMember( @AuthenticationPrincipal CustomUserDetails userDetails){
-        Member member = userDetails.getMember();
+        Long memberId = userDetails.getId();
+        Member member = memberService.findById(memberId);
         memberService.deleteMember(member);
 
         return ApiResponse.onSuccess(SuccessStatus.ACCOUNT_DELETE_SUCCESS);

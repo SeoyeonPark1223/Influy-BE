@@ -11,8 +11,6 @@ import java.util.Map;
 
 public interface QuestionService {
 
-    Page<Question> getQuestionList(QuestionCategory category, Pageable p);
-
     Page<Question> getQuestionsByTag(Long questionTagId, SellerProfile sellerProfile, Boolean isAnswered, Pageable pageable);
 
     Question createQuestion(Member member, SellerProfile seller, Long questionCategoryId, String content);

@@ -19,8 +19,8 @@ public class QuestionCategoryConverter {
 
     public static QuestionCategoryResponseDto.ViewDto toViewDto(QuestionCategory questionCategory) {
         return QuestionCategoryResponseDto.ViewDto.builder()
-                .id(questionCategory.getId())
-                .category(questionCategory.getName())
+                .questionCategoryId(questionCategory.getId())
+                .questionCategoryName(questionCategory.getName())
                 .build();
     }
 
@@ -32,8 +32,8 @@ public class QuestionCategoryConverter {
 
     public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
         return QuestionCategoryResponseDto.ViewWithCntDto.builder()
-                .id(questionCategory.getId())
-                .category(questionCategory.getName())
+                .questionCategoryId(questionCategory.getId())
+                .questionCategoryName(questionCategory.getName())
                 .questionCnt(questionCnt)
                 .unCheckedCnt(unCheckedCnt)
                 .build();

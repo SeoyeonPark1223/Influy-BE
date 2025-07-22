@@ -32,10 +32,6 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionTagRepository questionTagRepository;
     private final AiService aiService;
 
-    @Override
-    public Page<Question> getQuestionList(QuestionCategory category, Pageable pageable) {
-        return null;
-    }
 
     @Override
     public Page<Question> getQuestionsByTag(Long questionTagId, SellerProfile seller, Boolean isAnswered, Pageable pageable) {

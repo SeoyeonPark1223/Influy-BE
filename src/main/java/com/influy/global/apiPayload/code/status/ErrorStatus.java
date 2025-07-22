@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseCode {
     TIKTOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 틱톡 계정입니다."),
     INSTAGRAM_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL ALREADY EXISTS", "중복된 인스타 계정입니다."),
     REQUIRES_INTERESTED_CATEGORY(HttpStatus.BAD_REQUEST, "REQUIRES INTERESTED CATEGORY", "관심 카테고리 리스트는 필수입니다"),
+    LOGIN_REQUIRED(HttpStatus.BAD_REQUEST, "LOGIN REQUIRED", "로그인이 필요한 서비스입니다."),
 
 
     //공지
@@ -41,6 +42,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 셀러 에러 응답
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
+    SELLER_REQUIRED(HttpStatus.BAD_REQUEST, "SELLER REQUIRED", "셀러만 사용할 수 있습니다."),
     
     //링크 인 바이오 관련 응답
     LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK NOT FOUND", "링크를 찾을 수 없습니다."),
@@ -66,6 +68,11 @@ public enum ErrorStatus implements BaseCode {
     QUESTION_TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION TAG NOT FOUND", "질문 카테고리의 소분류 태그를 찾을 수 없습니다."),
     INVALID_QUESTION_ITEM_RELATION(HttpStatus.BAD_REQUEST, "INVALID QUESTION ITEM RELATION", "해당 질문 카테고리의 아이템을 찾을 수 없습니다."),
     TALKBOX_ALREADY_OPENED(HttpStatus.BAD_REQUEST, "TALKBOX ALREADY OPENED", "톡박스가 최초로 열린 이후에는 질문 카테고릴 수정할 수 없습니다."),
+    TALKBOX_CLOSED(HttpStatus.BAD_REQUEST, "TALKBOX CLOSED", "톡박스가 닫혀있습니다."),
+    QUESTION_INVALID_RELATION(HttpStatus.BAD_REQUEST, "QUESTION INVALID RELATION", "해당 질문을 조회할 수 없습니다."),
+    QUESTIONTAG_INVALID_RELATION(HttpStatus.BAD_REQUEST,"QUESTIONTAG INVALID RELATION", "해당 질문 태그를 조회할 수 없습니다."),
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER NOT FOUND", "해당 질문의 답변을 찾을 수 없습니다."),
+    INVALID_TALKBOX_REQUEST(HttpStatus.BAD_REQUEST, "INVALID TALKBOX REQUEST", "다시 INITIAL로 되돌릴 수 없습니다."),
 
     // 정렬 관련 응답
     UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬이 아닙니다."),

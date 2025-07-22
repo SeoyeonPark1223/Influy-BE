@@ -16,6 +16,7 @@ import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +83,4 @@ public class QuestionController {
 
         return ApiResponse.onSuccess(body);
     }
-
 }

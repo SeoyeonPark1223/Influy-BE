@@ -6,12 +6,14 @@ import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.service.LikeService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "찜", description = "찜 관련 API")
@@ -70,17 +72,17 @@ public class LikeRestController {
 
     @GetMapping("home/seller-likes")
     @Operation(summary = "멤버의 셀러 찜 리스트 조회")
-    public ApiResponse<LikeResponseDto.SellerLikePageDto> getSellerLikePage(@RequestParam(value = "memberId", defaultValue = "1") Long memberId,
+    public ApiResponse<LikeResponseDto.SellerLikePageDto> getSellerLikePage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                             @Valid @ParameterObject PageRequestDto pageRequest) {
-        Page<Like> likePage = likeService.toGetSellerLikePage(memberId, pageRequest);
+        Page<Like> likePage = likeService.toGetSellerLikePage(userDetails.getId(), pageRequest);
         return ApiResponse.onSuccess(LikeConverter.toSellerLikePageDto(likePage));
     }
 
     @GetMapping("home/item-likes")
     @Operation(summary = "멤버의 아이템 찜 리스트 조회")
-    public ApiResponse<LikeResponseDto.ItemLikePageDto> getItemLikePage(@RequestParam(value = "memberId", defaultValue = "1") Long memberId,
+    public ApiResponse<LikeResponseDto.ItemLikePageDto> getItemLikePage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                         @Valid @ParameterObject PageRequestDto pageRequest) {
-        Page<Like> likePage = likeService.toGetItemLikePage(memberId, pageRequest);
+        Page<Like> likePage = likeService.toGetItemLikePage(userDetails.getId(), pageRequest);
         return ApiResponse.onSuccess(LikeConverter.toItemLikePageDto(likePage));
     }
 }

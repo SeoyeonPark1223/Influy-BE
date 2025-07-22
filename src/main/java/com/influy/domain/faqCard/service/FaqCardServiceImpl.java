@@ -1,5 +1,6 @@
 package com.influy.domain.faqCard.service;
 
+import com.influy.domain.answer.dto.AnswerRequestDto;
 import com.influy.domain.faqCard.converter.FaqCardConverter;
 import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
@@ -9,11 +10,16 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.faqCategory.repository.FaqCategoryRepository;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
+import com.influy.domain.member.repository.MemberRepository;
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +34,7 @@ import java.util.Objects;
 public class FaqCardServiceImpl implements FaqCardService {
     private final FaqCategoryRepository faqCategoryRepository;
     private final FaqCardRepository faqCardRepository;
-    private final SellerProfileRepository sellerRepository;
-    private final ItemRepository itemRepository;
+    private final MemberService memberService;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,10 +52,9 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional
-    public FaqCard create(Long sellerId, Long itemId, Long faqCategoryId, FaqCardRequestDto.CreateDto request) {
-        FaqCategory faqCategory = checkAll(sellerId, itemId, faqCategoryId);
-        SellerProfile seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+    public FaqCard create(CustomUserDetails userDetails, Long itemId, Long faqCategoryId, FaqCardRequestDto.CreateDto request) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        FaqCategory faqCategory = checkAll(seller.getId(), itemId, faqCategoryId);
 
         FaqCard faqCard = FaqCardConverter.toFaqCard(request, faqCategory, seller);
         seller.getFaqCardList().add(faqCard);
@@ -70,10 +74,11 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional
-    public FaqCard update(Long sellerId, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request) {
+    public FaqCard update(CustomUserDetails userDetails, Long itemId, Long faqCardId, FaqCardRequestDto.UpdateDto request) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
-        FaqCategory faqCategory = checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+        FaqCategory faqCategory = checkAll(seller.getId(), itemId, faqCard.getFaqCategory().getId());
 
         if (request.getQuestionContent() != null) faqCard.setQuestionContent(request.getQuestionContent());
         if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent());
@@ -92,10 +97,11 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional
-    public FaqCard pinUpdate(Long sellerId, Long itemId, Long faqCardId, boolean isPinned) {
+    public FaqCard pinUpdate(CustomUserDetails userDetails, Long itemId, Long faqCardId, boolean isPinned) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
-        checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
+        checkAll(seller.getId(), itemId, faqCard.getFaqCategory().getId());
 
         faqCard.setIsPinned(isPinned);
 
@@ -104,27 +110,15 @@ public class FaqCardServiceImpl implements FaqCardService {
 
     @Override
     @Transactional
-    public void delete(Long sellerId, Long itemId, Long faqCardId) {
+    public void delete(CustomUserDetails userDetails, Long itemId, Long faqCardId) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
         FaqCard faqCard = faqCardRepository.findById(faqCardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CARD_NOT_FOUND));
-        FaqCategory faqCategory = checkAll(sellerId, itemId, faqCard.getFaqCategory().getId());
-        SellerProfile seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        FaqCategory faqCategory = checkAll(seller.getId(), itemId, faqCard.getFaqCategory().getId());
 
         faqCategory.getFaqCardList().remove(faqCard);
         seller.getFaqCardList().remove(faqCard);
         faqCardRepository.delete(faqCard);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public FaqCardResponseDto.ItemInfoDto getItemInfo(Long sellerId, Long itemId) {
-        sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-
-        return FaqCardConverter.toItemInfoDto(item);
     }
 
     FaqCategory checkAll (Long sellerId, Long itemId, Long faqCategoryId) {

@@ -1,8 +1,11 @@
 package com.influy.domain.faqCard.entity;
 
+import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.faqCategory.entity.FaqCategory;
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
