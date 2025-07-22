@@ -1,7 +1,10 @@
 package com.influy.domain.sellerProfile.service;
 
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.like.entity.LikeStatus;
+import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
@@ -17,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
 
     private final ItemRepository itemRepository;
     private final SellerProfileRepository sellerProfileRepository;
+    private final LikeRepository likeRepository;
 
     public SellerProfile getSellerProfile(Long sellerId){
         return sellerProfileRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
@@ -62,5 +68,16 @@ public class SellerProfileServiceImpl implements SellerProfileService {
         SellerProfile sellerProfile = SellerProfileConverter.toSellerProfile(member,request);
         member.setSellerProfile(sellerProfile);
         return sellerProfileRepository.save(sellerProfile);
+    }
+
+    @Override
+    public boolean getIsLikedByMember(SellerProfile seller, Member member) {
+
+        return likeRepository.existsByMemberAndSellerAndLikeStatus(member,seller,LikeStatus.LIKE);
+    }
+
+    @Override
+    public List<ItemJPQLResponse> getMarketItems(Long sellerId) {
+        return itemRepository.countBySellerIdGroupByIsArchived(sellerId);
     }
 }

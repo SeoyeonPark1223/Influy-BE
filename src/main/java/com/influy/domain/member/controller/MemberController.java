@@ -69,6 +69,7 @@ public class MemberController {
     }
 
     @GetMapping("/auth/reissue")
+    @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰(쿠키)만 있으면 됨")
     public ApiResponse<AuthResponseDTO.LoginResponse> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
         TokenPair tokenPair = authService.reissueToken(request, response);
@@ -100,7 +101,7 @@ public class MemberController {
 
 
     @GetMapping("/{memberId}/profile")
-    @Operation(summary = "유저용 프로필 조회", description = "셀러용은 셀러쪽 api 사용하세요")
+    @Operation(summary = "유저용 프로필 조회", description = "셀러 프사, 닉네임, 아이디만 필요하면 이거 써도 됩니다. 마켓 정보는 셀러 프로필 조회에서!")
     public ApiResponse<MemberResponseDTO.MemberProfile> getMemberProfile(@PathVariable("memberId") Long memberId){
 
         Member member = memberService.findById(memberId);

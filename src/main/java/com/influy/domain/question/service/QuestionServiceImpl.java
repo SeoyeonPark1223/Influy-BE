@@ -1,6 +1,7 @@
 package com.influy.domain.question.service;
 
 import com.influy.domain.ai.service.AiService;
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.jpql.JPQLResult;
@@ -42,14 +43,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public Question createQuestion(Member member, SellerProfile seller, Long questionCategoryId, String content) {
-
-        QuestionCategory questionCategory = questionCategoryRepository.findById(questionCategoryId)
-                .orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+    public Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content) {
 
         QuestionTag questionTag = aiService.classifyQuestion(content, questionCategory);
-        Question question = QuestionConverter.toQuestion(seller,member,content, questionTag);
+        Question question = QuestionConverter.toQuestion(item,member,content, questionTag);
         questionTag.getQuestionList().add(question);
+        item.getQuestionList().add(question);
 
 
         return questionRepository.save(question);

@@ -1,5 +1,10 @@
 package com.influy.domain.sellerProfile.controller;
 
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
+import com.influy.domain.item.service.ItemService;
+import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -14,46 +19,88 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Tag(name="셀러")
 @RequiredArgsConstructor
-@RequestMapping("/seller")
 public class SellerProfileController {
 
     private final SellerProfileService sellerService;
+    private final MemberService memberService;
+    private final ItemService itemService;
 
 
     //프로필 조회
-    @GetMapping("/{sellerId}/profile")//로그인 구현 이후 엔드포인트 변경
-    @Operation(summary = "셀러 프로필 조회 API", description = "아무나 사용할 수 있는 조회 API")
-    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@PathVariable("sellerId") Long sellerId){
+    @GetMapping("seller/profile")
+    @Operation(summary = "셀러 프로필 수정 시 기본값 조회 API", description = "셀러 본인만 가능")
+    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        //로그인 구현 이후 SellerProfile 객체 반환
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
+        SellerProfile seller = memberService.checkSeller(userDetails);
         SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(seller);
 
         return ApiResponse.onSuccess(body);
     }
 
+    //일반 유저의 프로필 조회
+    @GetMapping("user/{sellerId}/market")
+    @Operation(summary = "셀러 마켓 조회 API", description = "일반 사용자가 셀러 마켓 들어갔을 때")
+    public ApiResponse<SellerProfileResponseDTO.MarketProfile> getSellerMarket(@PathVariable("sellerId") Long sellerId,
+                                                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+        boolean isLiked = false;
+        if(userDetails!=null){//회원일 경우에만 like 표시
+            Member member = userDetails.getMember();
+            isLiked = sellerService.getIsLikedByMember(seller,member);
+        }
+        Long publicItems = Long.valueOf(itemService.getCount(seller.getId(),false));
+        Long reviews = 0L;
+
+        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked, publicItems, reviews);
+
+
+
+        return ApiResponse.onSuccess(body);
+    }
+
+    //본인이 프로필 조회
+    @GetMapping("seller/my-market")
+    @Operation(summary = "셀러 마켓 조회 API", description = "셀러 본인이 셀러 페이지 들어갔을 때")
+    public ApiResponse<SellerProfileResponseDTO.MarketProfile> getMyMarket(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        boolean isLiked = sellerService.getIsLikedByMember(seller,seller.getMember());
+
+        List<ItemJPQLResponse> itemCountList = sellerService.getMarketItems(seller.getId());
+        Long reviews = 0L;
+
+        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked,itemCountList, reviews);
+
+        return ApiResponse.onSuccess(body);
+    }
+
+
+
     //프로필 수정
-    @PatchMapping("/profile")
+    @PatchMapping("seller/profile")
     @Operation(summary = "셀러가 본인 프로필 수정 API", description = "수정한 필드만 보내면 됨. 유저 프로필은 회원쪽 api 사용하세요")
     public ApiResponse<SellerProfileResponseDTO.SellerProfile> updateSellerProfile(@RequestBody SellerProfileRequestDTO.UpdateProfile requestBody,
                                                                                    @AuthenticationPrincipal CustomUserDetails userDetails){
 
-        SellerProfile sellerProfile = sellerService.getSellerProfile(userDetails.getId());
+        SellerProfile sellerProfile = memberService.checkSeller(userDetails);
         SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(sellerService.updateSeller(sellerProfile,requestBody));
 
         return ApiResponse.onSuccess(body);
     }
 
-    @PutMapping
+    @PutMapping("seller/item-sort")
     @Operation(summary = "셀러 마켓 아이템 정렬방식 수정 API")
     public ApiResponse<SellerProfileResponseDTO.SortType> updateItemSort(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                          @RequestParam("sort-type") ItemSortType sortBy){
 
-        SellerProfile sellerProfile = sellerService.getSellerProfile(userDetails.getId());
+        SellerProfile sellerProfile = memberService.checkSeller(userDetails);
         SellerProfileResponseDTO.SortType body  = SellerProfileConverter.toSortTypeDTO(sellerService.updateItemSortType(sellerProfile,sortBy));
 
         return ApiResponse.onSuccess(body);

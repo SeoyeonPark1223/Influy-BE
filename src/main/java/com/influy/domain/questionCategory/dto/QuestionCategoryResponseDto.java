@@ -70,6 +70,7 @@ public class QuestionCategoryResponseDto {
         private String questionCategoryName;
     }
 
+
     @Getter
     @Builder
     @AllArgsConstructor
