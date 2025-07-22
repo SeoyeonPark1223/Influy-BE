@@ -82,7 +82,7 @@ public class QuestionController {
 
         Member member = memberService.findById(userDetails.getId());
         Item item = itemService.findById(itemId);
-        QuestionCategory category = questionCategoryService.findById(questionCategoryId);
+        QuestionCategory category = questionCategoryService.findByCategoryIdAndItemId(questionCategoryId, itemId);
 
         Question question = questionService.createQuestion(member, item, category,request.getContent());
 

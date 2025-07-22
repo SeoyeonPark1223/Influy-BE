@@ -28,6 +28,7 @@ public class QuestionConverter {
                 .id(question.getId())
                 .content(question.getContent())
                 .categoryName(categoryName)
+                .createdAt(question.getCreatedAt())
                 .build();
 
     }

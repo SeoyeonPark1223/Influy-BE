@@ -119,9 +119,9 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     }
 
     @Override
-    public QuestionCategory findById(Long questionCategoryId) {
+    public QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId) {
 
-        return questionCategoryRepository.findById(questionCategoryId).orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+        return questionCategoryRepository.findByIdAndItemId(questionCategoryId, itemId).orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
     }
 
     private void checkSellerAndItem(Long sellerId, Long itemId) {

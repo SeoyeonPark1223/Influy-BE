@@ -15,5 +15,5 @@ public interface QuestionCategoryService {
     QuestionCategoryResponseDto.ListDto getList(Long sellerId, Long itemId);
     List<QuestionCategory> generateCategory(CustomUserDetails userDetails, Long itemId);
 
-    QuestionCategory findById(Long questionCategoryId);
+    QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
 }
