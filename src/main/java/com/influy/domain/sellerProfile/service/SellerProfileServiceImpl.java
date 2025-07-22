@@ -77,7 +77,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     }
 
     @Override
-    public List<ItemJPQLResponse.ItemCount> getMarketItems(Long sellerId) {
+    public List<ItemJPQLResponse> getMarketItems(Long sellerId) {
         return itemRepository.countBySellerIdGroupByIsArchived(sellerId);
     }
 }

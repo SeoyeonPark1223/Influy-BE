@@ -20,7 +20,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.isArchived = false AND i.endDate > :now")
     Page<Item> findOngoingItems(Long sellerId, LocalDateTime now, Pageable pageable);
 
-    @Query("SELECT new com.influy.domain.item.dto.jpql.ItemJPQLResponse.ItemCount(p.isArchived, COUNT(p)) FROM Item p WHERE p.seller.id = :sellerId GROUP BY p.isArchived")
-    List<ItemJPQLResponse.ItemCount> countBySellerIdGroupByIsArchived(@Param("sellerId") Long sellerId);
+    @Query("SELECT new com.influy.domain.item.dto.jpql.ItemJPQLResponse(p.isArchived, COUNT(p)) " +
+            "FROM Item p WHERE p.seller.id = :sellerId GROUP BY p.isArchived")
+    List<ItemJPQLResponse> countBySellerIdGroupByIsArchived(@Param("sellerId") Long sellerId);
 
 }

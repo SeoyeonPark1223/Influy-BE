@@ -54,11 +54,12 @@ public class SellerProfileConverter {
                 .build();
     }
 
-    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<ItemJPQLResponse.ItemCount> itemCountList) {
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<ItemJPQLResponse> itemCountList, Long reviews) {
         SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
+
         Long publicItems = null;
         Long privateItems = null;
-        for(ItemJPQLResponse.ItemCount itemCount : itemCountList) {
+        for(ItemJPQLResponse itemCount : itemCountList) {
             if(itemCount.getIsArchived()){
                 privateItems = itemCount.getCount();
             }else {
@@ -72,10 +73,24 @@ public class SellerProfileConverter {
                 .itemSortType(seller.getItemSortType())
                 .privateItemCnt(privateItems)
                 .publicItemCnt(publicItems)
-                .reviews(0L)
+                .reviews(reviews)
                 .build();
 
     }
 
 
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, Long publicItems, Long reviews) {
+
+        SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
+
+        return SellerProfileResponseDTO.MarketProfile.builder()
+                .sellerProfile(sellerProfileDTO)
+                .isLiked(isLiked)
+                .isPublic(seller.getIsPublic())
+                .itemSortType(seller.getItemSortType())
+                .privateItemCnt(null)
+                .publicItemCnt(publicItems)
+                .reviews(reviews)
+                .build();
+    }
 }
