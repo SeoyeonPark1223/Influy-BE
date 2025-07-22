@@ -9,10 +9,13 @@ import com.influy.domain.profileLink.service.ProfileLinkService;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,9 +59,8 @@ public class ProfileLinkController {
 
     //링크 리스트 조회
     @GetMapping("/seller/{sellerId}/market-links")//얘는 로그인 구현 후에도 pathVariable로 남겨두기
-    @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다.")
-    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId,
-                                                                         @P){
+    @Operation(summary = "링크 리스트 조회",description = "특정 셀러의 링크 리스트를 조회합니다. 최대 개수가 많지 않으므로 페이지네이션 X")
+    public ApiResponse<List<ProfileLinkResponseDTO.General>> getLinkList(@PathVariable("sellerId") Long sellerId){
 
         List<ProfileLink> profileLinks = profileLinkServiceImpl.getLinkListOf(sellerId);
 

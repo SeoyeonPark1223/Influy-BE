@@ -1,5 +1,9 @@
 package com.influy.domain.sellerProfile.controller;
 
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
+import com.influy.domain.item.service.ItemService;
+import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
@@ -15,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Tag(name="셀러")
 @RequiredArgsConstructor
@@ -23,18 +29,41 @@ public class SellerProfileController {
 
     private final SellerProfileService sellerService;
     private final MemberService memberService;
+    private final ItemService itemService;
 
 
     //프로필 조회
-    @GetMapping("/{sellerId}/profile")
-    @Operation(summary = "셀러 프로필 조회 API", description = "아무나 사용할 수 있는 조회 API")
-    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@PathVariable("sellerId") Long sellerId){
+    @GetMapping("/profile")
+    @Operation(summary = "셀러 프로필 조회 API", description = "셀러 본인만 가능")
+    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+
+        SellerProfile seller = memberService.checkSeller(userDetails);
         SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(seller);
 
         return ApiResponse.onSuccess(body);
     }
+
+    //프로필 조회
+    @GetMapping("/{sellerId}/market")
+    @Operation(summary = "셀러 마켓 조회 API", description = "일반 사용자가 셀러 페이지 들어갔을 때")
+    public ApiResponse<SellerProfileResponseDTO.MarketProfile> getSellerMarket(@PathVariable("sellerId") Long sellerId,
+                                                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+        boolean isLiked = false;
+        if(userDetails!=null){//회원일 경우에만 like 표시
+            Member member = userDetails.getMember();
+            isLiked = sellerService.getIsLikedByMember(seller,member);
+        }
+        List<ItemJPQLResponse.ItemCount> itemCountList = sellerService.getMarketItems(sellerId);
+
+        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked,itemCountList);
+
+        return ApiResponse.onSuccess(body);
+    }
+
+
 
     //프로필 수정
     @PatchMapping("/profile")

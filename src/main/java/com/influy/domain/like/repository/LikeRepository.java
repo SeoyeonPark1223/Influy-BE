@@ -3,6 +3,8 @@ package com.influy.domain.like.repository;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
+import com.influy.domain.member.entity.Member;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,4 +33,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     """)
     Page<Like> findSellerLikesOrderByRecentItem(Long memberId, Pageable pageable);
     Page<Like> findByMemberIdAndTargetTypeAndLikeStatus(Long memberId, TargetType targetType, LikeStatus likeStatus, Pageable pageable);
+
+    boolean existsByMemberAndSellerAndLikeStatus(Member member, SellerProfile seller, LikeStatus likeStatus);
 }
