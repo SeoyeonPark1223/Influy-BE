@@ -1,5 +1,6 @@
 package com.influy.domain.question.converter;
 
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
@@ -12,13 +13,24 @@ import java.util.Map;
 
 public class QuestionConverter {
 
-    public static Question toQuestion(SellerProfile to, Member from, String content, QuestionTag questionTag){
+    public static Question toQuestion(Item item, Member from, String content, QuestionTag questionTag){
         return Question.builder()
-                .seller(to)
+                .item(item)
                 .member(from)
                 .content(content)
                 .questionTag(questionTag)
                 .build();
+    }
+
+    public static QuestionResponseDTO.CreationResult toCreationResult(Question question,String categoryName){
+
+        return QuestionResponseDTO.CreationResult.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .categoryName(categoryName)
+                .createdAt(question.getCreatedAt())
+                .build();
+
     }
 
     public static QuestionResponseDTO.General toGeneralDTO(Question question, Long nthQuestion) {
@@ -27,6 +39,7 @@ public class QuestionConverter {
                 .memberId(question.getMember().getId())
                 .content(question.getContent())
                 .nickname(question.getMember().getNickname())
+                .username(question.getMember().getUsername())
                 .nthQuestion(nthQuestion)
                 .createdAt(question.getCreatedAt())
                 .build();

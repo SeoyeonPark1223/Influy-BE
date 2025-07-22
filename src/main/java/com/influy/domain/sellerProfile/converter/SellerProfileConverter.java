@@ -1,38 +1,27 @@
 package com.influy.domain.sellerProfile.converter;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 
-public class SellerProfileConverter {
+import java.util.List;
 
-    public static SellerProfile toSeller(SellerProfileRequestDTO.Join requestDTO) {
-        return null;
-    }
+public class SellerProfileConverter {
 
     public static SellerProfileResponseDTO.SellerProfile toSellerProfileDTO(SellerProfile seller) {
 
         Member member = seller.getMember();
-        //가짜 셀러일 경우 null 반환
-        String nickname = null;
-        String profileImageUrl =null;
-        Long memberId = null;
 
-        if(member != null) {
-            nickname = member.getNickname();
-            memberId = member.getId();
-            profileImageUrl = member.getProfileImg();
-        }
 
         return SellerProfileResponseDTO.SellerProfile.builder()
-                .nickname(nickname)
-                .profileImg(profileImageUrl)
-                .id(memberId)
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .username(member.getUsername())
+                .profileImg(member.getProfileImg())
                 .sellerId(seller.getId())
                 .backgroundImg(seller.getBackgroundImg())
-                .isPublic(seller.getIsPublic())
-                .itemSortType(seller.getItemSortType())
                 .instagram(seller.getInstagram())
                 .tiktok(seller.getTiktok())
                 .youtube(seller.getYoutube())
@@ -58,6 +47,46 @@ public class SellerProfileConverter {
                 .instagram(instagram)
                 .tiktok(request.getTiktok())
                 .youtube(request.getYoutube())
+                .build();
+    }
+
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<ItemJPQLResponse> itemCountList, Long reviews) {
+        SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
+
+        Long publicItems = null;
+        Long privateItems = null;
+        for(ItemJPQLResponse itemCount : itemCountList) {
+            if(itemCount.getIsArchived()){
+                privateItems = itemCount.getCount();
+            }else {
+                publicItems = itemCount.getCount();
+            }
+        }
+        return SellerProfileResponseDTO.MarketProfile.builder()
+                .sellerProfile(sellerProfileDTO)
+                .isLiked(isLiked)
+                .isPublic(seller.getIsPublic())
+                .itemSortType(seller.getItemSortType())
+                .privateItemCnt(privateItems)
+                .publicItemCnt(publicItems)
+                .reviews(reviews)
+                .build();
+
+    }
+
+
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, Long publicItems, Long reviews) {
+
+        SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
+
+        return SellerProfileResponseDTO.MarketProfile.builder()
+                .sellerProfile(sellerProfileDTO)
+                .isLiked(isLiked)
+                .isPublic(seller.getIsPublic())
+                .itemSortType(seller.getItemSortType())
+                .privateItemCnt(null)
+                .publicItemCnt(publicItems)
+                .reviews(reviews)
                 .build();
     }
 }

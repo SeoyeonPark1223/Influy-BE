@@ -235,4 +235,10 @@ public class ItemServiceImpl implements ItemService {
         return ItemConverter.toItemOverviewDto(item);
     }
 
+    @Override
+    public Item findById(Long itemId) {
+
+        return itemRepository.findById(itemId).orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+    }
+
 }

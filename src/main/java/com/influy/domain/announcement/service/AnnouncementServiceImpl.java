@@ -37,9 +37,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     //공지 추가
     @Transactional
-    public Announcement addAnnouncementOf(Long sellerId, AnnouncementRequestDTO requestDTO) {
-
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+    public Announcement addAnnouncementOf(SellerProfile seller, AnnouncementRequestDTO requestDTO) {
 
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
 
@@ -49,10 +47,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     //특정 공지 수정
     @Transactional
-    public Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, Long sellerId, Boolean isPrimary) {
-
-
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+    public Announcement updateAnnouncement(Long announcementId, AnnouncementRequestDTO requestDTO, SellerProfile seller, Boolean isPrimary) {
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
@@ -78,12 +73,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Transactional
-    public void deleteAnnouncement(Long sellerId, Long announcementId) {
+    public void deleteAnnouncement(SellerProfile seller, Long announcementId) {
 
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
 
         Announcement announcement = announcementRepository.findById(announcementId).orElseThrow(()->new GeneralException(ErrorStatus.ANNOUNCEMENT_NOT_FOUND));
 
+        //셀러 본인 확인
         if(!announcement.getSeller().equals(seller)){
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }

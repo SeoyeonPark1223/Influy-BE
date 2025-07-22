@@ -6,8 +6,11 @@ import com.influy.domain.announcement.dto.AnnouncementResponseDTO;
 import com.influy.domain.announcement.entity.Announcement;
 import com.influy.domain.announcement.service.AnnouncementService;
 import com.influy.domain.announcement.service.AnnouncementServiceImpl;
+import com.influy.domain.member.service.MemberService;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -27,24 +31,16 @@ import java.util.Optional;
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
+    private final MemberService memberService;
 
     //공지 리스트 조회
     @GetMapping("/seller/{sellerId}/announcements")
-    @Operation(summary = "공지 리스트 조회",description ="셀러가 본인의 공지 리스트 조회" )
+    @Operation(summary = "공지 리스트 조회",description ="아무나 조회 가능한 공지 리스트" )
     public ApiResponse<AnnouncementResponseDTO.GeneralList> getAnnouncements(@PathVariable("sellerId") Long sellerId,
                                                                              @Valid @ParameterObject PageRequestDto pageable) {
 
         Page<Announcement> announcements = announcementService.getAnnouncementsOf(sellerId,pageable);
-
-        Page<AnnouncementResponseDTO.General> dto = announcements.map(AnnouncementConverter::toGeneralDTO);
-        AnnouncementResponseDTO.GeneralList body = AnnouncementResponseDTO.GeneralList.builder()
-                .announcements(dto.getContent())
-                .listSize(dto.getSize())
-                .totalElements(dto.getTotalElements())
-                .isFirst(dto.isFirst())
-                .isLast(dto.isLast())
-                .totalPage(dto.getTotalPages())
-                .build();
+        AnnouncementResponseDTO.GeneralList body = AnnouncementConverter.toListDTO(announcements);
 
         return ApiResponse.onSuccess(body);
     }
@@ -64,9 +60,10 @@ public class AnnouncementController {
     //공지 추가
     @PostMapping("/seller/announcements")
     @Operation(summary = "공지 추가",description ="셀러가 공지 추가" )
-    public ApiResponse<AnnouncementResponseDTO.General> addAnnouncement(@RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+    public ApiResponse<AnnouncementResponseDTO.General> addAnnouncement(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                         @RequestBody AnnouncementRequestDTO requestDTO) {
-        Announcement announcement = announcementService.addAnnouncementOf(sellerId,requestDTO);
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Announcement announcement = announcementService.addAnnouncementOf(seller,requestDTO);
 
         AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
         return ApiResponse.onSuccess(body);
@@ -76,11 +73,12 @@ public class AnnouncementController {
     @PatchMapping("/seller/announcements/{announcementId}") //로그인 구현 후 sellerId 제거
     @Operation(summary = "공지 수정",description ="셀러가 개별 공지 수정" )
     public ApiResponse<AnnouncementResponseDTO.General> updateAnnouncement(@PathVariable("announcementId") Long announcementId,
-                                                                           @RequestParam(value="sellerId",defaultValue = "1") Long sellerId,
+                                                                           @AuthenticationPrincipal CustomUserDetails userDetails,
                                                                            @RequestParam(value="isPrimary", required = false) Boolean isPrimary,
                                                                            @RequestBody(required = false) AnnouncementRequestDTO requestDTO) {
 
-        Announcement announcement = announcementService.updateAnnouncement(announcementId, requestDTO, sellerId,isPrimary);
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Announcement announcement = announcementService.updateAnnouncement(announcementId, requestDTO, seller,isPrimary);
         AnnouncementResponseDTO.General body = AnnouncementConverter.toGeneralDTO(announcement);
         return ApiResponse.onSuccess(body);
     }
@@ -90,9 +88,10 @@ public class AnnouncementController {
     @DeleteMapping("/seller/announcements/{announcementId}") //로그인 구현 후 sellerId 제거
     @Operation(summary = "공지 삭제",description ="셀러가 개별 공지 삭제" )
     public ApiResponse<String> deleteAnnouncement(@PathVariable("announcementId") Long announcementId,
-                                                  @RequestParam(value="sellerId",defaultValue = "1") Long sellerId) {
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        announcementService.deleteAnnouncement(sellerId, announcementId);
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        announcementService.deleteAnnouncement(seller, announcementId);
 
         return ApiResponse.onSuccess("삭제에 성공했습니다.");
     }
