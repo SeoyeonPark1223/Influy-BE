@@ -18,11 +18,11 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     FROM QuestionCategory qc
     LEFT JOIN QuestionTag qt ON qt.questionCategory = qc
     LEFT JOIN Question q ON q.questionTag = qt
-    WHERE qc.item.id = :itemId
+    WHERE qc.item.id = :itemId AND qc.item.seller.id = :sellerId
     GROUP BY qc
     ORDER BY COUNT(q.id) DESC
     """)
-    List<QuestionCategory> findQuestionCategories(@Param("itemId") Long itemId);
+    List<QuestionCategory> findQuestionCategories(@Param("itemId") Long itemId, @Param("sellerId") Long sellerId);
 
     @Query("""
     SELECT COUNT(q)

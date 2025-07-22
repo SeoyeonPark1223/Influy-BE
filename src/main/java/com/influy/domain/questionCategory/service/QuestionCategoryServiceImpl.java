@@ -10,6 +10,7 @@ import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
+import com.influy.domain.questionTag.converter.QuestionTagConverter;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
@@ -18,9 +19,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.influy.global.util.StaticValues.DEFAULT_QUESTION_CATEGORIES;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,22 +37,27 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
 
     @Override
     @Transactional
-    public QuestionCategory add(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.AddDto request) {
+    public List<QuestionCategory> addAll(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.AddListDto request) {
         memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-        if (item.getTalkBoxOpenStatus() != TalkBoxOpenStatus.INITIAL) throw new GeneralException(ErrorStatus.TALKBOX_ALREADY_OPENED);
+        Item item = checkInitial(itemId);
 
-        // 중복 체크
-        boolean exists = questionCategoryRepository.existsByItemIdAndName(itemId, request.getCategory());
-        if (exists) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_ALREADY_EXISTS);
+        List<QuestionCategory> questionCategoryList = new ArrayList<>();
+        for (String newCategory : request.getCategoryList()) {
+            // 중복 체크
+            boolean exists = questionCategoryRepository.existsByItemIdAndName(itemId, newCategory);
+            if (exists) throw new GeneralException(ErrorStatus.FAQ_CATEGORY_ALREADY_EXISTS);
 
-        // 추가
-        QuestionCategory questionCategory = QuestionCategoryConverter.toQuestionCategory(item, request.getCategory());
-        item.getQuestionCategoryList().add(questionCategory);
+            // 추가
+            QuestionCategory questionCategory = QuestionCategoryConverter.toQuestionCategory(item, newCategory);
+            item.getQuestionCategoryList().add(questionCategory);
+            questionCategoryList.add(questionCategory);
+            questionCategoryRepository.save(questionCategory);
+            questionCategory.getQuestionTagList().add(QuestionTagConverter.toQuestionTag("기타", questionCategory));
+        }
 
-        return questionCategoryRepository.save(questionCategory);
+        return questionCategoryList;
     }
+
 
     @Override
     @Transactional
@@ -77,6 +84,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
 
         QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+        if (Objects.equals(questionCategory.getName(), "기타")) throw new GeneralException(ErrorStatus.ETC_IS_PINNED_CATEGORY);
 
         item.getQuestionCategoryList().remove(questionCategory);
         questionCategoryRepository.delete(questionCategory);
@@ -84,11 +92,11 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
 
     @Override
     @Transactional(readOnly = true)
-    public QuestionCategoryResponseDto.ListDto getList(Long sellerId, Long itemId) {
+    public QuestionCategoryResponseDto.ListWithCntDto getList(Long sellerId, Long itemId) {
         checkSellerAndItem(sellerId, itemId);
 
         // 정렬 순서: 질문 많은 순
-        List<QuestionCategory> questionCategoryList = questionCategoryRepository.findQuestionCategories(itemId);
+        List<QuestionCategory> questionCategoryList = questionCategoryRepository.findQuestionCategories(itemId, sellerId);
 
         // 질문 개수 map 조회
         Map<Long, Integer> questionCntMap = questionCategoryList.stream()
@@ -104,18 +112,17 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
                         qc -> 0
                 ));
 
-        return QuestionCategoryConverter.toListDto(questionCategoryList, questionCntMap, unCheckedCntMap);
+        return QuestionCategoryConverter.toListWithCntDto(questionCategoryList, questionCntMap, unCheckedCntMap);
     }
 
     @Override
     @Transactional
-    public List<QuestionCategory> generateCategory(CustomUserDetails userDetails, Long itemId) {
+    public List<String> generateCategory(CustomUserDetails userDetails, Long itemId) {
         memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
-        aiService.generateCategory(item);
-        return questionCategoryRepository.findAllByItem(item);
+        return aiService.generateCategory(item);
     }
 
     private void checkSellerAndItem(Long sellerId, Long itemId) {
