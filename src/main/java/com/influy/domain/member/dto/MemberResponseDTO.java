@@ -27,14 +27,4 @@ public class MemberResponseDTO {
         private LocalDateTime createdAt;
     }
 
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class JoinDTO{
-        private String accessToken;
-        private String refreshToken;
-        private MemberProfile profile;
-    }
-
 }

@@ -43,6 +43,7 @@ public enum ErrorStatus implements BaseCode {
     // 셀러 에러 응답
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER NOT FOUND", "셀러를 찾을 수 없습니다."),
     SELLER_REQUIRED(HttpStatus.BAD_REQUEST, "SELLER REQUIRED", "셀러만 사용할 수 있습니다."),
+    NOT_OWNER(HttpStatus.FORBIDDEN, "NOT OWNER","요청한 리소스에 접근할 권한이 없습니다."),
     
     //링크 인 바이오 관련 응답
     LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK NOT FOUND", "링크를 찾을 수 없습니다."),

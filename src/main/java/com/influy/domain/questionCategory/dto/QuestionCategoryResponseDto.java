@@ -71,24 +71,4 @@ public class QuestionCategoryResponseDto {
         private String questionCategoryName;
     }
 
-    @Builder @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Preview {
-        private Long id;
-        private String name;
-        private Integer pendingCnt;
-        private Integer answeredCnt;
-        @Builder.Default
-        private List<QuestionResponseDTO.General> questions = new ArrayList<>();
-
-        public void setCount(Boolean isAnswered, Long cnt){
-            if(isAnswered){
-                this.answeredCnt = cnt.intValue();
-            }else{
-                this.pendingCnt = cnt.intValue();
-            }
-        }
-    }
-
 }

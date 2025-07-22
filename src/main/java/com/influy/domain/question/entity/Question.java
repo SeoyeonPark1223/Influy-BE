@@ -1,6 +1,7 @@
 package com.influy.domain.question.entity;
 
 import com.influy.domain.answer.entity.Answer;
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -26,8 +27,8 @@ public class Question extends BaseEntity {
     private QuestionTag questionTag;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="seller_id")
-    private SellerProfile seller;
+    @JoinColumn(name ="item_id")
+    private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="member_id")

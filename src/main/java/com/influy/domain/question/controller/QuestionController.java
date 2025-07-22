@@ -1,6 +1,7 @@
 package com.influy.domain.question.controller;
 
 
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
@@ -10,6 +11,8 @@ import com.influy.domain.question.dto.QuestionRequestDTO;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.service.QuestionService;
+import com.influy.domain.questionCategory.entity.QuestionCategory;
+import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
@@ -36,9 +39,10 @@ public class QuestionController {
     private final MemberService memberService;
     private final SellerProfileService sellerService;
     private final QuestionService questionService;
+    private final QuestionCategoryService questionCategoryService;
     private final ItemService itemService;
 
-    @GetMapping("seller/items/{itemId}/questions/{questionTagId}")
+    @GetMapping("seller/items/{itemId}/talkbox/{questionTagId}")
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
     public ApiResponse<QuestionResponseDTO.GeneralPage> getQuestions(@PathVariable("itemId") Long itemId,
                                                                      @PathVariable("questionTagId") Long questionTagId,
@@ -67,17 +71,25 @@ public class QuestionController {
 
     }
 
-    @PostMapping("user/items/{sellerId}/questions/{questionCategoryId}")
+    
+    //itemId 받게 수정하기
+    @PostMapping("user/items/{itemId}/talkbox/{questionCategoryId}")
     @Operation(summary = "질문 작성", description = "질문 작성 API")
-    public ApiResponse<QuestionResponseDTO.General> postQuestion(@RequestBody QuestionRequestDTO.Create request, @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                 @PathVariable("sellerId") Long sellerId, @PathVariable("questionCategoryId") Long questionCategoryId){
+    public ApiResponse<QuestionResponseDTO.CreationResult> postQuestion(@RequestBody QuestionRequestDTO.Create request,
+                                                                 @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                 @PathVariable("itemId") Long itemId,
+                                                                 @PathVariable("questionCategoryId") Long questionCategoryId){
 
         Member member = memberService.findById(userDetails.getId());
-        SellerProfile seller = sellerService.getSellerProfile(sellerId);
+        Item item = itemService.findById(itemId);
+        QuestionCategory category = questionCategoryService.findByCategoryIdAndItemId(questionCategoryId, itemId);
 
-        Question question = questionService.createQuestion(member, seller, questionCategoryId,request.getContent());
-        Long nthQuestion = questionService.getTimesMemberAskedSeller(member, seller);
-        QuestionResponseDTO.General body = QuestionConverter.toGeneralDTO(question, nthQuestion);
+        Question question = questionService.createQuestion(member, item, category,request.getContent());
+
+        //질문 생성시 응답에는 불필요
+        //Long nthQuestion = questionService.getTimesMemberAskedSeller(member, item.getSeller());
+
+        QuestionResponseDTO.CreationResult body = QuestionConverter.toCreationResult(question, category.getName());
 
 
 

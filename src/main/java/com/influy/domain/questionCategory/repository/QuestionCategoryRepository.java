@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuestionCategoryRepository extends JpaRepository<QuestionCategory, Long> {
@@ -33,4 +34,6 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     int countQuestionsByCategoryId(@Param("questionCategoryId") Long questionCategoryId);
 
     List<QuestionCategory> findAllByItem(Item item);
+
+    Optional<QuestionCategory> findByIdAndItemId(Long questionCategoryId, Long itemId);
 }

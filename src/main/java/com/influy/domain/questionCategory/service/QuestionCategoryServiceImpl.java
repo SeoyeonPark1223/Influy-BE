@@ -118,6 +118,12 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
         return questionCategoryRepository.findAllByItem(item);
     }
 
+    @Override
+    public QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId) {
+
+        return questionCategoryRepository.findByIdAndItemId(questionCategoryId, itemId).orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+    }
+
     private void checkSellerAndItem(Long sellerId, Long itemId) {
         if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         if (!itemRepository.existsById(itemId)) throw new GeneralException(ErrorStatus.ITEM_NOT_FOUND);

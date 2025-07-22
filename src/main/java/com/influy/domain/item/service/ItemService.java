@@ -9,6 +9,8 @@ import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
 import org.springframework.data.domain.Page;
 
+import java.util.Optional;
+
 public interface ItemService {
     Item create(CustomUserDetails userDetails, ItemRequestDto.DetailDto request);
     Item getDetail(Long sellerId, Long itemId);
@@ -19,4 +21,6 @@ public interface ItemService {
     Integer getCount(Long sellerId, Boolean isArchived);
     ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing, Long memberId);
     ItemResponseDto.ItemOverviewDto getItemOverview(Long sellerId, Long itemId);
+
+    Item findById(Long itemId);
 }

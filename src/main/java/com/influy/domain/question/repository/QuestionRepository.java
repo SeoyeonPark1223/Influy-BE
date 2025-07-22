@@ -1,9 +1,7 @@
 package com.influy.domain.question.repository;
 
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.dto.jpql.JPQLResult;
-import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -22,11 +20,19 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
-    Long countByMemberAndSeller(Member member, SellerProfile seller);
+    @Query("SELECT COUNT(q) AS cnt " +
+            "FROM Question q " +
+            "JOIN q.item i " +
+            "JOIN i.seller s " +
+            "WHERE s = :seller AND q.member = :member " +
+            "GROUP BY q.member.id")
+    Long countByMemberAndSeller(@Param("member") Member member, @Param("seller") SellerProfile seller);
 
     @Query("SELECT q.member.id AS memberId, COUNT(q) AS cnt " +
             "FROM Question q " +
-            "WHERE q.seller = :seller AND q.member.id IN :memberIds " +
+            "JOIN q.item i " +
+            "JOIN i.seller s " +
+            "WHERE s = :seller AND q.member.id IN :memberIds " +
             "GROUP BY q.member.id")
     List<JPQLResult.MemberQuestionCount> countQuestionsBySellerAndMemberIds(@Param("seller") SellerProfile seller,
                                                                             @Param("memberIds") List<Long> memberIds);
