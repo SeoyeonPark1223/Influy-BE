@@ -14,4 +14,6 @@ public interface QuestionCategoryService {
     void delete(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.DeleteDto request);
     QuestionCategoryResponseDto.ListDto getList(Long sellerId, Long itemId);
     List<QuestionCategory> generateCategory(CustomUserDetails userDetails, Long itemId);
+
+    QuestionCategory findById(Long questionCategoryId);
 }

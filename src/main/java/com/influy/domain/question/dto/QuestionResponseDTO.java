@@ -49,4 +49,19 @@ public class QuestionResponseDTO {
         @Schema(description = "마지막 페이지인지", example = "false")
         private Boolean isLast;
     }
+
+    @Builder @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CreationResult {
+
+        @Schema(description = "질문 아이디", example = "1")
+        private Long id;
+        @Schema(description = "내용", example = "더 싸게는 안되나요?")
+        private String content;
+        @Schema(description = "질문 대분류 카테고리 이름", example = "색상")
+        private String categoryName;
+        @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
+        private LocalDateTime createdAt;
+    }
 }
