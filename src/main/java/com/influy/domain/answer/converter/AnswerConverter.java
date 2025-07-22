@@ -1,13 +1,12 @@
 package com.influy.domain.answer.converter;
 
-import com.influy.domain.answer.dto.AnswerRequestDto;
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.answer.entity.AnswerType;
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
 
 import java.util.List;
 
@@ -20,10 +19,10 @@ public class AnswerConverter {
                 .build();
     }
 
-    public static Answer toAnswer(SellerProfile seller, Question question, String content, AnswerType answerType) {
+    public static Answer toAnswer(Item item, Question question, String content, AnswerType answerType) {
         return Answer.builder()
                 .content(content)
-                .seller(seller)
+                .item(item)
                 .question(question)
                 .answerType(answerType)
                 .build();

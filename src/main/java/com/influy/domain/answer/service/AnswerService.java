@@ -4,9 +4,7 @@ import com.influy.domain.answer.dto.AnswerRequestDto;
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.answer.entity.AnswerType;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
-import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.jwt.CustomUserDetails;
 
 

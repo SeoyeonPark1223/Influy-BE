@@ -14,7 +14,6 @@ import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
@@ -39,13 +38,13 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public Answer createIndividualAnswer(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, Long questionTagId, Long questionId, AnswerRequestDto.AnswerIndividualDto request, AnswerType answerType) {
-        SellerProfile seller = memberService.checkSeller(userDetails);
-        checkTalkBoxOpenStatus(itemId);
+        memberService.checkSeller(userDetails);
+        Item item = checkTalkBoxOpenStatus(itemId);
         Question question = questionRepository.findValidQuestion(itemId, questionCategoryId, questionTagId, questionId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_INVALID_RELATION));
 
-        Answer answer = AnswerConverter.toAnswer(seller, question, request.getAnswerContent(), answerType);
-        seller.getAnswerList().add(answer);
+        Answer answer = AnswerConverter.toAnswer(item, question, request.getAnswerContent(), answerType);
+        item.getAnswerList().add(answer);
         question.getAnswerList().add(answer);
         question.setIsAnswered(true);
 
@@ -71,14 +70,14 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public AnswerResponseDto.AnswerCommonResultDto createCommonAnswers(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, AnswerRequestDto.AnswerCommonDto request) {
-        SellerProfile seller = memberService.checkSeller(userDetails);
-        checkTalkBoxOpenStatus(itemId);
+        memberService.checkSeller(userDetails);
+        Item item = checkTalkBoxOpenStatus(itemId);
 
         List<Question> questionList= questionRepository.findAllById(request.getQuestionIdList());
         List<Answer> answerList = new ArrayList<>();
         for (Question question : questionList) {
-            Answer answer = AnswerConverter.toAnswer(seller, question, request.getAnswerContent(), AnswerType.COMMON);
-            seller.getAnswerList().add(answer);
+            Answer answer = AnswerConverter.toAnswer(item, question, request.getAnswerContent(), AnswerType.COMMON);
+            item.getAnswerList().add(answer);
             question.getAnswerList().add(answer);
             question.setIsAnswered(true);
             answerList.add(answer);
@@ -116,10 +115,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
 
-    private void checkTalkBoxOpenStatus(Long itemId) {
+    private Item checkTalkBoxOpenStatus(Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
         if (item.getTalkBoxOpenStatus() != TalkBoxOpenStatus.OPENED) throw new GeneralException(ErrorStatus.TALKBOX_CLOSED);
+        return item;
     }
 
 }
