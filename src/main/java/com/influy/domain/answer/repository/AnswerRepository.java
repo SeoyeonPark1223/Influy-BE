@@ -20,7 +20,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Query("""
     SELECT a FROM Answer a
-    WHERE a.question.questionTag.id = :questionTagId 
+    WHERE a.question.questionTag.id = :questionTagId
     AND a.answerType = 'COMMON'
     """)
     List<Answer> findCommonAnswersByQuestionTagId(Long questionTagId);
