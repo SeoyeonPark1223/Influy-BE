@@ -41,7 +41,7 @@ public class QuestionCategoryController {
     }
 
     @PatchMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 수정 (한번에 하나)")
+    @Operation(summary = "질문 카테고리 수정 (한번에 하나, 추가 api 한번 이상 호출한 이후에만 사용)")
     public ApiResponse<QuestionCategoryResponseDto.ViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @PathVariable("itemId") Long itemId,
                                                                      @RequestBody QuestionCategoryRequestDto.UpdateDto request) {
@@ -50,7 +50,7 @@ public class QuestionCategoryController {
     }
 
     @DeleteMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 삭제 (한번에 하나)")
+    @Operation(summary = "질문 카테고리 삭제 (한번에 하나, 추가 api 한번 이상 호출한 이후에만 사용)")
     public ApiResponse<QuestionCategoryResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                            @PathVariable("itemId") Long itemId,
                                                                            @RequestBody QuestionCategoryRequestDto.DeleteDto request) {
