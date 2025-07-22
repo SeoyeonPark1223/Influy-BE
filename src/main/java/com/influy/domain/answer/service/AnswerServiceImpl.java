@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +59,12 @@ public class AnswerServiceImpl implements AnswerService {
         QuestionTag questionTag = questionTagRepository.findValidQuestionTag(itemId, questionCategoryId, questionTagId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTIONTAG_INVALID_RELATION));
 
-        List<Answer> answerList = answerRepository.findAllByQuestionTagId(questionTagId);
+        List<Answer> answerList = answerRepository.findIndividualAndFaqAnswersByQuestionTagId(questionTagId);
+        List<Answer> commonList = answerRepository.findCommonAnswersByQuestionTagId(questionTagId);
+        Map<String, Answer> uniqueAnswers = new LinkedHashMap<>();
+        for (Answer answer : commonList) uniqueAnswers.putIfAbsent(answer.getContent(), answer);
+        List<Answer> commonAnswerList = new ArrayList<>(uniqueAnswers.values());
+        answerList.addAll(commonAnswerList);
         return AnswerConverter.toAnswerTagListDto(questionTag, answerList);
     }
 
