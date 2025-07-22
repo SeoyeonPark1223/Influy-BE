@@ -13,8 +13,8 @@ import java.util.List;
 
 @Repository
 public interface QuestionCategoryRepository extends JpaRepository<QuestionCategory, Long> {
-    boolean existsByItemIdAndCategory(Long itemId, String category);
-    boolean existsByCategory(String category);
+    boolean existsByItemIdAndName(Long itemId, String category);
+    boolean existsByName(String category);
     @Query("""
     SELECT qc
     FROM QuestionCategory qc

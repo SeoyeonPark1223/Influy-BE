@@ -1,5 +1,6 @@
 package com.influy.domain.item.entity;
 
+import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.itemCategory.entity.ItemCategory;
@@ -65,6 +66,10 @@ public class Item extends BaseEntity {
 
     @Builder.Default
     private Boolean isArchived = false; //보관 여부
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Answer> answerList = new ArrayList<>();
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

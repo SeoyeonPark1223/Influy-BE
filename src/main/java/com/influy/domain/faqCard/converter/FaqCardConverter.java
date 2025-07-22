@@ -4,7 +4,6 @@ import com.influy.domain.faqCard.dto.FaqCardRequestDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.faqCard.entity.FaqCard;
 import com.influy.domain.faqCategory.entity.FaqCategory;
-import com.influy.domain.item.entity.Item;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
@@ -94,15 +93,6 @@ public class FaqCardConverter {
     public static FaqCardResponseDto.DeleteResultDto toDeleteResultDto(Long faqCardId) {
         return FaqCardResponseDto.DeleteResultDto.builder()
                 .id(faqCardId)
-                .build();
-    }
-
-    public static FaqCardResponseDto.ItemInfoDto toItemInfoDto(Item item) {
-        return FaqCardResponseDto.ItemInfoDto.builder()
-                .id(item.getId())
-                .itemName(item.getName())
-                .tagline(item.getTagline())
-                .MainImg(item.getImageList().getFirst().getImageLink())
                 .build();
     }
 

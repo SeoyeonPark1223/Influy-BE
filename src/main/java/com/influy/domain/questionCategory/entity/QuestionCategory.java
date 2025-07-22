@@ -26,7 +26,7 @@ public class QuestionCategory extends BaseEntity {
 
     @NotBlank
     @Setter
-    private String category;
+    private String name;
 
     @OneToMany(mappedBy = "questionCategory", cascade = CascadeType.ALL)
     @Builder.Default

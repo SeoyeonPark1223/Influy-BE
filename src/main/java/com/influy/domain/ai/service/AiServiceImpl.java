@@ -111,7 +111,7 @@ public class AiServiceImpl implements AiService {
         for (Map<String, String> entry : categoryList) {
             String cat = entry.get("category").trim();
 
-            if (!questionCategoryRepository.existsByCategory(cat)) {
+            if (!questionCategoryRepository.existsByName(cat)) {
                 QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, cat);
                 questionCategoryRepository.save(category);
             }

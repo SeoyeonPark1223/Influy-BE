@@ -1,5 +1,6 @@
 package com.influy.domain.item.converter;
 
+import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
@@ -113,5 +114,15 @@ public class ItemConverter {
                .sellerId(sellerId)
                .count(count)
                .build();
+    }
+
+    public static ItemResponseDto.ItemOverviewDto toItemOverviewDto(Item item) {
+        return ItemResponseDto.ItemOverviewDto.builder()
+                .id(item.getId())
+                .itemName(item.getName())
+                .tagline(item.getTagline())
+                .mainImg(item.getImageList().getFirst().getImageLink())
+                .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .build();
     }
 }

@@ -151,4 +151,25 @@ public class ItemResponseDto {
         @Schema(description = "공개/보관 아이템 개수", example = "5")
         private Integer count;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ItemOverviewDto {
+        @Schema(description = "아이템 id", example = "1")
+        private Long id;
+
+        @Schema(description = "아이템 이름", example = "원피스")
+        private String itemName;
+
+        @Schema(description = "한줄 소개", example = "빤짝거리는 원피스입니다")
+        private String tagline;
+
+        @Schema(description = "대표 사진", example = "xxxx.png")
+        private String mainImg;
+
+        @Schema(description = "해당 아이템 톡박스 오픈 여부", example = "OPEN")
+        private TalkBoxOpenStatus talkBoxOpenStatus;
+    }
 }

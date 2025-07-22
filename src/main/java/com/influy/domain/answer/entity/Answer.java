@@ -1,14 +1,11 @@
 package com.influy.domain.answer.entity;
 
+import com.influy.domain.item.entity.Item;
 import com.influy.domain.question.entity.Question;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder @Getter
@@ -21,11 +18,14 @@ public class Answer extends BaseEntity {
     @NotBlank
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private SellerProfile seller;
+    @Enumerated(EnumType.STRING)
+    private AnswerType answerType;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Question> questionList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private Question question;
 }
