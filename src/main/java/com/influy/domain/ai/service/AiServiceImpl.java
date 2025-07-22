@@ -45,7 +45,6 @@ public class AiServiceImpl implements AiService {
     private final QuestionTagRepository questionTagRepository;
 
     private static final String CATEGORY_PROMPT_FILE_PATH = "src/main/resources/category-storage/aiQuestionCategory/prompt-question-category.txt";
-//    private static final String CATEGORY_JSON_FILE_PATH = "src/main/resources/category-storage/question-category.json";
     private static final String QUESTION_CLASSIFICATION_FILE_PATH = "src/main/resources/category-storage/aiQuestionClassification/system-prompt.txt";
 
     @Override
@@ -154,22 +153,6 @@ public class AiServiceImpl implements AiService {
 
     }
 
-
-//    private void updateQuestionsToNewTag(Item item, List<String> aiCategories) throws IOException {
-//
-//        //기본 대분류
-//        List<String> defaultCategoryList = Arrays.stream(DEFAULT_QUESTION_CATEGORIES).toList();
-//        //ai 생성 카테고리에 더하기
-//        aiCategories.addAll(defaultCategoryList);
-//
-//        for (String name:aiCategories) {
-//            if (!questionCategoryRepository.existsByItemIdAndName(item.getId(), name.trim())) {
-//                QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, name.trim());
-//                //각 카테고리마다 기타 태그 기본으로 생성
-//                category.getQuestionTagList().add(QuestionTagConverter.toQuestionTag("기타", category));
-//            }
-//        }
-//    }
 
     private void updateQuestionsToNewTag(AiResponseDTO.QuestionClassification result,
                                          QuestionTag createdTag, Map<Long,QuestionTag> questionTagMap,
