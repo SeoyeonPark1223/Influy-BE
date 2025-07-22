@@ -3,10 +3,19 @@ package com.influy.global.auth.converter;
 import com.influy.global.auth.dto.AuthResponseDTO;
 
 public class AuthConverter {
-    public static AuthResponseDTO.IdAndToken toIdAndTokenDto(Long memberId, String accessToken) {
+    public static AuthResponseDTO.UserIdAndToken toIdAndTokenDto(Long memberId, String accessToken) {
 
-        return AuthResponseDTO.IdAndToken.builder()
+        return AuthResponseDTO.UserIdAndToken.builder()
                 .memberId(memberId)
+                .accessToken(accessToken)
+                .build();
+    }
+
+    public static AuthResponseDTO.SellerIdAndToken toSellerIdAndToken(Long memberId, Long sellerId, String accessToken) {
+
+        return AuthResponseDTO.SellerIdAndToken.builder()
+                .memberId(memberId)
+                .sellerId(sellerId)
                 .accessToken(accessToken)
                 .build();
     }

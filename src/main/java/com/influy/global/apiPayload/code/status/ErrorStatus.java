@@ -65,6 +65,7 @@ public enum ErrorStatus implements BaseCode {
 
     //질문관리창 관련 응당
     QUESTION_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION CATEGORY NOT FOUND", "질문 카테고리를 찾을 수 없습니다."),
+    QUESTION_TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION TAG NOT FOUND", "질문 카테고리의 소분류 태그를 찾을 수 없습니다."),
     INVALID_QUESTION_ITEM_RELATION(HttpStatus.BAD_REQUEST, "INVALID QUESTION ITEM RELATION", "해당 질문 카테고리의 아이템을 찾을 수 없습니다."),
     TALKBOX_ALREADY_OPENED(HttpStatus.BAD_REQUEST, "TALKBOX ALREADY OPENED", "톡박스가 최초로 열린 이후에는 질문 카테고릴 수정할 수 없습니다."),
     TALKBOX_CLOSED(HttpStatus.BAD_REQUEST, "TALKBOX CLOSED", "톡박스가 닫혀있습니다."),
@@ -82,6 +83,10 @@ public enum ErrorStatus implements BaseCode {
     //토큰 관련 응답
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"EXPIRED TOKEN" ,"만료된 토큰입니다." ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID TOKEN","유효하지 않은 토큰입니다." ),
+
+    //AI 관련 응답
+    AI_RESPONSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AI RESPONSE ERROR" ,"AI 응답 생성에 실패했거나 응답 형식에 문제가 있습니다." ),
+    AI_CLASSIFICATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AI CLASSIFICATION ERROR" ,"AI가 존재하지 않는 태그를 이용해 분류를 시도했습니다." ),
 
     //API 요청 관련 에러 응답
     NEED_TO_SIGN_UP(HttpStatus.OK,"NEED_TO_SIGN_UP" ,"회원이 아닙니다." ),

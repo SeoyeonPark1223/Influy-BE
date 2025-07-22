@@ -1,34 +1,40 @@
 package com.influy.domain.question.converter;
 
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
+import com.influy.domain.questionTag.entity.QuestionTag;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 public class QuestionConverter {
-    public static QuestionResponseDTO.General toGeneralDTO(Question question) {
+
+    public static Question toQuestion(SellerProfile to, Member from, String content, QuestionTag questionTag){
+        return Question.builder()
+                .seller(to)
+                .member(from)
+                .content(content)
+                .questionTag(questionTag)
+                .build();
+    }
+
+    public static QuestionResponseDTO.General toGeneralDTO(Question question, Long nthQuestion) {
         return QuestionResponseDTO.General.builder()
                 .id(question.getId())
+                .memberId(question.getMember().getId())
                 .content(question.getContent())
                 .nickname(question.getMember().getNickname())
-                .itemPeriod(question.getItemPeriod())
+                .nthQuestion(nthQuestion)
                 .createdAt(question.getCreatedAt())
                 .build();
     }
 
-    //native sql 전용 converter
-    public static QuestionResponseDTO.General toGeneralDTO(Object[] row, String nickname) {
-        return QuestionResponseDTO.General.builder()
-                .id(((Number) row[0]).longValue())
-                .nickname(nickname)
-                .content((String) row[2])
-                .createdAt(((Timestamp) row[3]).toLocalDateTime())
-                .itemPeriod((Integer) row[4])
-                .build();
-    }
 
-    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<Question> questions) {
+
+    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<Question> questions, Map<Long, Long> countMap) {
 
 
         return QuestionResponseDTO.GeneralPage.builder()
@@ -37,7 +43,7 @@ public class QuestionConverter {
                 .totalPage(questions.getTotalPages())
                 .totalElements(questions.getTotalElements())
                 .listSize(questions.getSize())
-                .questions(questions.map(QuestionConverter::toGeneralDTO).getContent())
+                .questions(questions.map(question->QuestionConverter.toGeneralDTO(question, countMap.get(question.getMember().getId()))).getContent())
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 package com.influy.domain.questionCategory.converter;
 
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.question.dto.JPQLQuestionDTO;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import org.springframework.data.domain.Page;
@@ -11,9 +10,9 @@ import java.util.Map;
 
 public class QuestionCategoryConverter {
 
-    public static QuestionCategory toQuestionCategory(Item item, String category) {
+    public static QuestionCategory toQuestionCategory(Item item, String name) {
         return QuestionCategory.builder()
-                .name(category)
+                .name(name)
                 .item(item)
                 .build();
     }
@@ -55,15 +54,6 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    //JPQL result to Preview
-    public static QuestionCategoryResponseDto.Preview toPreviewDTO(JPQLQuestionDTO result) {
-        return QuestionCategoryResponseDto.Preview.builder()
-                .id(result.getCategoryId())
-                .name(result.getCategoryName())
-                .answeredCnt(0)
-                .pendingCnt(0)
-                .build();
-    }
 
     public static QuestionCategoryResponseDto.GenerateResultDto toGenerateResultDto(List<QuestionCategory> questionCategoryList) {
         List<QuestionCategoryResponseDto.ViewDto> viewList = questionCategoryList.stream()

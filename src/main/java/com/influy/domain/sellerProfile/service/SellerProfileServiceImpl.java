@@ -25,8 +25,8 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     private final ItemRepository itemRepository;
     private final SellerProfileRepository sellerProfileRepository;
 
-    public SellerProfile getSellerProfile(Long memberId){
-        return sellerProfileRepository.findByMemberId(memberId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+    public SellerProfile getSellerProfile(Long sellerId){
+        return sellerProfileRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
     }
 
     @Override
