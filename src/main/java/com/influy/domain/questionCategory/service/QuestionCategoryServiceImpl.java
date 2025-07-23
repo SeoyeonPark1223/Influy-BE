@@ -58,38 +58,6 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
         return questionCategoryList;
     }
 
-
-    @Override
-    @Transactional
-    public QuestionCategory update(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.UpdateDto request) {
-        memberService.checkSeller(userDetails);
-        Item item = checkInitial(itemId);
-
-        QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
-
-        if (!questionCategory.getItem().equals(item))
-            throw new GeneralException(ErrorStatus.INVALID_QUESTION_ITEM_RELATION);
-
-        if (request.getCategory() != null) questionCategory.setName(request.getCategory());
-
-        return questionCategory;
-    }
-
-    @Override
-    @Transactional
-    public void delete(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.DeleteDto request) {
-        memberService.checkSeller(userDetails);
-        Item item = checkInitial(itemId);
-
-        QuestionCategory questionCategory = questionCategoryRepository.findById(request.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
-        if (Objects.equals(questionCategory.getName(), "기타")) throw new GeneralException(ErrorStatus.ETC_IS_PINNED_CATEGORY);
-
-        item.getQuestionCategoryList().remove(questionCategory);
-        questionCategoryRepository.delete(questionCategory);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public QuestionCategoryResponseDto.ListWithCntDto getList(Long sellerId, Long itemId) {

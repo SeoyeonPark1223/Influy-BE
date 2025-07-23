@@ -15,15 +15,6 @@ public class QuestionCategoryResponseDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DeleteResultDto {
-        @Schema(description = "질문 카테고리 id", example = "1")
-        private Long id;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class ViewListDto {
         @Schema(description = "질문 카테고리 리스트", example = "[ 사이즈, 세탁, 색상 ]")
         private List<ViewDto> viewList;

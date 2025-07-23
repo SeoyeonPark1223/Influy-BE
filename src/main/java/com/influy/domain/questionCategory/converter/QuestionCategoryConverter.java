@@ -23,12 +23,6 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.DeleteResultDto toDeleteResultDto(Long id) {
-        return QuestionCategoryResponseDto.DeleteResultDto.builder()
-                .id(id)
-                .build();
-    }
-
     public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
         return QuestionCategoryResponseDto.ViewWithCntDto.builder()
                 .questionCategoryId(questionCategory.getId())
