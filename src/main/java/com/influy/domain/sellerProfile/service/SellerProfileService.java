@@ -17,7 +17,7 @@ public interface SellerProfileService {
 
     SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy);
 
-    void checkItemMatchSeller(Long sellerId, Long itemId);
+    void checkItemMatchSeller(Long itemId, Long sellerId);
 
     SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request);
 

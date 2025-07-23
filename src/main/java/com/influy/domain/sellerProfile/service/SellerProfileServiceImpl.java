@@ -52,7 +52,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     }
 
     @Override
-    public void checkItemMatchSeller(Long sellerId, Long itemId) {
+    public void checkItemMatchSeller(Long itemId, Long sellerId) {
         SellerProfile seller = getSellerProfile(sellerId);
         Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
