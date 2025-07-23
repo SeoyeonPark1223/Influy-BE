@@ -3,6 +3,7 @@ package com.influy.domain.like.service;
 import com.influy.domain.like.dto.LikeResponseDto;
 import com.influy.domain.like.entity.Like;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import org.springframework.data.domain.Page;
 
 public interface LikeService {
@@ -13,5 +14,5 @@ public interface LikeService {
     LikeResponseDto.LikeCountDto toCountSellerLikes(Long sellerId);
     LikeResponseDto.LikeCountDto toCountItemLikes(Long sellerId, Long itemId);
     Page<Like> toGetSellerLikePage(Long memberId, PageRequestDto pageRequest);
-    Page<Like> toGetItemLikePage(Long memberId, PageRequestDto pageRequest);
+    LikeResponseDto.ItemLikePageDto toGetItemLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest);
 }

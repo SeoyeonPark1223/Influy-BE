@@ -24,4 +24,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "FROM Item p WHERE p.seller.id = :sellerId GROUP BY p.isArchived")
     List<ItemJPQLResponse> countBySellerIdGroupByIsArchived(@Param("sellerId") Long sellerId);
 
+    @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'")
+    List<Item> findAllBySellerIdAndTalkBoxOpenStatus(Long sellerId);
 }

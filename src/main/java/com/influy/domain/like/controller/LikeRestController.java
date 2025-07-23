@@ -25,8 +25,8 @@ public class LikeRestController {
     @PostMapping("seller/{sellerId}/likes")
     @Operation(summary = "멤버가 셀러에 찜 추가")
     public ApiResponse<LikeResponseDto.SellerLikeDto> addSellerLike(@PathVariable("sellerId") Long sellerId,
-                                                                    @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
-        Like like = likeService.toAddSellerLike(sellerId, memberId);
+                                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Like like = likeService.toAddSellerLike(sellerId, userDetails.getId());
         return ApiResponse.onSuccess(LikeConverter.toSellerLikeDto(like));
     }
 
@@ -34,16 +34,16 @@ public class LikeRestController {
     @Operation(summary = "멤버가 아이템에 찜 추가")
     public ApiResponse<LikeResponseDto.ItemLikeDto> addItemLike(@PathVariable("sellerId") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId,
-                                                                @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
-        Like like = likeService.toAddItemLike(sellerId, itemId, memberId);
+                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Like like = likeService.toAddItemLike(sellerId, itemId, userDetails.getId());
         return ApiResponse.onSuccess(LikeConverter.toItemLikeDto(like));
     }
 
     @PatchMapping("seller/{sellerId}/dislikes")
     @Operation(summary = "멤버가 셀러 찜 취소")
     public ApiResponse<LikeResponseDto.SellerLikeDto> cancelSellerLike(@PathVariable("sellerId") Long sellerId,
-                                                                       @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
-        Like like = likeService.toCancelSellerLike(sellerId, memberId);
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Like like = likeService.toCancelSellerLike(sellerId, userDetails.getId());
         return ApiResponse.onSuccess(LikeConverter.toSellerLikeDto(like));
     }
 
@@ -52,8 +52,8 @@ public class LikeRestController {
     @Operation(summary = "멤버가 아이템 찜 취소")
     public ApiResponse<LikeResponseDto.ItemLikeDto> cancelItemLike(@PathVariable("sellerId") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId,
-                                                                   @RequestParam(value="memberId", defaultValue = "1") Long memberId) {
-        Like like = likeService.toCancelItemLike(sellerId, itemId, memberId);
+                                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Like like = likeService.toCancelItemLike(sellerId, itemId, userDetails.getId());
         return ApiResponse.onSuccess(LikeConverter.toItemLikeDto(like));
     }
 
@@ -82,7 +82,6 @@ public class LikeRestController {
     @Operation(summary = "멤버의 아이템 찜 리스트 조회")
     public ApiResponse<LikeResponseDto.ItemLikePageDto> getItemLikePage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                         @Valid @ParameterObject PageRequestDto pageRequest) {
-        Page<Like> likePage = likeService.toGetItemLikePage(userDetails.getId(), pageRequest);
-        return ApiResponse.onSuccess(LikeConverter.toItemLikePageDto(likePage));
+        return ApiResponse.onSuccess(likeService.toGetItemLikePage(userDetails, pageRequest));
     }
 }

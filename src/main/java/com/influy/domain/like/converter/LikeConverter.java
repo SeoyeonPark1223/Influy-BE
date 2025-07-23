@@ -2,6 +2,7 @@ package com.influy.domain.like.converter;
 
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.like.dto.LikeResponseDto;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
@@ -70,10 +71,16 @@ public class LikeConverter {
                 .build();
     }
 
-    public static LikeResponseDto.ViewItemLikeDto toViewItemLikeDto(Like like) {
+    public static LikeResponseDto.ViewItemLikeDto toViewItemLikeDto(Like like, MemberRole memberRole, TalkBoxInfoPair talkBoxInfoPair) {
+        Item item = like.getItem();
         return LikeResponseDto.ViewItemLikeDto.builder()
                 .targetType(like.getTargetType())
-                .itemPreviewDto(like.getItem() != null ? ItemConverter.toDetailPreviewDto(like.getItem(), true, MemberRole.USER) : null)
+                .itemPreviewDto(item != null ? ItemConverter.toDetailPreviewDto(
+                item,
+                true,
+                memberRole,
+                talkBoxInfoPair.waitingCntMap().getOrDefault(item.getId(), 0),
+                talkBoxInfoPair.completedCntMap().getOrDefault(item.getId(), 0)) : null)
                 .build();
     }
 
@@ -91,9 +98,9 @@ public class LikeConverter {
                 .build();
     }
 
-    public static LikeResponseDto.ItemLikePageDto toItemLikePageDto(Page<Like> likePage) {
+    public static LikeResponseDto.ItemLikePageDto toItemLikePageDto(Page<Like> likePage, MemberRole memberRole, TalkBoxInfoPair talkBoxInfoPair) {
         List<LikeResponseDto.ViewItemLikeDto> viewLikeList = likePage.stream()
-                .map(LikeConverter::toViewItemLikeDto).toList();
+                .map(like -> toViewItemLikeDto(like, memberRole, talkBoxInfoPair)).toList();
 
         return LikeResponseDto.ItemLikePageDto.builder()
                 .itemLikeList(viewLikeList)

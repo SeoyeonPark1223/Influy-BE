@@ -1,17 +1,14 @@
 package com.influy.domain.item.service;
 
-import com.influy.domain.answer.converter.AnswerConverter;
-import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
-import com.influy.domain.faqCard.converter.FaqCardConverter;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
@@ -20,6 +17,7 @@ import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
+import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
@@ -36,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +45,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final QuestionRepository questionRepository;
 
     @Override
     @Transactional
@@ -156,28 +155,23 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing, Long memberId) {
+    public ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(CustomUserDetails userDetails, Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing) {
+        Member member = memberRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
         MemberRole memberRole = MemberRole.SELLER;
 
-        List<Long> likeItems = null;
-        if (memberId != null) {
-            Optional<Member> optionalMember = memberRepository.findById(memberId);
-            if (optionalMember.isPresent()) {
-                if (optionalMember.get().getRole() == MemberRole.USER) {
-                    memberRole = MemberRole.USER;
-                }
-                likeItems = optionalMember.get()
-                        .getLikeList()
-                        .stream()
-                        .filter(like -> like.getItem() != null)
-                        .map(like -> like.getItem().getId())
-                        .toList();
-            }
-        }
+        if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
+        List<Long> likeItems = member
+                            .getLikeList()
+                            .stream()
+                            .filter(like -> like.getItem() != null)
+                            .map(like -> like.getItem().getId())
+                            .toList();
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
@@ -205,7 +199,9 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         }
 
-        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole);
+        TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemPage.getContent());
+
+        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap());
     }
 
     private void createImageList(ItemRequestDto.DetailDto request, Item item) {
@@ -264,6 +260,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemResponseDto.ViewTalkBoxCommentDto getTalkBoxComment(CustomUserDetails userDetails, Long itemId) {
         SellerProfile seller = memberService.checkSeller(userDetails);
         Item item = itemRepository.findById(itemId)
@@ -272,9 +269,46 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ItemResponseDto.TalkBoxOpenedListDto getTalkBoxOpened(CustomUserDetails userDetails) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        List<Item> itemList = itemRepository.findAllBySellerIdAndTalkBoxOpenStatus(seller.getId());
+
+        TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemList);
+
+        // 아이템 기준 미확인 질문 개수
+        Map<Long, Integer> uncheckedCntMap = itemList.stream()
+                .collect(Collectors.toMap(
+                        Item::getId,
+                        item -> questionRepository.countQuestionsByItemIdAndIsChecked(item.getId(), false)
+                ));
+
+        return ItemConverter.toTalkBoxOpenedListDto(itemList, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap(), uncheckedCntMap);
+    }
+
+    @Override
     public Item findById(Long itemId) {
 
         return itemRepository.findById(itemId).orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+    }
+
+    @Override
+    public TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList) {
+        // 아이템 기준 응답 대기 질문 개수
+        Map<Long, Integer> waitingCntMap = itemList.stream()
+                .collect(Collectors.toMap(
+                        Item::getId,
+                        item -> questionRepository.countQuestionsByItemIdAndIsAnswered(item.getId(), false)
+                ));
+
+        // 아이템 기준 응답 완료 질문 개수
+        Map<Long, Integer> completedCntMap = itemList.stream()
+                .collect(Collectors.toMap(
+                        Item::getId,
+                        item -> questionRepository.countQuestionsByItemIdAndIsAnswered(item.getId(), true)
+                ));
+
+        return new TalkBoxInfoPair(waitingCntMap, completedCntMap);
     }
 
 }

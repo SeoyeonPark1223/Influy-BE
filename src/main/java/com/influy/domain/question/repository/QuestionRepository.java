@@ -55,4 +55,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
           AND q.questionTag.questionCategory.item.id = :itemId
     """)
     Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
+
+    Integer countQuestionsByItemIdAndIsAnswered(Long id, Boolean b);
+
+    Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
 }

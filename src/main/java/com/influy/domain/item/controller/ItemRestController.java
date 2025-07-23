@@ -34,15 +34,15 @@ public class ItemRestController {
     }
 
     @GetMapping("/{sellerId}/items")
-    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)", description = "memberId는 이후 AuthenticationPrincipal로 받을 것")
-    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@PathVariable("sellerId") Long sellerId,
+    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)")
+    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                    @PathVariable("sellerId") Long sellerId,
                                                                                   @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
                                                                                   @Valid @ParameterObject PageRequestDto pageRequest,
                                                                                   @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType,
-                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing,
-                                                                                  @RequestParam(value = "memberId", required = false) Long memberId) {
+                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing) {
 
-        return ApiResponse.onSuccess(itemService.getDetailPreviewPage(sellerId, isArchived, pageRequest, sortType, isOnGoing, memberId));
+        return ApiResponse.onSuccess(itemService.getDetailPreviewPage(userDetails, sellerId, isArchived, pageRequest, sortType, isOnGoing));
     }
 
     @GetMapping("/{sellerId}/items/{itemId}")
@@ -125,5 +125,11 @@ public class ItemRestController {
     public ApiResponse<ItemResponseDto.ViewTalkBoxCommentDto> getTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                             @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(itemService.getTalkBoxComment(userDetails, itemId));
+    }
+
+    @GetMapping("/talkbox/opened")
+    @Operation(summary = "전체 질문 관리창 = 톡박스", description = "톡박스 활성화된 상품 리스트 조회")
+    public ApiResponse<ItemResponseDto.TalkBoxOpenedListDto> getTalkBoxOpened (@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.onSuccess(itemService.getTalkBoxOpened(userDetails));
     }
 }
