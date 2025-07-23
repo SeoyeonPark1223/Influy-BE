@@ -74,6 +74,7 @@ public enum ErrorStatus implements BaseCode {
     QUESTIONTAG_INVALID_RELATION(HttpStatus.BAD_REQUEST,"QUESTIONTAG INVALID RELATION", "해당 질문 태그를 조회할 수 없습니다."),
     ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER NOT FOUND", "해당 질문의 답변을 찾을 수 없습니다."),
     INVALID_TALKBOX_REQUEST(HttpStatus.BAD_REQUEST, "INVALID TALKBOX REQUEST", "다시 INITIAL로 되돌릴 수 없습니다."),
+    ETC_IS_PINNED_CATEGORY(HttpStatus.BAD_REQUEST, "ETC IS PINNED CATEGORY", "기타 카테고리는 삭제할 수 없습니다."),
 
     // 정렬 관련 응답
     UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST, "UNSUPPORTED SORT TYPE", "가능한 정렬이 아닙니다."),

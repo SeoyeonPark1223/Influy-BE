@@ -3,7 +3,6 @@ package com.influy.domain.questionCategory.converter;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -24,12 +23,6 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.DeleteResultDto toDeleteResultDto(Long id) {
-        return QuestionCategoryResponseDto.DeleteResultDto.builder()
-                .id(id)
-                .build();
-    }
-
     public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
         return QuestionCategoryResponseDto.ViewWithCntDto.builder()
                 .questionCategoryId(questionCategory.getId())
@@ -39,7 +32,7 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.ListDto toListDto(List<QuestionCategory> questionCategoryList, Map<Long, Integer> questionCntMap, Map<Long, Integer> unCheckedCntMap) {
+    public static QuestionCategoryResponseDto.ListWithCntDto toListWithCntDto(List<QuestionCategory> questionCategoryList, Map<Long, Integer> questionCntMap, Map<Long, Integer> unCheckedCntMap) {
         List<QuestionCategoryResponseDto.ViewWithCntDto> qcList = questionCategoryList.stream()
                 .map(qc -> toViewWithCntDto(
                         qc,
@@ -48,20 +41,26 @@ public class QuestionCategoryConverter {
                 ))
                 .toList();
 
-        return QuestionCategoryResponseDto.ListDto.builder()
+        return QuestionCategoryResponseDto.ListWithCntDto.builder()
                 .viewList(qcList)
                 .listSize(qcList.size())
                 .build();
     }
 
 
-    public static QuestionCategoryResponseDto.GenerateResultDto toGenerateResultDto(List<QuestionCategory> questionCategoryList) {
+    public static QuestionCategoryResponseDto.ViewListDto toViewListDto(List<QuestionCategory> questionCategoryList) {
         List<QuestionCategoryResponseDto.ViewDto> viewList = questionCategoryList.stream()
                 .map(QuestionCategoryConverter::toViewDto)
                 .toList();
 
-        return QuestionCategoryResponseDto.GenerateResultDto.builder()
+        return QuestionCategoryResponseDto.ViewListDto.builder()
                 .viewList(viewList)
+                .build();
+    }
+
+    public static QuestionCategoryResponseDto.GeneratedResultDto toGeneratedResultDto(List<String> generatedCategoryList) {
+        return QuestionCategoryResponseDto.GeneratedResultDto.builder()
+                .generatedNameList(generatedCategoryList)
                 .build();
     }
 }
