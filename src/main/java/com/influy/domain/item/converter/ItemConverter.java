@@ -11,6 +11,7 @@ import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -132,6 +133,17 @@ public class ItemConverter {
         return ItemResponseDto.TalkBoxOpenStatusDto.builder()
                 .itemId(itemId)
                 .status(openStatus)
+                .build();
+    }
+
+    public static ItemResponseDto.ViewTalkBoxCommentDto toViewTalkBoxCommentDto(SellerProfile seller, Item item) {
+        return ItemResponseDto.ViewTalkBoxCommentDto.builder()
+                .sellerId(seller.getId())
+                .sellerProfileImg(seller.getMember() == null ? null : seller.getMember().getProfileImg())
+                .sellerUsername(seller.getMember() == null ? null : seller.getMember().getUsername())
+                .sellerNickname(seller.getMember() == null ? null : seller.getMember().getNickname())
+                .createdAt(LocalDateTime.now())
+                .talkBoxComment(item.getTalkBoxComment())
                 .build();
     }
 }

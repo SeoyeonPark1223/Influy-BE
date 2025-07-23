@@ -1,7 +1,5 @@
 package com.influy.domain.item.controller;
 
-import com.influy.domain.answer.dto.AnswerResponseDto;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
@@ -17,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -115,7 +112,7 @@ public class ItemRestController {
     }
 
 
-    @PutMapping("/items/{itemId}/talkbox/default-comment")
+    @PatchMapping("/items/{itemId}/talkbox/default-comment")
     @Operation(summary = "톡박스 기본 멘트 등록")
     public ApiResponse<ItemResponseDto.ResultDto> updateTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                               @PathVariable("itemId") Long itemId,
@@ -123,5 +120,10 @@ public class ItemRestController {
         return ApiResponse.onSuccess(itemService.updateTalkBoxComment(userDetails, itemId, request));
     }
 
-    // 톡박스 기본 멘트 미리보기 조회
+    @GetMapping("/items/{itemId}/talkbox/view-comment")
+    @Operation(summary = "톡박스 기본 멘트 미리보기 조회")
+    public ApiResponse<ItemResponseDto.ViewTalkBoxCommentDto> getTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                            @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(itemService.getTalkBoxComment(userDetails, itemId));
+    }
 }

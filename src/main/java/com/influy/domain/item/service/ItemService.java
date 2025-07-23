@@ -27,5 +27,6 @@ public interface ItemService {
     ItemResponseDto.ItemOverviewDto getItemOverview(Long sellerId, Long itemId);
     ItemResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus);
     ItemResponseDto.ResultDto updateTalkBoxComment(CustomUserDetails userDetails, Long itemId, ItemRequestDto.TalkBoxCommentDto request);
+    ItemResponseDto.ViewTalkBoxCommentDto getTalkBoxComment(CustomUserDetails userDetails, Long itemId);
     Item findById(Long itemId);
 }

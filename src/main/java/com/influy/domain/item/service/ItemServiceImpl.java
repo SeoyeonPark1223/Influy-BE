@@ -264,6 +264,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public ItemResponseDto.ViewTalkBoxCommentDto getTalkBoxComment(CustomUserDetails userDetails, Long itemId) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+        return ItemConverter.toViewTalkBoxCommentDto(seller, item);
+    }
+
+    @Override
     public Item findById(Long itemId) {
 
         return itemRepository.findById(itemId).orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));

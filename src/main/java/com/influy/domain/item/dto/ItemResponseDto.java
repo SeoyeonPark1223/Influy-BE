@@ -185,4 +185,28 @@ public class ItemResponseDto {
         @Schema(description = "해당 톡박스 상태 [INITIAL, OPENED, CLOSED]", example = "OPENED")
         private TalkBoxOpenStatus status;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ViewTalkBoxCommentDto {
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
+        @Schema(description = "셀러 프로필사진", example = "https://...")
+        private String sellerProfileImg;
+
+        @Schema(description = "셀러 아이디", example = "xoyeon")
+        private String sellerUsername;
+
+        @Schema(description = "셀러 닉네임", example = "소현")
+        private String sellerNickname;
+
+        @Schema(description = "생성일", example = "021-01-01T00:00")
+        private LocalDateTime createdAt;
+
+        @Schema(description = "톡박스 기본 멘트", example = "울랄라 먐마먀")
+        private String talkBoxComment;
+    }
 }
