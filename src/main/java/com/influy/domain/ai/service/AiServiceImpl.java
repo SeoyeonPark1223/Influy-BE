@@ -17,15 +17,18 @@ import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.domain.questionTag.service.QuestionTagService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ai.chat.client.ChatClient;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -40,26 +43,25 @@ import static com.influy.global.util.StaticValues.DEFAULT_QUESTION_CATEGORIES;
 public class AiServiceImpl implements AiService {
     private final ObjectMapper objectMapper;
     private final ChatClient chatClient;
-    private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionTagService questionTagService;
     private final QuestionTagRepository questionTagRepository;
 
-    private static final String CATEGORY_PROMPT_FILE_PATH = "src/main/resources/category-storage/aiQuestionCategory/prompt-question-category.txt";
-    private static final String CATEGORY_JSON_FILE_PATH = "src/main/resources/category-storage/question-category.json";
-    private static final String QUESTION_CLASSIFICATION_FILE_PATH = "src/main/resources/category-storage/aiQuestionClassification/system-prompt.txt";
-    private final QuestionRepository questionRepository;
+    private static final String CATEGORY_PROMPT_FILE_PATH = "category-storage/aiQuestionCategory/prompt-question-category.txt";
+    private static final String QUESTION_CLASSIFICATION_FILE_PATH = "category-storage/aiQuestionClassification/system-prompt.txt";
 
     @Override
     @Transactional
-    public void generateCategory(Item item) {
+    public List<String> generateCategory(Item item) {
         // 상품 이름 + 상품 카테고리 (최대 3개) + 상품 한줄 소개 + 코멘트
         // 상품 관련 6개 질문 카테고리를 ai로 생성
 
         try {
             String prompt = buildPromptCategory(item);
             String cleanResponse = callAIClient(prompt);
-            List<String> aiCategories = objectMapper.readValue(cleanResponse, new TypeReference<>() {});
-            updateQuestionsToNewTag(item, aiCategories); // repository에 저장
+            List<String> aiCategoryList = objectMapper.readValue(cleanResponse, new TypeReference<>() {});
+            List<String> defaultCategoryList = Arrays.stream(DEFAULT_QUESTION_CATEGORIES).toList();
+            aiCategoryList.addAll(defaultCategoryList); // 생성된 카테고리 + 디폴트 카테고리
+            return aiCategoryList;
         } catch (IOException e) {
             throw new RuntimeException("Failed to process AI response", e);
         }
@@ -112,7 +114,8 @@ public class AiServiceImpl implements AiService {
                                                List<AiRequestDTO.Question> questionDTOs) throws IOException {
 
         try {
-            String template = Files.readString(Paths.get(QUESTION_CLASSIFICATION_FILE_PATH));
+            Resource resource = new ClassPathResource(QUESTION_CLASSIFICATION_FILE_PATH);
+            String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             return template
                     .replace("{{questioncategoryname}}", questionCategoryName)
                     .replace("{{questiontagdtolist}}", objectMapper.writeValueAsString(questionTagDTOs))
@@ -123,9 +126,10 @@ public class AiServiceImpl implements AiService {
         }
     }
 
-    private String buildPromptCategory(Item item) throws IOException{
+    private String buildPromptCategory(Item item) throws IOException {
         try {
-            String template = Files.readString(Paths.get(CATEGORY_PROMPT_FILE_PATH));
+            Resource resource = new ClassPathResource(CATEGORY_PROMPT_FILE_PATH);
+            String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             return template
                     .replace("{{name}}", item.getName())
                     .replace("{{categories}}", item.getItemCategoryList().stream()
@@ -151,25 +155,6 @@ public class AiServiceImpl implements AiService {
                 .replaceAll("```", "")
                 .trim();
 
-    }
-
-
-    private void updateQuestionsToNewTag(Item item, List<String> aiCategories) throws IOException {
-
-        //기본 대분류
-        List<String> defaultCategoryList = Arrays.stream(DEFAULT_QUESTION_CATEGORIES).toList();
-        //ai 생성 카테고리에 더하기
-        aiCategories.addAll(defaultCategoryList);
-
-        for (String name:aiCategories) {
-
-            if (!questionCategoryRepository.existsByItemIdAndName(item.getId(), name.trim())) {
-                QuestionCategory category = QuestionCategoryConverter.toQuestionCategory(item, name.trim());
-                //각 카테고리마다 기타 태그 기본으로 생성
-                category.getQuestionTagList().add(QuestionTagConverter.toQuestionTag("기타", category));
-                questionCategoryRepository.save(category);
-            }
-        }
     }
 
     private void updateQuestionsToNewTag(AiResponseDTO.QuestionClassification result,

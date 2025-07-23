@@ -9,11 +9,9 @@ import java.util.List;
 
 
 public interface QuestionCategoryService {
-    QuestionCategory add(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.AddDto request);
-    QuestionCategory update(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.UpdateDto request);
-    void delete(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.DeleteDto request);
-    QuestionCategoryResponseDto.ListDto getList(Long sellerId, Long itemId);
-    List<QuestionCategory> generateCategory(CustomUserDetails userDetails, Long itemId);
-
+    List<QuestionCategory> addAll(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.AddListDto request);
+    QuestionCategoryResponseDto.ListWithCntDto getList(Long sellerId, Long itemId);
+    List<String> generateCategory(CustomUserDetails userDetails, Long itemId);
     QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
+
 }

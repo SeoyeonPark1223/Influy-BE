@@ -25,43 +25,25 @@ public class QuestionCategoryController {
 
     @PostMapping("seller/items/{itemId}/question-categories/generate")
     @Operation(summary = "질문 카테고리 (대분류) ai 생성")
-    public ApiResponse<QuestionCategoryResponseDto.GenerateResultDto> generateCategory(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                       @PathVariable("itemId") Long itemId) {
-        List<QuestionCategory> questionCategoryList = questionCategoryService.generateCategory(userDetails, itemId);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toGenerateResultDto(questionCategoryList));
+    public ApiResponse<QuestionCategoryResponseDto.GeneratedResultDto> generateCategory(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                 @PathVariable("itemId") Long itemId) {
+        List<String> questionCategoryList = questionCategoryService.generateCategory(userDetails, itemId);
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toGeneratedResultDto(questionCategoryList));
     }
 
     @PostMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 추가 (한번에 하나)")
-    public ApiResponse<QuestionCategoryResponseDto.ViewDto> add(@AuthenticationPrincipal CustomUserDetails userDetails,
+    @Operation(summary = "질문 카테고리 추가 (한번에 여러개)")
+    public ApiResponse<QuestionCategoryResponseDto.ViewListDto> addAll(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @PathVariable("itemId") Long itemId,
-                                                                @RequestBody QuestionCategoryRequestDto.AddDto request) {
-        QuestionCategory questionCategory = questionCategoryService.add(userDetails, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
-    }
-
-    @PatchMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 수정 (한번에 하나)")
-    public ApiResponse<QuestionCategoryResponseDto.ViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                     @PathVariable("itemId") Long itemId,
-                                                                     @RequestBody QuestionCategoryRequestDto.UpdateDto request) {
-        QuestionCategory questionCategory = questionCategoryService.update(userDetails, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
-    }
-
-    @DeleteMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 삭제 (한번에 하나)")
-    public ApiResponse<QuestionCategoryResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                           @PathVariable("itemId") Long itemId,
-                                                                           @RequestBody QuestionCategoryRequestDto.DeleteDto request) {
-        questionCategoryService.delete(userDetails, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toDeleteResultDto(request.getId()));
+                                                                @RequestBody QuestionCategoryRequestDto.AddListDto request) {
+        List<QuestionCategory> questionCategoryList = questionCategoryService.addAll(userDetails, itemId, request);
+        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewListDto(questionCategoryList));
     }
 
     @GetMapping("seller/{sellerId}/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)", description = "미확인인 질문 개수는 질문 파트 개발 이후 수정할 예정입니다.")
-    public ApiResponse<QuestionCategoryResponseDto.ListDto> getList(@PathVariable("sellerId") Long sellerId,
-                                                                    @PathVariable("itemId") Long itemId) {
+    public ApiResponse<QuestionCategoryResponseDto.ListWithCntDto> getList(@PathVariable("sellerId") Long sellerId,
+                                                                           @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(questionCategoryService.getList(sellerId, itemId));
     }
 }

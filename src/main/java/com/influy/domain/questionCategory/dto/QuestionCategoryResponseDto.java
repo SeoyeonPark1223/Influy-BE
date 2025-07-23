@@ -1,7 +1,6 @@
 package com.influy.domain.questionCategory.dto;
 
 import com.influy.domain.question.dto.QuestionResponseDTO;
-import com.influy.domain.questionCategory.entity.QuestionCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,17 +15,8 @@ public class QuestionCategoryResponseDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DeleteResultDto {
-        @Schema(description = "질문 카테고리 id", example = "1")
-        private Long id;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class GenerateResultDto {
-        @Schema(description = "질문 카테고리 리스트")
+    public static class ViewListDto {
+        @Schema(description = "질문 카테고리 리스트", example = "[ 사이즈, 세탁, 색상 ]")
         private List<ViewDto> viewList;
     }
 
@@ -34,7 +24,7 @@ public class QuestionCategoryResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ListDto {
+    public static class ListWithCntDto {
         @Schema(description = "질문 카테고리 리스트")
         private List<ViewWithCntDto> viewList;
 
@@ -69,6 +59,35 @@ public class QuestionCategoryResponseDto {
 
         @Schema(description = "질문 카테고리", example = "사이즈")
         private String questionCategoryName;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GeneratedResultDto {
+        @Schema(description = "생성된 질문 카테고리 리스트", example = "[ 사이즈, 세탁, 색상 ]")
+        private List<String> generatedNameList;
+    }
+
+    @Builder @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Preview {
+        private Long id;
+        private String name;
+        private Integer pendingCnt;
+        private Integer answeredCnt;
+        @Builder.Default
+        private List<QuestionResponseDTO.General> questions = new ArrayList<>();
+
+        public void setCount(Boolean isAnswered, Long cnt){
+            if(isAnswered){
+                this.answeredCnt = cnt.intValue();
+            }else{
+                this.pendingCnt = cnt.intValue();
+            }
+        }
     }
 
 }
