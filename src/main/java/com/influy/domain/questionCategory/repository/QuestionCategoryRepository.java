@@ -33,7 +33,5 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     """)
     int countQuestionsByCategoryId(@Param("questionCategoryId") Long questionCategoryId);
 
-    List<QuestionCategory> findAllByItem(Item item);
-
     Optional<QuestionCategory> findByIdAndItemId(Long questionCategoryId, Long itemId);
 }

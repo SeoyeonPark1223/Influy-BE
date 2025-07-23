@@ -40,24 +40,6 @@ public class QuestionCategoryController {
         return ApiResponse.onSuccess(QuestionCategoryConverter.toViewListDto(questionCategoryList));
     }
 
-    @PatchMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 수정 (한번에 하나, 추가 api 한번 이상 호출한 이후에만 사용)")
-    public ApiResponse<QuestionCategoryResponseDto.ViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                     @PathVariable("itemId") Long itemId,
-                                                                     @RequestBody QuestionCategoryRequestDto.UpdateDto request) {
-        QuestionCategory questionCategory = questionCategoryService.update(userDetails, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toViewDto(questionCategory));
-    }
-
-    @DeleteMapping("seller/items/{itemId}/question-categories")
-    @Operation(summary = "질문 카테고리 삭제 (한번에 하나, 추가 api 한번 이상 호출한 이후에만 사용)")
-    public ApiResponse<QuestionCategoryResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                           @PathVariable("itemId") Long itemId,
-                                                                           @RequestBody QuestionCategoryRequestDto.DeleteDto request) {
-        questionCategoryService.delete(userDetails, itemId, request);
-        return ApiResponse.onSuccess(QuestionCategoryConverter.toDeleteResultDto(request.getId()));
-    }
-
     @GetMapping("seller/{sellerId}/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)", description = "미확인인 질문 개수는 질문 파트 개발 이후 수정할 예정입니다.")
     public ApiResponse<QuestionCategoryResponseDto.ListWithCntDto> getList(@PathVariable("sellerId") Long sellerId,

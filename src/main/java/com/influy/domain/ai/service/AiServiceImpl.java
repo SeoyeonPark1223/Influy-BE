@@ -7,27 +7,21 @@ import com.influy.domain.ai.dto.AiRequestDTO;
 import com.influy.domain.ai.dto.AiResponseDTO;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.question.entity.Question;
-import com.influy.domain.question.repository.QuestionRepository;
-import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
-import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
-import com.influy.domain.questionTag.converter.QuestionTagConverter;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.domain.questionTag.service.QuestionTagService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ai.chat.client.ChatClient;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -40,12 +34,11 @@ import static com.influy.global.util.StaticValues.DEFAULT_QUESTION_CATEGORIES;
 public class AiServiceImpl implements AiService {
     private final ObjectMapper objectMapper;
     private final ChatClient chatClient;
-    private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionTagService questionTagService;
     private final QuestionTagRepository questionTagRepository;
 
-    private static final String CATEGORY_PROMPT_FILE_PATH = "src/main/resources/category-storage/aiQuestionCategory/prompt-question-category.txt";
-    private static final String QUESTION_CLASSIFICATION_FILE_PATH = "src/main/resources/category-storage/aiQuestionClassification/system-prompt.txt";
+    private static final String CATEGORY_PROMPT_FILE_PATH = "category-storage/aiQuestionCategory/prompt-question-category.txt";
+    private static final String QUESTION_CLASSIFICATION_FILE_PATH = "category-storage/aiQuestionClassification/system-prompt.txt";
 
     @Override
     @Transactional
@@ -112,7 +105,8 @@ public class AiServiceImpl implements AiService {
                                                List<AiRequestDTO.Question> questionDTOs) throws IOException {
 
         try {
-            String template = Files.readString(Paths.get(QUESTION_CLASSIFICATION_FILE_PATH));
+            Resource resource = new ClassPathResource(QUESTION_CLASSIFICATION_FILE_PATH);
+            String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             return template
                     .replace("{{questioncategoryname}}", questionCategoryName)
                     .replace("{{questiontagdtolist}}", objectMapper.writeValueAsString(questionTagDTOs))
@@ -123,9 +117,10 @@ public class AiServiceImpl implements AiService {
         }
     }
 
-    private String buildPromptCategory(Item item) throws IOException{
+    private String buildPromptCategory(Item item) throws IOException {
         try {
-            String template = Files.readString(Paths.get(CATEGORY_PROMPT_FILE_PATH));
+            Resource resource = new ClassPathResource(CATEGORY_PROMPT_FILE_PATH);
+            String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             return template
                     .replace("{{name}}", item.getName())
                     .replace("{{categories}}", item.getItemCategoryList().stream()
@@ -152,7 +147,6 @@ public class AiServiceImpl implements AiService {
                 .trim();
 
     }
-
 
     private void updateQuestionsToNewTag(AiResponseDTO.QuestionClassification result,
                                          QuestionTag createdTag, Map<Long,QuestionTag> questionTagMap,
