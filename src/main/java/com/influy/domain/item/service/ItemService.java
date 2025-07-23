@@ -7,8 +7,10 @@ import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
+import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
@@ -24,6 +26,6 @@ public interface ItemService {
     ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing, Long memberId);
     ItemResponseDto.ItemOverviewDto getItemOverview(Long sellerId, Long itemId);
     ItemResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus);
-
+    ItemResponseDto.ResultDto updateTalkBoxComment(CustomUserDetails userDetails, Long itemId, ItemRequestDto.TalkBoxCommentDto request);
     Item findById(Long itemId);
 }

@@ -113,4 +113,15 @@ public class ItemRestController {
                                                                                 @RequestParam(name = "openStatus", defaultValue = "OPENED") TalkBoxOpenStatus openStatus) {
         return ApiResponse.onSuccess(itemService.changeOpenStatus(userDetails, itemId, openStatus));
     }
+
+
+    @PutMapping("/items/{itemId}/talkbox/default-comment")
+    @Operation(summary = "톡박스 기본 멘트 등록")
+    public ApiResponse<ItemResponseDto.ResultDto> updateTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                              @PathVariable("itemId") Long itemId,
+                                                                              @RequestBody @Valid ItemRequestDto.TalkBoxCommentDto request) {
+        return ApiResponse.onSuccess(itemService.updateTalkBoxComment(userDetails, itemId, request));
+    }
+
+    // 톡박스 기본 멘트 미리보기 조회
 }

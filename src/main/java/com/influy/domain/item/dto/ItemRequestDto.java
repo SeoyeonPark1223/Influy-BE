@@ -13,9 +13,6 @@ import java.util.List;
 
 public class ItemRequestDto {
     @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class DetailDto {
         @Schema(description = "아이템 사진 리스트, 대표사진은 리스트 맨 처음 순서로", example = "[\"xxx.png\", \"xxxxx.png\", \"xxxxxx.png\"]")
         @Size(max = 10, message = "이미지는 최대 10개까지만 업로드할 수 있습니다.")
@@ -57,9 +54,6 @@ public class ItemRequestDto {
     }
 
     @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class AccessDto {
         @Schema(description = "홈아카이브 추천 허용", example = "false")
         private Boolean archiveRecommended;
@@ -69,11 +63,14 @@ public class ItemRequestDto {
     }
 
     @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class StatusDto {
         @Schema(description = "아이템 표기 상태", example = "SOLD_OUT")
         private ItemStatus status;
+    }
+
+    @Getter
+    public static class TalkBoxCommentDto {
+        @Schema(description = "톡박스 기본 멘트", example = "FAQ를 보고도 해결되지 않는 부분을 이곳에 남겨주시면 최대한 빠르게 답변 드리겠습니다!")
+        private String talkBoxComment;
     }
 }

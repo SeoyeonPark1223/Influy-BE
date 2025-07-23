@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -249,6 +250,17 @@ public class ItemServiceImpl implements ItemService {
         item.setTalkBoxOpenStatus(openStatus);
 
         return ItemConverter.toTalkBoxOpenStatusDto(itemId, openStatus);
+    }
+
+    @Override
+    @Transactional
+    public ItemResponseDto.ResultDto updateTalkBoxComment(CustomUserDetails userDetails, Long itemId, ItemRequestDto.TalkBoxCommentDto request) {
+        memberService.checkSeller(userDetails);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+
+        item.setTalkBoxComment(request.getTalkBoxComment());
+        return ItemConverter.toResultDto(itemId);
     }
 
     @Override
