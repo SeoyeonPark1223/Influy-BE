@@ -12,8 +12,6 @@ import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
-import com.influy.global.apiPayload.code.status.ErrorStatus;
-import com.influy.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public Page<Question> getQuestionsByTag(Long questionTagId, SellerProfile seller, Boolean isAnswered, Pageable pageable) {
+    public Page<JPQLResult.SellerViewQuestion> getQuestionsByTagAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable) {
 
 
         return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
@@ -61,9 +59,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     //멤버 id별 seller에 대한 질문 횟수 구하는 메서드
     @Override
-    public Map<Long, Long> getNthQuestionMap(SellerProfile seller, Page<Question> questions) {
+    public Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<JPQLResult.SellerViewQuestion> questions) {
         List<Long> memberIds = questions.stream()
-                .map(q -> q.getMember().getId())
+                .map(q -> q.getMemberId())
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -71,6 +69,21 @@ public class QuestionServiceImpl implements QuestionService {
 
         return counts.stream()
                 .collect(Collectors.toMap(JPQLResult.MemberQuestionCount::getMemberId, JPQLResult.MemberQuestionCount::getCnt));
+    }
+
+    //isChecked==false인 질문 구하기
+    @Override
+    public Long getNewQuestionCountOf(Long questionTagId, Long questionCategoryId, Long itemId) {
+
+        if(questionTagId!=null){
+            return questionRepository.countByQuestionTagIdAndIsCheckedFalse(questionTagId);
+        } else if (questionCategoryId!=null) {
+            return questionRepository.countByQuestionCategoryIdAndIsCheckedFalse(questionCategoryId);
+        }else if (itemId!=null) {
+            return questionRepository.countByItemIdAndIsCheckedFalse(itemId);
+        }else{
+            return 0L;
+        }
     }
 
 

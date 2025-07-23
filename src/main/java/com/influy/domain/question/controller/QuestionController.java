@@ -9,6 +9,7 @@ import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.QuestionRequestDTO;
 import com.influy.domain.question.dto.QuestionResponseDTO;
+import com.influy.domain.question.dto.jpql.JPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.service.QuestionService;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -18,7 +19,6 @@ import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
-import com.influy.global.jwt.CustomUserDetails;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +30,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @Tag(name="질문 관리")
@@ -53,18 +52,22 @@ public class QuestionController {
         Member member = memberService.findById(userDetails.getId());
 
         //자격 검사
-        if(member.getRole().equals(MemberRole.SELLER)){
-            sellerService.checkItemMatchSeller(itemId, Objects.requireNonNull(member.getSellerProfile()).getId());
-        }else{
+        if(!member.getRole().equals(MemberRole.SELLER)){
             throw new GeneralException(ErrorStatus.FORBIDDEN);
         }
-
         SellerProfile seller = member.getSellerProfile();
-        Page<Question> questions = questionService.getQuestionsByTag(questionTagId, seller, isAnswered, pageable);
 
+        //질문 리스트
+        Page<JPQLResult.SellerViewQuestion> questions = questionService.getQuestionsByTagAndIsAnswered(questionTagId, isAnswered, pageable);
+        System.out.println(questions.getTotalElements());
+        System.out.println(questions.getContent().getFirst().getContent());
+        //새 질문 개수
+        Long newQuestions = questionService.getNewQuestionCountOf(questionTagId, null, null);
         //<memberId,질문 횟수> Map
-        Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions);
-        QuestionResponseDTO.GeneralPage body = QuestionConverter.toGeneralPageDTO(questions, nthQuestions);
+        Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions.getContent());
+        QuestionResponseDTO.GeneralPage body = QuestionConverter.toGeneralPageDTO(questions, nthQuestions, newQuestions);
+
+
 
         return ApiResponse.onSuccess(body);
 

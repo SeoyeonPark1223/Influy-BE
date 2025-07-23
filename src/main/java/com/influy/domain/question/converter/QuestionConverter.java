@@ -3,12 +3,13 @@ package com.influy.domain.question.converter;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
+import com.influy.domain.question.dto.jpql.JPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
-import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.Map;
 
 public class QuestionConverter {
@@ -33,30 +34,33 @@ public class QuestionConverter {
 
     }
 
-    public static QuestionResponseDTO.General toGeneralDTO(Question question, Long nthQuestion) {
+    public static QuestionResponseDTO.General toGeneralDTO(JPQLResult.SellerViewQuestion question, Long nthQuestion) {
         return QuestionResponseDTO.General.builder()
                 .id(question.getId())
-                .memberId(question.getMember().getId())
+                .memberId(question.getMemberId())
                 .content(question.getContent())
-                .nickname(question.getMember().getNickname())
-                .username(question.getMember().getUsername())
+                .nickname(question.getNickname())
+                .username(question.getUsername())
                 .nthQuestion(nthQuestion)
-                .createdAt(question.getCreatedAt())
+                .createdAt(question.getCreatedAt().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime())
                 .build();
     }
 
 
 
-    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<Question> questions, Map<Long, Long> countMap) {
-
+    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<JPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
+        List<QuestionResponseDTO.General> questionDTOs = questions.getContent().stream().map(question -> toGeneralDTO(question, countMap.get(question.getMemberId()))).toList();
 
         return QuestionResponseDTO.GeneralPage.builder()
+                .questions(questionDTOs)
+                .newQuestionCnt(newQuestions)
                 .isFirst(questions.isFirst())
                 .isLast(questions.isLast())
                 .totalPage(questions.getTotalPages())
                 .totalElements(questions.getTotalElements())
                 .listSize(questions.getSize())
-                .questions(questions.map(question->QuestionConverter.toGeneralDTO(question, countMap.get(question.getMember().getId()))).getContent())
                 .build();
     }
 }

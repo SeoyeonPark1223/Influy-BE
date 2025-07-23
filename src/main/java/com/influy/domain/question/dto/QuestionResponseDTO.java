@@ -40,9 +40,11 @@ public class QuestionResponseDTO {
         private List<General> questions;
         @Schema(description = "이 페이지의 리스트 사이즈", example = "20")
         private Integer listSize;
+        @Schema(description = "미확인 질문 개수", example = "3")
+        private Long newQuestionCnt;
         @Schema(description = "총 페이지", example = "13")
         private Integer totalPage;
-        @Schema(description = "전체 개수", example = "260")
+        @Schema(description = "전체 질문 개수", example = "260")
         private Long totalElements;
         @Schema(description = "지금 첫 페이지인지", example = "false")
         private Boolean isFirst;

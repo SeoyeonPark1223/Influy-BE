@@ -17,8 +17,6 @@ public interface SellerProfileService {
 
     SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy);
 
-    void checkItemMatchSeller(Long itemId, Long sellerId);
-
     SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request);
 
     boolean getIsLikedByMember(SellerProfile seller, Member member);

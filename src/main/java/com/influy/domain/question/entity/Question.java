@@ -52,6 +52,10 @@ public class Question extends BaseEntity {
     @Builder.Default
     private Boolean isHidden = false;
 
+    @Builder.Default
+    @Setter
+    private Boolean isChecked = false;
+
     public Question updateTag(QuestionTag questionTag) {
         this.questionTag = questionTag;
         return this;

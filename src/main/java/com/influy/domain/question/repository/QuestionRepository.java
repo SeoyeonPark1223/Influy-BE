@@ -38,7 +38,21 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
                                                                             @Param("memberIds") List<Long> memberIds);
 
 
-    Page<Question> findAllByQuestionTagIdAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable);
+
+    @Query("""
+    SELECT q.id AS id,
+           m.id AS memberId,
+           m.nickname AS nickname,
+           m.username AS username,
+           q.content AS content,
+           q.createdAt AS createdAt
+    FROM Question q
+    JOIN q.member m
+    WHERE q.questionTag.id = :tagId
+      AND q.isAnswered = :isAnswered
+""")
+    Page<JPQLResult.SellerViewQuestion> findAllByQuestionTagIdAndIsAnswered(@Param("tagId") Long questionTagId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
+
     @Query("""
     SELECT q
     FROM Question q
@@ -56,4 +70,22 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
           AND q.questionTag.questionCategory.item.id = :itemId
     """)
     Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
+
+
+    /*
+     밑 3개는 태그, 카테고리, 아이템 별 새 질문 수 구하는 함수
+     */
+    @Query("""
+    SELECT COUNT(q)
+    FROM QuestionTag qt
+    JOIN Question q ON q.questionTag = qt
+    WHERE qt.questionCategory.id = :categoryId
+      AND q.isAnswered = true
+      AND q.isChecked = false
+    """)
+    Long countByQuestionCategoryIdAndIsCheckedFalse(@Param("categoryId") Long categoryId);
+
+    Long countByQuestionTagIdAndIsCheckedFalse(Long questionTagId);
+
+    Long countByItemIdAndIsCheckedFalse(Long itemId);
 }

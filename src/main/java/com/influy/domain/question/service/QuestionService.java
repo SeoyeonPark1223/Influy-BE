@@ -2,21 +2,25 @@ package com.influy.domain.question.service;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.question.dto.jpql.JPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Map;
 
 public interface QuestionService {
 
-    Page<Question> getQuestionsByTag(Long questionTagId, SellerProfile sellerProfile, Boolean isAnswered, Pageable pageable);
+    Page<JPQLResult.SellerViewQuestion> getQuestionsByTagAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable);
 
     Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content);
 
     Long getTimesMemberAskedSeller(Member member, SellerProfile seller);
 
-    Map<Long, Long> getNthQuestionMap(SellerProfile seller, Page<Question> questions);
+    Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<JPQLResult.SellerViewQuestion> questions);
+
+    Long getNewQuestionCountOf(Long questionTagId, Long questionCategoryId, Long itemId);
 }

@@ -1,11 +1,19 @@
 package com.influy.domain.question.dto.jpql;
 
-import lombok.Getter;
+import java.util.Date;
 
 public class JPQLResult {
-    @Getter
-    public static class MemberQuestionCount{
-        private Long memberId;
-        private Long cnt;
+    public interface MemberQuestionCount{
+        Long getMemberId();
+        Long getCnt();
+    }
+
+    public interface SellerViewQuestion {
+        Long getId();
+        Long getMemberId();
+        String getNickname();
+        String getUsername();
+        String getContent();
+        Date getCreatedAt();
     }
 }
