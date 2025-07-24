@@ -15,6 +15,7 @@ public class QuestionJPQLResult {
         String getUsername();
         Boolean getIsChecked();
         String getContent();
+        String getTagName();
         Date getCreatedAt();
     }
 }

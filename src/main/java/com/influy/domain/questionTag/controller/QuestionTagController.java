@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "질문 관리")
+@Tag(name = "질문 태그(소분류)")
 public class QuestionTagController {
 
     private final MemberService memberService;

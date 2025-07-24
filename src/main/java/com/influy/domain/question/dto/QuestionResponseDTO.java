@@ -15,6 +15,19 @@ public class QuestionResponseDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class UserViewViewQuestion {
+        @Schema(description = "질문 아이디", example = "1")
+        private Long id;
+        @Schema(description = "내용", example = "더 싸게는 안되나요?")
+        private String content;
+        @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
+        private LocalDateTime createdAt;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class SellerViewQuestion {
         @Schema(description = "질문 아이디", example = "1")
         private Long id;
@@ -24,6 +37,8 @@ public class QuestionResponseDTO {
         private String nickname;
         @Schema(description = "질문한 회원 유저네임", example = "@pullpullpull")
         private String username;
+        @Schema(description = "질문 태그 이름")
+        private String tagName;
         @Schema(description = "새로 들어온 질문인지(빨간점)", example = "true")
         private boolean isNew;
         @Schema(description = "내용", example = "더 싸게는 안되나요?")

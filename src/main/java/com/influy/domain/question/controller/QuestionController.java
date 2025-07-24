@@ -39,20 +39,23 @@ public class QuestionController {
     private final QuestionCategoryService questionCategoryService;
     private final ItemService itemService;
 
-    @GetMapping("seller/item/talkbox/{questionTagId}/questions")
+    @GetMapping("seller/item/talkbox/items/question-categories/{questionTagId}/questions")
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
     public ApiResponse<QuestionResponseDTO.SellerViewPage> getQuestions(@PathVariable("questionTagId") Long questionTagId,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                        @RequestParam(value = "isAnswered",defaultValue = "true") Boolean isAnswered,
+                                                                        @RequestParam(value = "isAnswered",defaultValue = "false") Boolean isAnswered,
                                                                         @ParameterObject Pageable pageable) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);
         sellerService.checkQuestionOwner(questionTagId, null,seller.getId());
 
+
         //질문 리스트
-        Page<QuestionJPQLResult.SellerViewQuestion> questions = questionService.getQuestionsByTagAndIsAnswered(questionTagId, isAnswered, pageable);
-        //새 질문 개수
+        Page<QuestionJPQLResult.SellerViewQuestion> questions = questionService
+                .getQuestionsByTagOrCategoryAndIsAnswered(questionTagId, null, isAnswered, pageable);
+        //새 질문 개수(새 질문 수>페이지 사이즈보다 클 수 있으므로 반복문보다는 쿼리 날리는게 맞음)
         Long newQuestions = questionService.getNewQuestionCountOf(questionTagId, null, null);
+
         //<memberId,질문 횟수> Map
         Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions.getContent());
         QuestionResponseDTO.SellerViewPage body = QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
@@ -61,8 +64,33 @@ public class QuestionController {
         questionService.setAllChecked(questionIds);
 
         return ApiResponse.onSuccess(body);
+    }
+
+    @GetMapping("seller/item/talkbox/items/{questionCategoryId}/questions")
+    @Operation(summary = "각 카테고리 별 전체 질문 조회", description = "태그별 질문 리스트와 동일한데 태그 id 대신 카테고리 id 필요")
+    public ApiResponse<QuestionResponseDTO.SellerViewPage> getCategoryQuestions(@PathVariable("questionCategoryId") Long categoryId,
+                                                                        @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                        @RequestParam(value = "isAnswered",defaultValue = "false") Boolean isAnswered,
+                                                                        @ParameterObject Pageable pageable) {
+
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        sellerService.checkQuestionOwner(null, categoryId,seller.getId());
 
 
+        //질문 리스트
+        Page<QuestionJPQLResult.SellerViewQuestion> questions = questionService
+                .getQuestionsByTagOrCategoryAndIsAnswered(null, categoryId, isAnswered, pageable);
+        //새 질문 개수(새 질문 수>페이지 사이즈보다 클 수 있으므로 반복문보다는 쿼리 날리는게 맞음)
+        Long newQuestions = questionService.getNewQuestionCountOf(null, categoryId, null);
+
+        //<memberId,질문 횟수> Map
+        Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions.getContent());
+        QuestionResponseDTO.SellerViewPage body = QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
+
+        List<Long> questionIds = questions.getContent().stream().map(QuestionJPQLResult.SellerViewQuestion::getId).toList();
+        questionService.setAllChecked(questionIds);
+
+        return ApiResponse.onSuccess(body);
     }
 
     

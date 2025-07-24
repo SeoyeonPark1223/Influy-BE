@@ -39,7 +39,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
                                                                                     @Param("memberIds") List<Long> memberIds);
 
 
-
+    //태그별 질문 조회
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
@@ -47,22 +47,35 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,
-           q.isChecked AS isChecked
+           q.isChecked AS isChecked,
+           qt.name AS tagName
     FROM Question q
     JOIN q.member m
+    JOIN q.questionTag qt
     WHERE q.questionTag.id = :tagId
       AND q.isAnswered = :isAnswered
 """)
     Page<QuestionJPQLResult.SellerViewQuestion> findAllByQuestionTagIdAndIsAnswered(@Param("tagId") Long questionTagId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
 
+    //카테고리에 속한 모든 질문 조회
     @Query("""
-    SELECT q
+    SELECT q.id AS id,
+           m.id AS memberId,
+           m.nickname AS nickname,
+           m.username AS username,
+           q.content AS content,
+           q.createdAt AS createdAt,
+           q.isChecked AS isChecked,
+           qt.name AS tagName
     FROM Question q
+    JOIN q.member m
     JOIN q.questionTag qt
-    WHERE qt.questionCategory = :questionCategory
-    AND q.isAnswered = :isAnswered
+    WHERE qt.questionCategory.id = :categoryId
+      AND q.isAnswered = :isAnswered
+    ORDER BY q.createdAt
+    
     """)
-    Page<Question> findAllByQuestionCategoryAndIsAnswered(QuestionCategory questionCategory, Boolean isAnswered, Pageable pageable);
+    Page<QuestionJPQLResult.SellerViewQuestion> findAllByQuestionCategoryAndIsAnswered(@Param("categoryId") Long questionCategoryId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
 
     @Query("""
         SELECT q FROM Question q

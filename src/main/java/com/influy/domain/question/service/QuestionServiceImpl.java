@@ -33,10 +33,12 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable) {
-
-
-        return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
+    public Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, Pageable pageable) {
+        if(questionTagId!=null){
+            return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
+        }else{
+            return questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategoryId, isAnswered, pageable);
+        }
     }
 
     @Override
