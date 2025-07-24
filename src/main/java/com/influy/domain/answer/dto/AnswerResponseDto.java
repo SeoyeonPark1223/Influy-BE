@@ -72,35 +72,30 @@ public class AnswerResponseDto {
         private AnswerType answerType;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnswerViewListDto {
+        @Schema(description = "답변 리스트")
+        private List<AnswerViewDto> answerViewList;
+    }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DeleteResultDto {
-        @Schema(description = "삭제된 질문 id 리스트")
-        private List<Long> questionIdList;
+    public static class AnswerViewDto {
+        @Schema(description = "답변 id", example = "1")
+        private Long answerId;
+
+        @Schema(description = "답변 타입 [COMMON, INDIVIDUAL, FAQ", example = "INDIVIDUAL")
+        private AnswerType answerType;
+
+        @Schema(description = "답변 내용", example = "울랄라 이건 이거에요")
+        private String answerContent;
+
+        @Schema(description = "답변 생성일", example = "021-01-01T00:00")
+        private LocalDateTime answerTime;
     }
-
-//    @Getter
-//    @Builder
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class QnAListDto {
-//
-//    }
-
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TalkBoxOpenStatusDto {
-        @Schema(description = "아이템 id", example = "1")
-        private Long itemId;
-
-        @Schema(description = "해당 톡박스 상태 [INITIAL, OPENED, CLOSED]", example = "OPENED")
-        private TalkBoxOpenStatus status;
-    }
-
 }

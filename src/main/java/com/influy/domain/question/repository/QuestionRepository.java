@@ -2,8 +2,11 @@ package com.influy.domain.question.repository;
 
 import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
+import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
+import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
 
+    @Query("SELECT COUNT(q) AS cnt " +
+            "FROM Question q " +
+            "LEFT JOIN q.item i " +
+            "LEFT JOIN i.seller s " +
+            "WHERE s = :seller AND q.member = :member ")
+    Long countByMemberAndSeller(@Param("member") Member member, @Param("seller") SellerProfile seller);
 
     @Query("SELECT q.member.id AS memberId, COUNT(q) AS cnt " +
             "FROM Question q " +
@@ -37,7 +46,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
-           m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,
@@ -55,7 +63,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
-           m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,
@@ -72,14 +79,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     """)
     Page<QuestionJPQLResult.SellerViewQuestion> findAllByQuestionCategoryAndIsAnswered(@Param("categoryId") Long questionCategoryId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
 
-    @Query("""
-        SELECT q FROM Question q
-        WHERE q.id = :questionId
-          AND q.questionTag.id = :questionTagId
-          AND q.questionTag.questionCategory.id = :questionCategoryId
-          AND q.questionTag.questionCategory.item.id = :itemId
-    """)
-    Optional<Question> findValidQuestion(@Param("itemId") Long itemId, @Param("questionCategoryId") Long questionCategoryId, @Param("questionTagId") Long questionTagId, @Param("questionId") Long questionId);
 
 
     /*
@@ -136,4 +135,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         GROUP BY q.isAnswered
     """)
     List<CategoryJPQLResult.IsAnswered> countIsAnsweredByItemId(Long itemId);
+    Optional<Question> findValidQuestion(@Param("itemId")Long itemId, @Param("questionCategoryId")Long questionCategoryId, @Param("questionTagId")Long questionTagId, @Param("questionId")Long questionId);
+
+    Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
+
+    @Query("""
+        SELECT new com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto(q.item.id, q.isAnswered, COUNT(q))
+        FROM Question q
+        WHERE q.item.id IN :itemIdList
+        GROUP BY q.item.id, q.isAnswered
+    """)
+    List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(@Param("itemIdList")List<Long> itemIdList);
 }

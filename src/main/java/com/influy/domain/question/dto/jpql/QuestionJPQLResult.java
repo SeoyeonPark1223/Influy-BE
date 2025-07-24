@@ -11,7 +11,6 @@ public class QuestionJPQLResult {
     public interface SellerViewQuestion {
         Long getId();
         Long getMemberId();
-        String getNickname();
         String getUsername();
         Boolean getIsChecked();
         String getContent();

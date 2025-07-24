@@ -2,6 +2,8 @@ package com.influy.domain.question.converter;
 
 import com.influy.domain.answer.converter.AnswerConverter;
 import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
+import com.influy.domain.answer.dto.AnswerResponseDto;
+import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
@@ -39,10 +41,9 @@ public class QuestionConverter {
 
     public static QuestionResponseDTO.SellerViewQuestion toSellerViewDTO(QuestionJPQLResult.SellerViewQuestion question, Long nthQuestion) {
         return QuestionResponseDTO.SellerViewQuestion.builder()
-                .id(question.getId())
+                .questionId(question.getId())
                 .memberId(question.getMemberId())
                 .content(question.getContent())
-                .nickname(question.getNickname())
                 .username(question.getUsername())
                 .tagName(question.getTagName())
                 .isNew(!question.getIsChecked())
@@ -113,6 +114,35 @@ public class QuestionConverter {
         return QuestionResponseDTO.IsAnsweredCntDTO.builder()
                 .waitingCnt(waitingCnt)
                 .completedCnt(completedCnt)
+                .build();
+    }
+
+    public static QuestionResponseDTO.QnAListDto toQnAListDto(Question question, List<Answer> answerList, Long nth) {
+        QuestionResponseDTO.QuestionViewDto questionDto = QuestionConverter.toQuestionViewDto(question, nth);
+        AnswerResponseDto.AnswerViewListDto answerListDto = AnswerConverter.toAnswerViewListDto(answerList);
+
+        return QuestionResponseDTO.QnAListDto.builder()
+                .questionDto(questionDto)
+                .answerListDto(answerListDto)
+                .build();
+    }
+
+    private static QuestionResponseDTO.QuestionViewDto toQuestionViewDto(Question question, Long nth) {
+        Member member = question.getMember();
+        return QuestionResponseDTO.QuestionViewDto.builder()
+                .questionId(question.getId())
+                .memberId(member.getId())
+                .username(member.getUsername())
+                .content(question.getContent())
+                .nthQuestion(nth)
+                .questionTime(question.getCreatedAt())
+                .questionTag(question.getQuestionTag().getName())
+                .build();
+    }
+
+    public static QuestionResponseDTO.DeleteResultDto toDeleteResultDto(List<Long> questionList) {
+        return QuestionResponseDTO.DeleteResultDto.builder()
+                .questionIdList(questionList)
                 .build();
     }
 }

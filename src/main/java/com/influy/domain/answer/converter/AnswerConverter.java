@@ -9,7 +9,9 @@ import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AnswerConverter {
@@ -48,17 +50,21 @@ public class AnswerConverter {
                 .build();
     }
 
-    public static AnswerResponseDto.DeleteResultDto toDeleteResultDto(List<Long> questionList) {
-        return AnswerResponseDto.DeleteResultDto.builder()
-                .questionIdList(questionList)
+
+    public static AnswerResponseDto.AnswerViewDto toAnswerViewDto(Answer answer) {
+        return AnswerResponseDto.AnswerViewDto.builder()
+                .answerId(answer.getId())
+                .answerType(answer.getAnswerType())
+                .answerContent(answer.getContent())
+                .answerTime(answer.getCreatedAt())
                 .build();
     }
 
-    public static AnswerResponseDto.TalkBoxOpenStatusDto toTalkBoxOpenStatusDto(Long itemId, TalkBoxOpenStatus openStatus) {
-        return AnswerResponseDto.TalkBoxOpenStatusDto.builder()
-                .itemId(itemId)
-                .status(openStatus)
-                .build();
+    public static AnswerResponseDto.AnswerViewListDto toAnswerViewListDto(List<Answer> answerList) {
+        List<AnswerResponseDto.AnswerViewDto> answerDtoList = answerList.stream().map(AnswerConverter::toAnswerViewDto).toList();
+
+        return AnswerResponseDto.AnswerViewListDto.builder()
+                .answerViewList(answerDtoList).build();
     }
 
     public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo qna) {

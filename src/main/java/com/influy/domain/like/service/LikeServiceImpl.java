@@ -1,7 +1,9 @@
 package com.influy.domain.like.service;
 
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.item.service.ItemService;
 import com.influy.domain.like.converter.LikeConverter;
 import com.influy.domain.like.dto.LikeResponseDto;
 import com.influy.domain.like.entity.Like;
@@ -9,12 +11,14 @@ import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
+import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +36,7 @@ public class LikeServiceImpl implements LikeService {
     private final ItemRepository itemRepository;
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
+    private final ItemService itemService;
 
     @Override
     @Transactional
@@ -135,9 +140,17 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Like> toGetItemLikePage(Long memberId, PageRequestDto pageRequest) {
+    public LikeResponseDto.ItemLikePageDto toGetItemLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest) {
+        Member member = userDetails.getMember();
+        MemberRole memberRole = MemberRole.USER;
+        if (member.getRole() == MemberRole.SELLER) memberRole = MemberRole.SELLER;
+
         // 정렬: 아이템 마감일 빠른순
         Pageable pageable = pageRequest.toPageable(Sort.by("item.endDate").ascending());
-        return likeRepository.findByMemberIdAndTargetTypeAndLikeStatus(memberId, TargetType.ITEM, LikeStatus.LIKE, pageable);
+        Page<Like> likePage = likeRepository.findByMemberIdAndTargetTypeAndLikeStatus(member.getId(), TargetType.ITEM, LikeStatus.LIKE, pageable);
+
+        List<Item> likedItemList = likePage.getContent().stream().map(Like::getItem).toList();
+        TalkBoxInfoPair talkBoxInfoPair = itemService.getTalkBoxInfoPair(likedItemList);
+        return LikeConverter.toItemLikePageDto(likePage, memberRole, talkBoxInfoPair);
     }
 }
