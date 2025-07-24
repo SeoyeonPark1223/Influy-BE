@@ -48,7 +48,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         WHERE ic.category.id = :categoryId
           AND ic.item.itemStatus != 'SOLD_OUT'
           AND ic.item.endDate > :now
-          ORDER BY ic.item.startDate DESC
+          ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(Long categoryId, Pageable pageable, LocalDateTime now);
 
