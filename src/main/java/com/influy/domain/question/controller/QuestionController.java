@@ -2,6 +2,7 @@ package com.influy.domain.question.controller;
 
 
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.service.MemberService;
@@ -16,6 +17,8 @@ import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -103,6 +106,9 @@ public class QuestionController {
 
         Member member = memberService.findById(userDetails.getId());
         Item item = itemService.findById(itemId);
+        if(item.getTalkBoxOpenStatus()!= TalkBoxOpenStatus.OPENED){
+            throw new GeneralException(ErrorStatus.TALKBOX_CLOSED);
+        }
 
         /* 금지 해두면 스웨거로 실험을 못함
         if(member.getRole()==MemberRole.SELLER){
