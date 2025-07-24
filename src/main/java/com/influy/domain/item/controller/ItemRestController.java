@@ -1,10 +1,10 @@
 package com.influy.domain.item.controller;
 
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,15 +34,15 @@ public class ItemRestController {
     }
 
     @GetMapping("/{sellerId}/items")
-    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)", description = "memberId는 이후 AuthenticationPrincipal로 받을 것")
-    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@PathVariable("sellerId") Long sellerId,
+    @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)")
+    public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                    @PathVariable("sellerId") Long sellerId,
                                                                                   @RequestParam(name = "archive", defaultValue = "false") Boolean isArchived,
                                                                                   @Valid @ParameterObject PageRequestDto pageRequest,
                                                                                   @RequestParam(name = "sortType", defaultValue = "END_DATE") ItemSortType sortType,
-                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing,
-                                                                                  @RequestParam(value = "memberId", required = false) Long memberId) {
+                                                                                  @RequestParam(name = "onGoing", defaultValue = "false") Boolean isOnGoing) {
 
-        return ApiResponse.onSuccess(itemService.getDetailPreviewPage(sellerId, isArchived, pageRequest, sortType, isOnGoing, memberId));
+        return ApiResponse.onSuccess(itemService.getDetailPreviewPage(userDetails, sellerId, isArchived, pageRequest, sortType, isOnGoing));
     }
 
     @GetMapping("/{sellerId}/items/{itemId}")
@@ -102,5 +101,35 @@ public class ItemRestController {
     public ApiResponse<ItemResponseDto.ItemOverviewDto> getItemInfo(@PathVariable("sellerId") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(itemService.getItemOverview(sellerId, itemId));
+    }
+
+    @PostMapping("/items/{itemId}/talkbox/open-status")
+    @Operation(summary = "톡박스 오픈 여부 수정")
+    public ApiResponse<ItemResponseDto.TalkBoxOpenStatusDto> changeOpenStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                @PathVariable("itemId") Long itemId,
+                                                                                @RequestParam(name = "openStatus", defaultValue = "OPENED") TalkBoxOpenStatus openStatus) {
+        return ApiResponse.onSuccess(itemService.changeOpenStatus(userDetails, itemId, openStatus));
+    }
+
+
+    @PatchMapping("/items/{itemId}/talkbox/default-comment")
+    @Operation(summary = "톡박스 기본 멘트 등록")
+    public ApiResponse<ItemResponseDto.ResultDto> updateTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                              @PathVariable("itemId") Long itemId,
+                                                                              @RequestBody @Valid ItemRequestDto.TalkBoxCommentDto request) {
+        return ApiResponse.onSuccess(itemService.updateTalkBoxComment(userDetails, itemId, request));
+    }
+
+    @GetMapping("/items/{itemId}/talkbox/view-comment")
+    @Operation(summary = "톡박스 기본 멘트 미리보기 조회")
+    public ApiResponse<ItemResponseDto.ViewTalkBoxCommentDto> getTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                            @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(itemService.getTalkBoxComment(userDetails, itemId));
+    }
+
+    @GetMapping("/talkbox/opened")
+    @Operation(summary = "전체 질문 관리창 = 톡박스", description = "톡박스 활성화된 상품 리스트 조회")
+    public ApiResponse<ItemResponseDto.TalkBoxOpenedListDto> getTalkBoxOpened (@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.onSuccess(itemService.getTalkBoxOpened(userDetails));
     }
 }

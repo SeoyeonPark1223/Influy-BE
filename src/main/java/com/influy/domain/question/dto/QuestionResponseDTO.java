@@ -1,5 +1,6 @@
 package com.influy.domain.question.dto;
 
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,5 +64,53 @@ public class QuestionResponseDTO {
         private String categoryName;
         @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
         private LocalDateTime createdAt;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuestionViewDto {
+        @Schema(description = "질문 아이디", example = "1")
+        private Long questionId;
+
+        @Schema(description = "질문한 회원 아이디", example = "2")
+        private Long memberId;
+
+        @Schema(description = "질문한 회원 유저네임", example = "@pullpullpull")
+        private String username;
+
+        @Schema(description = "내용", example = "더 싸게는 안되나요?")
+        private String content;
+
+        @Schema(description = "몇차 질문", example = "4")
+        private Long nthQuestion;
+
+        @Schema(description = "질문 시간", example = "2025-01-03Z13:13:13")
+        private LocalDateTime questionTime;
+
+        @Schema(description = "질문 태그 이름", example = "네이비")
+        private String questionTag;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QnAListDto {
+        @Schema(description = "질문 뷰")
+        private QuestionViewDto questionDto;
+
+        @Schema(description = "답변 리스트 뷰")
+        private AnswerResponseDto.AnswerViewListDto answerListDto;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteResultDto {
+        @Schema(description = "삭제된 질문 id 리스트")
+        private List<Long> questionIdList;
     }
 }

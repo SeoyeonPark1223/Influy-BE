@@ -54,32 +54,4 @@ public class AnswerRestController {
         Answer answer = answerService.createIndividualAnswer(userDetails, itemId, questionCategoryId, questionTagId, questionId, request, answerType);
         return ApiResponse.onSuccess(AnswerConverter.toAnswerResultDto(answer));
     }
-
-    @DeleteMapping("/{questionCategoryId}/questions")
-    @Operation(summary = "선택한 질문들 삭제 (여러개 가능, 질문 객체 삭제가 아닌 isHidden 처리)")
-    public ApiResponse<AnswerResponseDto.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                 @PathVariable("itemId") Long itemId,
-                                                                 @PathVariable("questionCategoryId") Long questionCategoryId,
-                                                                 @RequestBody @Valid AnswerRequestDto.DeleteDto request) {
-        return ApiResponse.onSuccess(answerService.delete(userDetails, itemId, questionCategoryId, request));
-    }
-
-//    @GetMapping("/{questionCategoryId}/questions/{questionTagId}/{questionId}")
-//    @Operation(summary = "개별 질문 + 답변들 조회 (아직 구현 x)")
-//    public ApiResponse<AnswerResponseDto.QnAListDto> viewQnA(@AuthenticationPrincipal CustomUserDetails userDetails,
-//                                                             @PathVariable("itemId") Long itemId,
-//                                                             @PathVariable("questionCategoryId") Long questionCategoryId,
-//                                                             @PathVariable("questionTagId") Long questionTagId,
-//                                                             @PathVariable("questionId") Long questionId) {
-//        return ApiResponse.onSuccess(SuccessStatus._OK);
-//    }
-
-
-    @PostMapping("/open-status")
-    @Operation(summary = "톡박스 오픈 여부 수정")
-    public ApiResponse<AnswerResponseDto.TalkBoxOpenStatusDto> changeOpenStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                          @PathVariable("itemId") Long itemId,
-                                                                          @RequestParam(name = "openStatus", defaultValue = "OPENED") TalkBoxOpenStatus openStatus) {
-        return ApiResponse.onSuccess(answerService.changeOpenStatus(userDetails, itemId, openStatus));
-    }
 }

@@ -172,4 +172,73 @@ public class ItemResponseDto {
         @Schema(description = "해당 아이템 톡박스 오픈 여부", example = "OPEN")
         private TalkBoxOpenStatus talkBoxOpenStatus;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkBoxOpenStatusDto {
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+
+        @Schema(description = "해당 톡박스 상태 [INITIAL, OPENED, CLOSED]", example = "OPENED")
+        private TalkBoxOpenStatus status;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ViewTalkBoxCommentDto {
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
+        @Schema(description = "셀러 프로필사진", example = "https://...")
+        private String sellerProfileImg;
+
+        @Schema(description = "셀러 아이디", example = "xoyeon")
+        private String sellerUsername;
+
+        @Schema(description = "셀러 닉네임", example = "소현")
+        private String sellerNickname;
+
+        @Schema(description = "생성일", example = "021-01-01T00:00")
+        private LocalDateTime createdAt;
+
+        @Schema(description = "톡박스 기본 멘트", example = "울랄라 먐마미아")
+        private String talkBoxComment;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkBoxOpenedListDto {
+        @Schema(description = "톡박스가 활성화된 아이템 리스트")
+        private List<TalkBoxOpenedDto> talkBoxOpenedDtoList;
+
+        @Schema(description = "톡박스가 활성화된 아이템 개수", example = "4")
+        private Integer cnt;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TalkBoxOpenedDto {
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+
+        @Schema(description = "아이템 대표사진", example = "https:/....")
+        private String itemMainImg;
+
+        @Schema(description = "아이템 이름", example = "컬러 리들샷")
+        private String itemName;
+
+        @Schema(description = "응답대기(waitingCnt) / 응답완료(completedCnt) 개수")
+        private TalkBoxInfoDto talkBoxCntInfo;
+
+        @Schema(description = "해당 상품에 새로 들어온 질문 총개수", example = "5")
+        private Integer newCnt;
+    }
 }

@@ -1,16 +1,23 @@
 package com.influy.domain.item.converter;
 
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
+import com.influy.domain.item.entity.TalkBoxInfoPair;
+import com.influy.domain.item.entity.TalkBoxOpenStatus;
+import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ItemConverter {
@@ -42,7 +49,7 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked, MemberRole memberRole) {
+    public static ItemResponseDto.DetailPreviewDto toDetailPreviewDto(Item item, boolean liked, MemberRole memberRole, Integer waitingCnt, Integer completedCnt) {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .sellerId(item.getSeller().getId())
@@ -55,15 +62,21 @@ public class ItemConverter {
                 .tagline(item.getTagline())
                 .currentStatus(item.getItemStatus())
                 .liked(liked)
-                .talkBoxInfo(memberRole==MemberRole.SELLER ? toTalkBoxInfoDto(item):null)
+                .talkBoxInfo(memberRole==MemberRole.SELLER ? toTalkBoxInfoDto(item, waitingCnt, completedCnt):null)
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole) {
+    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap) {
         List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
 
         List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
-                .map(item -> toDetailPreviewDto(item, safeLikeItems.contains(item.getId()), memberRole))
+                .map(item -> {
+                    Long itemId = item.getId();
+                    boolean liked = safeLikeItems.contains(item.getId());
+                    Integer waitingCnt = waitingCntMap.getOrDefault(itemId, 0);
+                    Integer completedCnt = completedCntMap.getOrDefault(itemId, 0);
+                    return toDetailPreviewDto(item, liked, memberRole, waitingCnt, completedCnt);
+                })
                 .toList();
 
         return ItemResponseDto.DetailPreviewPageDto.builder()
@@ -76,11 +89,11 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.TalkBoxInfoDto toTalkBoxInfoDto(Item item) {
+    public static ItemResponseDto.TalkBoxInfoDto toTalkBoxInfoDto(Item item, Integer waitingCnt, Integer completedCnt) {
         return ItemResponseDto.TalkBoxInfoDto.builder()
                 .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
-                .waitingCnt(0)
-                .completedCnt(0)
+                .waitingCnt(waitingCnt)
+                .completedCnt(completedCnt)
                 .build();
     }
 
@@ -123,6 +136,52 @@ public class ItemConverter {
                 .tagline(item.getTagline())
                 .mainImg(item.getImageList().getFirst().getImageLink())
                 .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .build();
+    }
+
+    public static ItemResponseDto.TalkBoxOpenStatusDto toTalkBoxOpenStatusDto(Long itemId, TalkBoxOpenStatus openStatus) {
+        return ItemResponseDto.TalkBoxOpenStatusDto.builder()
+                .itemId(itemId)
+                .status(openStatus)
+                .build();
+    }
+
+    public static ItemResponseDto.ViewTalkBoxCommentDto toViewTalkBoxCommentDto(SellerProfile seller, Item item) {
+        Member member = seller.getMember();
+        return ItemResponseDto.ViewTalkBoxCommentDto.builder()
+                .sellerId(seller.getId())
+                .sellerProfileImg(member.getProfileImg())
+                .sellerUsername(member.getUsername())
+                .sellerNickname(member.getNickname())
+                .createdAt(LocalDateTime.now())
+                .talkBoxComment(item.getTalkBoxComment())
+                .build();
+    }
+
+    public static ItemResponseDto.TalkBoxOpenedDto toTalkBoxOpenedDto(Item item, Integer waitingCnt, Integer completedCnt, Integer unCheckedCnt) {
+        return ItemResponseDto.TalkBoxOpenedDto.builder()
+                .itemId(item.getId())
+                .itemMainImg(item.getImageList().getFirst().getImageLink())
+                .itemName(item.getName())
+                .talkBoxCntInfo(toTalkBoxInfoDto(item, waitingCnt, completedCnt))
+                .newCnt(unCheckedCnt)
+                .build();
+    }
+
+    public static ItemResponseDto.TalkBoxOpenedListDto toTalkBoxOpenedListDto(List<Item> itemList, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap, Map<Long, Integer> unCheckedCntMap) {
+        List<ItemResponseDto.TalkBoxOpenedDto> itemDtoList = itemList.stream()
+                .map(item -> {
+                    Long itemId = item.getId();
+                    Integer waitingCnt = waitingCntMap.getOrDefault(itemId, 0);
+                    Integer completedCnt = completedCntMap.getOrDefault(itemId, 0);
+                    Integer unCheckedCnt = unCheckedCntMap.getOrDefault(itemId, 0);
+                    return toTalkBoxOpenedDto(item, waitingCnt, completedCnt, unCheckedCnt);
+                })
+                .toList();
+
+        return ItemResponseDto.TalkBoxOpenedListDto.builder()
+                .cnt(itemList.size())
+                .talkBoxOpenedDtoList(itemDtoList)
                 .build();
     }
 }

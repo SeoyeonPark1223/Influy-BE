@@ -1,5 +1,6 @@
 package com.influy.domain.question.repository;
 
+import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.jpql.JPQLResult;
 import com.influy.domain.question.entity.Question;
@@ -22,10 +23,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT COUNT(q) AS cnt " +
             "FROM Question q " +
-            "JOIN q.item i " +
-            "JOIN i.seller s " +
-            "WHERE s = :seller AND q.member = :member " +
-            "GROUP BY q.member.id")
+            "LEFT JOIN q.item i " +
+            "LEFT JOIN i.seller s " +
+            "WHERE s = :seller AND q.member = :member ")
     Long countByMemberAndSeller(@Param("member") Member member, @Param("seller") SellerProfile seller);
 
     @Query("SELECT q.member.id AS memberId, COUNT(q) AS cnt " +
@@ -46,7 +46,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     WHERE qt.questionCategory = :questionCategory
     AND q.isAnswered = :isAnswered
     """)
-    Page<Question> findAllByQuestionCategoryAndIsAnswered(QuestionCategory questionCategory, Boolean isAnswered, Pageable pageable);
+    Page<Question> findAllByQuestionCategoryAndIsAnswered(@Param("questionCategory")QuestionCategory questionCategory, @Param("isAnswered")Boolean isAnswered, Pageable pageable);
 
     @Query("""
         SELECT q FROM Question q
@@ -55,5 +55,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
           AND q.questionTag.questionCategory.id = :questionCategoryId
           AND q.questionTag.questionCategory.item.id = :itemId
     """)
-    Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
+    Optional<Question> findValidQuestion(@Param("itemId")Long itemId, @Param("questionCategoryId")Long questionCategoryId, @Param("questionTagId")Long questionTagId, @Param("questionId")Long questionId);
+
+    Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
+
+    @Query("""
+        SELECT new com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto(q.item.id, q.isAnswered, COUNT(q))
+        FROM Question q
+        WHERE q.item.id IN :itemIdList
+        GROUP BY q.item.id, q.isAnswered
+    """)
+    List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(@Param("itemIdList")List<Long> itemIdList);
 }

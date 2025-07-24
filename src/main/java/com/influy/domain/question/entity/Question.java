@@ -46,6 +46,10 @@ public class Question extends BaseEntity {
     private Boolean isAnswered=false;
 
     @Builder.Default
+    @Setter
+    private Boolean isChecked=false;
+
+    @Builder.Default
     private Integer itemPeriod=1;
 
     @Setter

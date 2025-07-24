@@ -9,6 +9,7 @@ import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -64,6 +65,9 @@ public class Item extends BaseEntity {
     private String marketLink;
 
     private String comment;
+
+    @Builder.Default
+    private String talkBoxComment = "";
 
     @Builder.Default
     private Boolean isArchived = false; //보관 여부

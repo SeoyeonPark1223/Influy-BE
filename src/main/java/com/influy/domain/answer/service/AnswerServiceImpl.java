@@ -87,34 +87,6 @@ public class AnswerServiceImpl implements AnswerService {
         return AnswerConverter.toAnswerCommonResultDto(answerList.size(), answerList);
     }
 
-    @Override
-    @Transactional
-    public AnswerResponseDto.DeleteResultDto delete(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, AnswerRequestDto.DeleteDto request) {
-        memberService.checkSeller(userDetails);
-
-        // 질문을 삭제하면 해당 질문의 모든 답변들도 삭제된다고 가정 (셀러 입장)
-        List<Question> questionList= questionRepository.findAllById(request.getQuestionIdList());
-        for (Question question : questionList) {
-            question.setIsHidden(true);
-        }
-
-        return AnswerConverter.toDeleteResultDto(request.getQuestionIdList());
-    }
-
-    @Override
-    @Transactional
-    public AnswerResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus) {
-        memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-
-        if (openStatus == TalkBoxOpenStatus.INITIAL) throw new GeneralException((ErrorStatus.INVALID_TALKBOX_REQUEST));
-        item.setTalkBoxOpenStatus(openStatus);
-
-        return AnswerConverter.toTalkBoxOpenStatusDto(itemId, openStatus);
-    }
-
-
     private Item checkTalkBoxOpenStatus(Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));

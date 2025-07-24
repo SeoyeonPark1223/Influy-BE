@@ -1,6 +1,8 @@
 package com.influy.domain.question.controller;
 
 
+import com.influy.domain.answer.dto.AnswerRequestDto;
+import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
@@ -17,11 +19,13 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -95,4 +99,24 @@ public class QuestionController {
 
         return ApiResponse.onSuccess(body);
     }
+
+    @GetMapping("/seller/items/{itemId}/talkbox/{questionCategoryId}/questions/{questionTagId}/{questionId}")
+    @Operation(summary = "셀러뷰 질문별 질문 조회", description = "해당 질문과 해당 질문에 대한 답변 리스트")
+    public ApiResponse<QuestionResponseDTO.QnAListDto> viewQnA(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                             @PathVariable("itemId") Long itemId,
+                                                             @PathVariable("questionCategoryId") Long questionCategoryId,
+                                                             @PathVariable("questionTagId") Long questionTagId,
+                                                             @PathVariable("questionId") Long questionId) {
+        return ApiResponse.onSuccess(questionService.viewQnA(userDetails, itemId, questionCategoryId, questionTagId, questionId));
+    }
+
+    @DeleteMapping("/seller/items/{itemId}/talkbox/{questionCategoryId}/questions")
+    @Operation(summary = "선택한 질문들 삭제 (여러개 가능, 질문 객체 삭제가 아닌 isHidden 처리)")
+    public ApiResponse<QuestionResponseDTO.DeleteResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                 @PathVariable("itemId") Long itemId,
+                                                                 @PathVariable("questionCategoryId") Long questionCategoryId,
+                                                                 @RequestBody @Valid QuestionRequestDTO.DeleteDto request) {
+        return ApiResponse.onSuccess(questionService.delete(userDetails, itemId, questionCategoryId, request));
+    }
+
 }
