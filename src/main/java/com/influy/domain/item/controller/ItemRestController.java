@@ -21,11 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "셀러 아이템", description = "셀러 아이템 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/seller")
 public class ItemRestController {
     private final ItemService itemService;
 
-    @PostMapping("/items")
+    @PostMapping("/seller/items")
     @Operation(summary = "셀러 상품 상세정보 작성 후 생성")
     public ApiResponse<ItemResponseDto.ResultDto> create(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                              @RequestBody @Valid ItemRequestDto.DetailDto request) {
@@ -33,7 +32,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @GetMapping("/{sellerId}/items")
+    @GetMapping("/seller/{sellerId}/items")
     @Operation(summary = "셀러의 상품 상세정보 프리뷰 리스트 조회 (공개/아카이브/진행중 여부 선택 가능)")
     public ApiResponse<ItemResponseDto.DetailPreviewPageDto> getDetailPreviewPage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                     @PathVariable("sellerId") Long sellerId,
@@ -45,7 +44,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(itemService.getDetailPreviewPage(userDetails, sellerId, isArchived, pageRequest, sortType, isOnGoing));
     }
 
-    @GetMapping("/{sellerId}/items/{itemId}")
+    @GetMapping("/seller/{sellerId}/items/{itemId}")
     @Operation(summary = "개별 상품 상세정보 조회")
     public ApiResponse<ItemResponseDto.DetailViewDto> getDetail(@PathVariable("sellerId") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId) {
@@ -53,7 +52,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toDetailViewDto(item));
     }
 
-    @DeleteMapping("/items/{itemId}")
+    @DeleteMapping("/seller/items/{itemId}")
     @Operation(summary = "개별 상품 삭제")
     public ApiResponse<ItemResponseDto.ResultDto> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                              @PathVariable("itemId") Long itemId) {
@@ -61,7 +60,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(itemId));
     }
 
-    @PutMapping("/items/{itemId}")
+    @PutMapping("/seller/items/{itemId}")
     @Operation(summary = "개별 상품 상세정보 수정")
     public ApiResponse<ItemResponseDto.DetailViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                  @PathVariable("itemId") Long itemId,
@@ -70,7 +69,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toDetailViewDto(item));
     }
 
-    @PatchMapping("/items/{itemId}/access")
+    @PatchMapping("/seller/items/{itemId}/access")
     @Operation(summary = "개별 상품 공개 범위 설정")
     public ApiResponse<ItemResponseDto.ResultDto> setAccess(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @PathVariable("itemId") Long itemId,
@@ -79,7 +78,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @PatchMapping("/items/{itemId}/status")
+    @PatchMapping("/seller/items/{itemId}/status")
     @Operation(summary = "개별 상품 표기 상태 설정 | DEFAULT, EXTEND, SOLD_OUT")
     public ApiResponse<ItemResponseDto.ResultDto> setStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @PathVariable("itemId") Long itemId,
@@ -88,7 +87,7 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
-    @GetMapping("/{sellerId}/items/count-access")
+    @GetMapping("/seller/{sellerId}/items/count-access")
     @Operation(summary = "상품 공개/보관 개수 조회")
     public ApiResponse<ItemResponseDto.CountDto> getCount(@PathVariable("sellerId") Long sellerId,
                                                           @RequestParam(name = "isArchived", defaultValue = "false") Boolean isArchived) {
@@ -96,14 +95,14 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toCountDto(sellerId, count));
     }
 
-    @GetMapping("/{sellerId}/items/{itemId}/item-overview")
+    @GetMapping("/seller/{sellerId}/items/{itemId}/item-overview")
     @Operation(summary = "아이템 간략 정보 조회 [대표사진, 이름, 태그라인")
     public ApiResponse<ItemResponseDto.ItemOverviewDto> getItemInfo(@PathVariable("sellerId") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(itemService.getItemOverview(sellerId, itemId));
     }
 
-    @PostMapping("/items/{itemId}/talkbox/open-status")
+    @PostMapping("/seller/items/{itemId}/talkbox/open-status")
     @Operation(summary = "톡박스 오픈 여부 수정")
     public ApiResponse<ItemResponseDto.TalkBoxOpenStatusDto> changeOpenStatus(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                 @PathVariable("itemId") Long itemId,
@@ -112,7 +111,7 @@ public class ItemRestController {
     }
 
 
-    @PatchMapping("/items/{itemId}/talkbox/default-comment")
+    @PatchMapping("/seller/items/{itemId}/talkbox/default-comment")
     @Operation(summary = "톡박스 기본 멘트 등록")
     public ApiResponse<ItemResponseDto.ResultDto> updateTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                               @PathVariable("itemId") Long itemId,
@@ -120,16 +119,24 @@ public class ItemRestController {
         return ApiResponse.onSuccess(itemService.updateTalkBoxComment(userDetails, itemId, request));
     }
 
-    @GetMapping("/items/{itemId}/talkbox/view-comment")
+    @GetMapping("/seller/items/{itemId}/talkbox/view-comment")
     @Operation(summary = "톡박스 기본 멘트 미리보기 조회")
     public ApiResponse<ItemResponseDto.ViewTalkBoxCommentDto> getTalkBoxComment(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                             @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(itemService.getTalkBoxComment(userDetails, itemId));
     }
 
-    @GetMapping("/talkbox/opened")
+    @GetMapping("/seller/talkbox/opened")
     @Operation(summary = "전체 질문 관리창 = 톡박스", description = "톡박스 활성화된 상품 리스트 조회")
     public ApiResponse<ItemResponseDto.TalkBoxOpenedListDto> getTalkBoxOpened (@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ApiResponse.onSuccess(itemService.getTalkBoxOpened(userDetails));
     }
+
+    @GetMapping("/home/close-deadline")
+    @Operation(summary = "홈 마감 임박 상품 ")
+    public ApiResponse<ItemResponseDto.HomeItemViewPageDto> getCloseDeadline(@AuthenticationPrincipal CustomUserDetails userDetails) {}
+
+//    @GetMapping("/home/popular")
+
+//    @GetMapping("/home/recommend")
 }
