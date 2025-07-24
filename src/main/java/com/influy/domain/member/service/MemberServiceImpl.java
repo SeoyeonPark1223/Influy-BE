@@ -9,6 +9,8 @@ import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.memberCategory.converter.MemberCategoryConverter;
 import com.influy.domain.memberCategory.entity.MemberCategory;
+import com.influy.domain.questionCategory.entity.QuestionCategory;
+import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
@@ -140,4 +142,5 @@ public class MemberServiceImpl implements MemberService {
             throw new GeneralException(ErrorStatus.SELLER_REQUIRED);
         }
     }
+
 }

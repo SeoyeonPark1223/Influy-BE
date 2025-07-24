@@ -9,7 +9,7 @@ import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.QuestionRequestDTO;
 import com.influy.domain.question.dto.QuestionResponseDTO;
-import com.influy.domain.question.dto.jpql.JPQLResult;
+import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.service.QuestionService;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -41,26 +41,18 @@ public class QuestionController {
     private final QuestionCategoryService questionCategoryService;
     private final ItemService itemService;
 
-    @GetMapping("seller/items/{itemId}/talkbox/{questionTagId}")
+    @GetMapping("seller/item/talkbox/{questionTagId}/questions")
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
-    public ApiResponse<QuestionResponseDTO.GeneralPage> getQuestions(@PathVariable("itemId") Long itemId,
-                                                                     @PathVariable("questionTagId") Long questionTagId,
+    public ApiResponse<QuestionResponseDTO.GeneralPage> getQuestions(@PathVariable("questionTagId") Long questionTagId,
                                                                      @AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @RequestParam(value = "isAnswered",defaultValue = "true") Boolean isAnswered,
                                                                      @ParameterObject Pageable pageable) {
 
-        Member member = memberService.findById(userDetails.getId());
-
-        //자격 검사
-        if(!member.getRole().equals(MemberRole.SELLER)){
-            throw new GeneralException(ErrorStatus.FORBIDDEN);
-        }
-        SellerProfile seller = member.getSellerProfile();
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        sellerService.checkQuestionOwner(questionTagId, null,seller.getId());
 
         //질문 리스트
-        Page<JPQLResult.SellerViewQuestion> questions = questionService.getQuestionsByTagAndIsAnswered(questionTagId, isAnswered, pageable);
-        System.out.println(questions.getTotalElements());
-        System.out.println(questions.getContent().getFirst().getContent());
+        Page<QuestionJPQLResult.SellerViewQuestion> questions = questionService.getQuestionsByTagAndIsAnswered(questionTagId, isAnswered, pageable);
         //새 질문 개수
         Long newQuestions = questionService.getNewQuestionCountOf(questionTagId, null, null);
         //<memberId,질문 횟수> Map

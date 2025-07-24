@@ -3,7 +3,7 @@ package com.influy.domain.question.converter;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
-import com.influy.domain.question.dto.jpql.JPQLResult;
+import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class QuestionConverter {
 
     }
 
-    public static QuestionResponseDTO.General toGeneralDTO(JPQLResult.SellerViewQuestion question, Long nthQuestion) {
+    public static QuestionResponseDTO.General toGeneralDTO(QuestionJPQLResult.SellerViewQuestion question, Long nthQuestion) {
         return QuestionResponseDTO.General.builder()
                 .id(question.getId())
                 .memberId(question.getMemberId())
@@ -50,7 +50,7 @@ public class QuestionConverter {
 
 
 
-    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<JPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
+    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<QuestionJPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
         List<QuestionResponseDTO.General> questionDTOs = questions.getContent().stream().map(question -> toGeneralDTO(question, countMap.get(question.getMemberId()))).toList();
 
         return QuestionResponseDTO.GeneralPage.builder()

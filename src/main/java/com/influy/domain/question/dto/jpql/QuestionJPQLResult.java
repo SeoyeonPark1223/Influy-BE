@@ -2,7 +2,7 @@ package com.influy.domain.question.dto.jpql;
 
 import java.util.Date;
 
-public class JPQLResult {
+public class QuestionJPQLResult {
     public interface MemberQuestionCount{
         Long getMemberId();
         Long getCnt();

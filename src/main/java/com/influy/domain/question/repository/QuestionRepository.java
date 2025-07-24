@@ -1,7 +1,7 @@
 package com.influy.domain.question.repository;
 
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.question.dto.jpql.JPQLResult;
+import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -34,8 +34,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "JOIN i.seller s " +
             "WHERE s = :seller AND q.member.id IN :memberIds " +
             "GROUP BY q.member.id")
-    List<JPQLResult.MemberQuestionCount> countQuestionsBySellerAndMemberIds(@Param("seller") SellerProfile seller,
-                                                                            @Param("memberIds") List<Long> memberIds);
+    List<QuestionJPQLResult.MemberQuestionCount> countQuestionsBySellerAndMemberIds(@Param("seller") SellerProfile seller,
+                                                                                    @Param("memberIds") List<Long> memberIds);
 
 
 
@@ -51,7 +51,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     WHERE q.questionTag.id = :tagId
       AND q.isAnswered = :isAnswered
 """)
-    Page<JPQLResult.SellerViewQuestion> findAllByQuestionTagIdAndIsAnswered(@Param("tagId") Long questionTagId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
+    Page<QuestionJPQLResult.SellerViewQuestion> findAllByQuestionTagIdAndIsAnswered(@Param("tagId") Long questionTagId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
 
     @Query("""
     SELECT q

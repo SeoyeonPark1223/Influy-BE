@@ -18,6 +18,12 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "question",
+        indexes = {
+                @Index(name = "idx_question_tag_id_and_is_answered", columnList = "question_tag_id, is_answered")
+        }
+)
 public class Question extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

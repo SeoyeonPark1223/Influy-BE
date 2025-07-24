@@ -4,7 +4,7 @@ import com.influy.domain.ai.service.AiService;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.converter.QuestionConverter;
-import com.influy.domain.question.dto.jpql.JPQLResult;
+import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
@@ -33,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public Page<JPQLResult.SellerViewQuestion> getQuestionsByTagAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable) {
+    public Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagAndIsAnswered(Long questionTagId, Boolean isAnswered, Pageable pageable) {
 
 
         return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
@@ -59,16 +59,16 @@ public class QuestionServiceImpl implements QuestionService {
 
     //멤버 id별 seller에 대한 질문 횟수 구하는 메서드
     @Override
-    public Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<JPQLResult.SellerViewQuestion> questions) {
+    public Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions) {
         List<Long> memberIds = questions.stream()
                 .map(q -> q.getMemberId())
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<JPQLResult.MemberQuestionCount> counts = questionRepository.countQuestionsBySellerAndMemberIds(seller, memberIds);
+        List<QuestionJPQLResult.MemberQuestionCount> counts = questionRepository.countQuestionsBySellerAndMemberIds(seller, memberIds);
 
         return counts.stream()
-                .collect(Collectors.toMap(JPQLResult.MemberQuestionCount::getMemberId, JPQLResult.MemberQuestionCount::getCnt));
+                .collect(Collectors.toMap(QuestionJPQLResult.MemberQuestionCount::getMemberId, QuestionJPQLResult.MemberQuestionCount::getCnt));
     }
 
     //isChecked==false인 질문 구하기

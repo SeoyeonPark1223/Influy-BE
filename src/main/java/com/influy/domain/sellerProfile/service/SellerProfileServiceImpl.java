@@ -72,4 +72,19 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     public List<ItemJPQLResponse> getMarketItems(Long sellerId) {
         return itemRepository.countBySellerIdGroupByIsArchived(sellerId);
     }
+
+    @Override
+    public Boolean checkQuestionOwner(Long tagId, Long categoryId, Long sellerId) {
+        if(tagId!=null){
+            if(!sellerProfileRepository.existsByIdAndTagId(sellerId, tagId)){
+                throw new GeneralException(ErrorStatus.NOT_OWNER);
+            }
+        }else if(categoryId!=null){
+            if(!sellerProfileRepository.existsByIdAndCategoryId(sellerId, categoryId)){
+                throw new GeneralException(ErrorStatus.NOT_OWNER);
+            }
+        }else return false;
+
+        return true;
+    }
 }
