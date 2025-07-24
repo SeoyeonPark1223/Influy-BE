@@ -29,7 +29,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'")
     List<Item> findAllBySellerIdAndTalkBoxOpenStatus(Long sellerId);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold")
+    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold AND i.itemStatus != 'SOLD_OUT'")
     Page<Item> findAllByEndDateAndItemStatus(LocalDateTime now, LocalDateTime threshold, Pageable pageable);
 
     @Query("""
@@ -37,6 +37,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         FROM Item i
         LEFT JOIN i.questionList q
         WHERE i.endDate > :now
+        AND i.itemStatus != 'SOLD_OUT'
         GROUP BY i
         ORDER BY COUNT(q) DESC
     """)
@@ -46,10 +47,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         SELECT DISTINCT ic.item FROM ItemCategory ic
         WHERE ic.category.id = :categoryId
           AND ic.item.endDate > :now
+          AND i.itemStatus != 'SOLD_OUT'
           ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(Long categoryId, Pageable pageable, LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now")
+    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT'")
     Page<Item> findAllNow(Pageable pageable, LocalDateTime now);
 }
