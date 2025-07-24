@@ -1,21 +1,46 @@
 package com.influy.domain.question.dto;
 
+import com.influy.domain.answer.dto.AnswerResponseDto;
+import com.influy.global.auth.dto.AuthResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class QuestionResponseDTO {
+    public interface UserViewQNA {}
 
     @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UserViewViewQuestion {
+    public static class UserViewQNAPage{
+        private List<UserViewQNA> chatList;
+        @Schema(description = "이 페이지의 리스트 사이즈", example = "20")
+        private Integer listSize;
+        @Schema(description = "총 페이지", example = "13")
+        private Integer totalPage;
+        @Schema(description = "전체 채팅 개수", example = "260")
+        private Long totalElements;
+        @Schema(description = "지금 첫 페이지인지", example = "false")
+        private Boolean isFirst;
+        @Schema(description = "마지막 페이지인지", example = "false")
+        private Boolean isLast;
+
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserViewQuestion implements UserViewQNA{
+        @Schema(description = "타입", example = "Q")
+        private String type;
         @Schema(description = "질문 아이디", example = "1")
         private Long id;
         @Schema(description = "내용", example = "더 싸게는 안되나요?")

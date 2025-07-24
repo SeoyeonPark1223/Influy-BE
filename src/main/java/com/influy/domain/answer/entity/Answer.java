@@ -11,6 +11,10 @@ import lombok.*;
 @Builder @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "answer",
+        indexes = {
+                @Index(name = "idx_answer_created_at", columnList = "created_at")
+        })
 public class Answer extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

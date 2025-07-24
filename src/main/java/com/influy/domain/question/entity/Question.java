@@ -21,7 +21,8 @@ import java.util.List;
 @Table(
         name = "question",
         indexes = {
-                @Index(name = "idx_question_tag_id_and_is_answered", columnList = "question_tag_id, is_answered")
+                @Index(name = "idx_question_tag_id_and_is_answered", columnList = "question_tag_id, is_answered"),
+                @Index(name = "idx_question_created_at", columnList = "created_at")
         }
 )
 public class Question extends BaseEntity {

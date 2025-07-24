@@ -1,6 +1,8 @@
 package com.influy.domain.question.controller;
 
 
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
+import com.influy.domain.answer.service.AnswerService;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
@@ -19,6 +21,7 @@ import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
+import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +44,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final QuestionCategoryService questionCategoryService;
     private final ItemService itemService;
+    private final AnswerService answerService;
 
     @GetMapping("seller/item/talkbox/items/question-categories/{questionTagId}/questions")
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
@@ -92,6 +96,20 @@ public class QuestionController {
 
         List<Long> questionIds = questions.getContent().stream().map(QuestionJPQLResult.SellerViewQuestion::getId).toList();
         questionService.setAllChecked(questionIds);
+
+        return ApiResponse.onSuccess(body);
+    }
+
+    @GetMapping("user/items/{itemId}/talkbox/")
+    @Operation(summary = "유저가 톡박스 조회", description = "톡박스 질답 내역 확인")
+    public ApiResponse<QuestionResponseDTO.UserViewQNAPage> getUserQnA(@PathVariable("itemId")Long itemId,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                       @ParameterObject PageRequestDto pageable){
+
+        Member member = memberService.findById(userDetails.getId());
+
+        Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList = questionService.getQNAsOf(member.getId(),itemId,pageable);
+        QuestionResponseDTO.UserViewQNAPage body = QuestionConverter.toUserViewQNAPage(userQNAList);
 
         return ApiResponse.onSuccess(body);
     }

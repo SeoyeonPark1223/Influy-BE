@@ -1,5 +1,7 @@
 package com.influy.domain.question.converter;
 
+import com.influy.domain.answer.converter.AnswerConverter;
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
@@ -63,6 +65,36 @@ public class QuestionConverter {
                 .totalPage(questions.getTotalPages())
                 .totalElements(questions.getTotalElements())
                 .listSize(questions.getSize())
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo question) {
+        return QuestionResponseDTO.UserViewQuestion.builder()
+                .type(question.getType())
+                .id(question.getId())
+                .content(question.getContent())
+                .createdAt(question.getCreatedAt())
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserViewQNAPage toUserViewQNAPage(Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList) {
+        List<QuestionResponseDTO.UserViewQNA> content = userQNAList.getContent().stream().map(
+                qna->{
+                    if(qna.getType().equals("Q")){
+                        return toUserViewDTO(qna);
+                    } else{
+                        return AnswerConverter.toUserViewDTO(qna);
+                    }
+                }
+        ).toList();
+
+        return QuestionResponseDTO.UserViewQNAPage.builder()
+                .chatList(content)
+                .listSize(userQNAList.getSize())
+                .totalPage(userQNAList.getTotalPages())
+                .totalElements(userQNAList.getTotalElements())
+                .isFirst(userQNAList.isFirst())
+                .isLast(userQNAList.isLast())
                 .build();
     }
 }

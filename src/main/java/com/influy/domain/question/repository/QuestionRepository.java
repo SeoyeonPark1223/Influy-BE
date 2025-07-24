@@ -1,9 +1,8 @@
 package com.influy.domain.question.repository;
 
-import com.influy.domain.member.entity.Member;
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
-import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,7 +78,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
           AND q.questionTag.questionCategory.id = :questionCategoryId
           AND q.questionTag.questionCategory.item.id = :itemId
     """)
-    Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
+    Optional<Question> findValidQuestion(@Param("itemId") Long itemId, @Param("questionCategoryId") Long questionCategoryId, @Param("questionTagId") Long questionTagId, @Param("questionId") Long questionId);
 
 
     /*
@@ -102,4 +101,21 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Modifying
     @Query("UPDATE Question q SET q.isChecked = true WHERE q.id IN :ids AND q.isChecked = false")
     void setQuestionsAsChecked(@Param("ids") List<Long> questionIds);
+
+    @Query(value = """
+
+    SELECT 'Q' AS type, q.id AS id, q.content AS content, q.created_at AS createdAt, NULL AS questionId, NULL as questionContent
+    FROM question q
+    WHERE q.member_id = :memberId
+    
+    UNION ALL
+    
+    SELECT 'A' AS type, a.id AS id, a.content AS content, a.created_at AS createdAt, q.id AS questionId, q.content AS questionContent
+    FROM answer a
+    JOIN question q ON a.question_id = q.id
+    WHERE q.member_id = :memberId AND q.item_id = :itemId
+    
+    ORDER BY createdAt DESC
+    """, nativeQuery = true)
+    Page<AnswerJPQLResult.UserViewQNAInfo> findAllByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId, Pageable pageable);
 }

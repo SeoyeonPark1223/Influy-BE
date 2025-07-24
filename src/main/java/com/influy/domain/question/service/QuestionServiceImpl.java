@@ -1,6 +1,8 @@
 package com.influy.domain.question.service;
 
 import com.influy.domain.ai.service.AiService;
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
+import com.influy.domain.answer.repository.AnswerRepository;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.converter.QuestionConverter;
@@ -12,6 +14,7 @@ import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.global.common.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionTagRepository questionTagRepository;
     private final AiService aiService;
+    private final AnswerRepository answerRepository;
 
 
     @Override
@@ -88,6 +92,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void setAllChecked(List<Long> questionIds) {
         questionRepository.setQuestionsAsChecked(questionIds);
+    }
+
+    @Override
+    public Page<AnswerJPQLResult.UserViewQNAInfo> getQNAsOf(Long memberId, Long itemId, PageRequestDto pageableDto) {
+
+        Pageable pageable = pageableDto.toPageable();
+        //유저에게는 question 의 Hidden 상태와 무관하게 모두 보여줌
+        return questionRepository.findAllByMemberIdAndItemId(memberId, itemId, pageable);
     }
 
 

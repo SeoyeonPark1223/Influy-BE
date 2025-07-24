@@ -1,10 +1,12 @@
 package com.influy.domain.answer.converter;
 
 import com.influy.domain.answer.dto.AnswerResponseDto;
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.answer.entity.AnswerType;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
+import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionTag.entity.QuestionTag;
 
@@ -56,6 +58,17 @@ public class AnswerConverter {
         return AnswerResponseDto.TalkBoxOpenStatusDto.builder()
                 .itemId(itemId)
                 .status(openStatus)
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo qna) {
+        return AnswerResponseDto.UserViewAnswer.builder()
+                .type(qna.getType())
+                .id(qna.getId())
+                .questionId(qna.getQuestionId())
+                .questionContent(qna.getQuestionContent())
+                .content(qna.getContent())
+                .createdAt(qna.getCreatedAt())
                 .build();
     }
 }
