@@ -1,5 +1,6 @@
 package com.influy.domain.question.repository;
 
+import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.jpql.JPQLResult;
 import com.influy.domain.question.entity.Question;
@@ -56,7 +57,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     """)
     Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
 
-    Integer countQuestionsByItemIdAndIsAnswered(Long id, Boolean b);
-
     Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
+
+    @Query("""
+        SELECT new com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto(q.item.id, q.isAnswered, COUNT(q))
+        FROM Question q
+        WHERE q.item.id IN :itemIdList
+        GROUP BY q.item.id, q.isAnswered
+    """)
+    List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(List<Long> itemIdList);
 }

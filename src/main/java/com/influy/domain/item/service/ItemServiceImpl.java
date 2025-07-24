@@ -7,6 +7,7 @@ import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
+import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -294,21 +296,21 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList) {
-        // 아이템 기준 응답 대기 질문 개수
-        Map<Long, Integer> waitingCntMap = itemList.stream()
-                .collect(Collectors.toMap(
-                        Item::getId,
-                        item -> questionRepository.countQuestionsByItemIdAndIsAnswered(item.getId(), false)
-                ));
+        List<Long> itemIdList = itemList.stream().map(Item::getId).toList();
 
-        // 아이템 기준 응답 완료 질문 개수
-        Map<Long, Integer> completedCntMap = itemList.stream()
-                .collect(Collectors.toMap(
-                        Item::getId,
-                        item -> questionRepository.countQuestionsByItemIdAndIsAnswered(item.getId(), true)
-                ));
+        Map<Long, Integer> waitingCntMap = new HashMap<>();
+        Map<Long, Integer> completedCntMap = new HashMap<>();
+
+        List<TalkBoxInfoPairDto> cntList = questionRepository.countByItemIdAndIsAnswered(itemIdList);
+
+        for (TalkBoxInfoPairDto pair : cntList) {
+            Long itemId = pair.getItemId();
+            int cnt = pair.getCnt().intValue();
+
+            if (Boolean.TRUE.equals(pair.getIsAnswered())) completedCntMap.put(itemId, cnt);
+            else waitingCntMap.put(itemId, cnt);
+        }
 
         return new TalkBoxInfoPair(waitingCntMap, completedCntMap);
     }
-
 }
