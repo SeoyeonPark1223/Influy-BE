@@ -18,6 +18,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Tag(name = "셀러 아이템", description = "셀러 아이템 관련 API")
 @RestController
 @RequiredArgsConstructor
@@ -133,10 +135,24 @@ public class ItemRestController {
     }
 
     @GetMapping("/home/close-deadline")
-    @Operation(summary = "홈 마감 임박 상품 ")
-    public ApiResponse<ItemResponseDto.HomeItemViewPageDto> getCloseDeadline(@AuthenticationPrincipal CustomUserDetails userDetails) {}
+    @Operation(summary = "홈 마감 임박 상품 페이지", description = "24시간 이내 마감 상품")
+    public ApiResponse<ItemResponseDto.HomeItemViewPageDto> getCloseDeadline(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                             @Valid @ParameterObject PageRequestDto pageRequest) {
+        return ApiResponse.onSuccess(itemService.getCloseDeadline(userDetails, pageRequest));
+    }
 
-//    @GetMapping("/home/popular")
+    @GetMapping("/home/popular")
+    @Operation(summary = "홈 인기 급상승 상품 페이지", description = "3개 반환 (나중에 더보기 생길 것을 고려해 pageable 사용)")
+    public ApiResponse<ItemResponseDto.HomeItemViewPageDto> getPopular(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                             @Valid @ParameterObject PageRequestDto pageRequest) {
+        return ApiResponse.onSuccess(itemService.getPopular(userDetails, pageRequest));
+    }
 
-//    @GetMapping("/home/recommend")
+    @GetMapping("/home/recommend")
+    @Operation(summary = "홈 추천 상품 페이지", description = "itemCategory request param 없이 요청보내면 '전체' 카테고리 결과 반환")
+    public ApiResponse<ItemResponseDto.HomeItemViewPageDto> getRecommended(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                             @Valid @ParameterObject PageRequestDto pageRequest,
+                                                                               @RequestParam(name = "categoryId", required = false) Long categoryId) {
+        return ApiResponse.onSuccess(itemService.getRecommended(userDetails, pageRequest, categoryId));
+    }
 }
