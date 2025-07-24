@@ -3,6 +3,7 @@ package com.influy.domain.item.repository;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.ItemStatus;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,4 +55,10 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT'")
     Page<Item> findAllNow(Pageable pageable, LocalDateTime now);
+
+    Boolean existsByNameContaining(String query);
+
+    Page<Item> findAllByNameContaining(String query, Pageable pageable);
+
+    Page<Item> findAllBySellerIn(List<SellerProfile> content, Pageable pageable);
 }

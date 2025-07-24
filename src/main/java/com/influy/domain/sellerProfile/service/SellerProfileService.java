@@ -24,4 +24,6 @@ public interface SellerProfileService {
     boolean getIsLikedByMember(SellerProfile seller, Member member);
 
     List<ItemJPQLResponse> getMarketItems(Long sellerId);
+
+    List<Long> getLikeSellers(Member member);
 }

@@ -363,7 +363,9 @@ public class ItemServiceImpl implements ItemService {
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
 
-    private List<Long> getLikeItems(Member member) {
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getLikeItems(Member member) {
         return member
                 .getLikeList()
                 .stream()
