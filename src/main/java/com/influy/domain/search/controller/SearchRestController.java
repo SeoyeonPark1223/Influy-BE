@@ -1,6 +1,5 @@
 package com.influy.domain.search.controller;
 
-import com.influy.domain.search.dto.SearchRequestDto;
 import com.influy.domain.search.dto.SearchResponseDto;
 import com.influy.domain.search.service.SearchService;
 import com.influy.global.apiPayload.ApiResponse;
@@ -10,8 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

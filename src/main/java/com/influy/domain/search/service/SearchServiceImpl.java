@@ -6,7 +6,6 @@ import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.search.converter.SearchConverter;
-import com.influy.domain.search.dto.SearchRequestDto;
 import com.influy.domain.search.dto.SearchResponseDto;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
