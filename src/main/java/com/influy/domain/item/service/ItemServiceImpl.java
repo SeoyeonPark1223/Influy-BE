@@ -319,7 +319,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
         if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
-        // 남은 마감 시간이 24시간 이내 (itemStatus.SOLD_OUT & 마감일이 이미 지난 것 제외)
+        // 남은 마감 시간이 24시간 이내 (마감일이 이미 지난 것 제외)
         LocalDateTime threshold = LocalDateTime.now().plusHours(24);
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "endDate"));
         Page<Item> itemPage = itemRepository.findAllByEndDateAndItemStatus(LocalDateTime.now(), threshold, pageable);
@@ -335,7 +335,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
         if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
-        // 질문 개수 top 3 (itemStatus.SOLD_OUT & 마감일이 이미 지난 것 제외)
+        // 질문 개수 top 3 (마감일이 이미 지난 것 제외)
         Pageable pageable = pageRequest.toPageable(1, 3);
         Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
         List<Long> likeItems = getLikeItems(member);
