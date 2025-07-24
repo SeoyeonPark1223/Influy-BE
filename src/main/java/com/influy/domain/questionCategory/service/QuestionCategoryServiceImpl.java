@@ -8,6 +8,7 @@ import com.influy.domain.member.service.MemberService;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
+import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.questionTag.converter.QuestionTagConverter;
@@ -21,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.influy.global.util.StaticValues.DEFAULT_QUESTION_CATEGORIES;
 
 @Service
 @Transactional(readOnly = true)
@@ -60,27 +59,13 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
 
     @Override
     @Transactional(readOnly = true)
-    public QuestionCategoryResponseDto.ListWithCntDto getList(Long sellerId, Long itemId) {
+    public List<CategoryJPQLResult.CategoryInfo> getList(Long sellerId, Boolean isAnswered, Long itemId) {
         checkSellerAndItem(sellerId, itemId);
 
         // 정렬 순서: 질문 많은 순
-        List<QuestionCategory> questionCategoryList = questionCategoryRepository.findQuestionCategories(itemId, sellerId);
 
-        // 질문 개수 map 조회
-        Map<Long, Integer> questionCntMap = questionCategoryList.stream()
-                .collect(Collectors.toMap(
-                        QuestionCategory::getId,
-                        qc -> questionCategoryRepository.countQuestionsByCategoryId(qc.getId())
-                ));
 
-        // 미확인 질문 수: 0으로 채운 map (미완료)
-        Map<Long, Integer> unCheckedCntMap = questionCategoryList.stream()
-                .collect(Collectors.toMap(
-                        QuestionCategory::getId,
-                        qc -> 0
-                ));
-
-        return QuestionCategoryConverter.toListWithCntDto(questionCategoryList, questionCntMap, unCheckedCntMap);
+        return questionCategoryRepository.findQuestionCategories(itemId, isAnswered);
     }
 
     @Override
@@ -100,8 +85,9 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     }
 
     private void checkSellerAndItem(Long sellerId, Long itemId) {
-        if (!sellerRepository.existsById(sellerId)) throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        if (!itemRepository.existsById(itemId)) throw new GeneralException(ErrorStatus.ITEM_NOT_FOUND);
+        if (!itemRepository.existsByIdAndSellerId(itemId, sellerId)){
+            throw new GeneralException(ErrorStatus.NOT_OWNER);
+        }
     }
 
     private Item checkInitial(Long itemId) {

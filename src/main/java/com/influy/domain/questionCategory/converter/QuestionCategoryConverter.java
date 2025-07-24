@@ -2,10 +2,10 @@ package com.influy.domain.questionCategory.converter;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
+import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 
 import java.util.List;
-import java.util.Map;
 
 public class QuestionCategoryConverter {
 
@@ -23,27 +23,12 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.ViewWithCntDto toViewWithCntDto(QuestionCategory questionCategory, Integer questionCnt, Integer unCheckedCnt) {
-        return QuestionCategoryResponseDto.ViewWithCntDto.builder()
-                .questionCategoryId(questionCategory.getId())
-                .questionCategoryName(questionCategory.getName())
-                .questionCnt(questionCnt)
-                .unCheckedCnt(unCheckedCnt)
-                .build();
-    }
-
-    public static QuestionCategoryResponseDto.ListWithCntDto toListWithCntDto(List<QuestionCategory> questionCategoryList, Map<Long, Integer> questionCntMap, Map<Long, Integer> unCheckedCntMap) {
-        List<QuestionCategoryResponseDto.ViewWithCntDto> qcList = questionCategoryList.stream()
-                .map(qc -> toViewWithCntDto(
-                        qc,
-                        questionCntMap.getOrDefault(qc.getId(), 0),
-                        unCheckedCntMap.getOrDefault(qc.getId(), 0)
-                ))
-                .toList();
-
-        return QuestionCategoryResponseDto.ListWithCntDto.builder()
-                .viewList(qcList)
-                .listSize(qcList.size())
+    public static QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO toTalkBoxCategoryInfoDTO(CategoryJPQLResult.CategoryInfo categoryInfo) {
+        return QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO.builder()
+                .questionCategoryId(categoryInfo.getId())
+                .questionCategoryName(categoryInfo.getCategoryName())
+                .questionCnt(categoryInfo.getTotalQuestions())
+                .unCheckedCnt(categoryInfo.getUncheckedQuestions())
                 .build();
     }
 

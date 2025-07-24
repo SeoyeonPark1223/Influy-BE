@@ -77,11 +77,14 @@ public class QuestionController {
 
         Member member = memberService.findById(userDetails.getId());
         Item item = itemService.findById(itemId);
+
+        /* 금지 해두면 스웨거로 실험을 못함
         if(member.getRole()==MemberRole.SELLER){
             if(member.getSellerProfile()==item.getSeller()){
                 throw new GeneralException(ErrorStatus.FORBIDDEN);
             }
         }
+        */
 
         QuestionCategory category = questionCategoryService.findByCategoryIdAndItemId(questionCategoryId, itemId);
 

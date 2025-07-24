@@ -22,6 +22,7 @@ public interface QuestionTagRepository extends JpaRepository<QuestionTag, Long> 
     """)
     Optional<QuestionTag> findValidQuestionTag(Long itemId, Long questionCategoryId, Long questionTagId);
 
+    //태그 id, 이름, 태그에 속한 isAnswered 상태 질문 개수, 새 질문 개수
     @Query(value = """
         SELECT qt.id AS id,
                qt.name AS tagName,
@@ -31,7 +32,7 @@ public interface QuestionTagRepository extends JpaRepository<QuestionTag, Long> 
         LEFT JOIN question q ON q.question_tag_id = qt.id AND q.is_answered = :isAnswered
         WHERE qt.question_category_id = :categoryId
         GROUP BY qt.id
-        ORDER BY uncheckedQuestions,totalQuestions DESC,tagName;
+        ORDER BY uncheckedQuestions DESC ,totalQuestions DESC,tagName ASC;
 """, nativeQuery = true)
     List<TagJPQLResult.QuestionTagInfo> findTagAndCountByCategoryIdOrderByCount(@Param("categoryId") Long categoryId,
                                                                                 @Param("isAnswered") boolean isAnswered);
