@@ -63,8 +63,6 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
         checkSellerAndItem(sellerId, itemId);
 
         // 정렬 순서: 질문 많은 순
-
-
         return questionCategoryRepository.findQuestionCategories(itemId, isAnswered);
     }
 

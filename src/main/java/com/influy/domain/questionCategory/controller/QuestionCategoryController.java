@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -46,14 +47,22 @@ public class QuestionCategoryController {
 
     @GetMapping("seller/items/{itemId}/question-categories")
     @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)", description = "미확인인 질문 개수는 질문 파트 개발 이후 수정할 예정입니다.")
-    public ApiResponse<List<QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO>> getList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                         @PathVariable("itemId") Long itemId,
-                                                                                         @RequestParam(name = "isAnswered", defaultValue = "false") Boolean isAnswered) {
+    public ApiResponse<QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO> getList(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                       @PathVariable("itemId") Long itemId,
+                                                                                       @RequestParam(name = "isAnswered", defaultValue = "false") Boolean isAnswered) {
         SellerProfile seller = memberService.checkSeller(userDetails);
 
         List<CategoryJPQLResult.CategoryInfo> result = questionCategoryService.getList(seller.getId(),isAnswered, itemId);
-        List<QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO> body = result.stream().map(QuestionCategoryConverter::toTalkBoxCategoryInfoDTO).toList();
+        /*서연 병합 후 완성
+        Map<Boolean, Long> isAnsweredCntMap = questionService.getIsAnsweredMap(itemId);
+        */
+
+        QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO body = QuestionCategoryConverter.toTalkBoxCategoryInfoListDTO(result,0L,0L);
+
         return ApiResponse.onSuccess(body);
     }
+
+
+
 
 }

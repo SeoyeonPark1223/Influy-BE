@@ -42,6 +42,18 @@ public class QuestionCategoryResponseDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class TalkBoxCategoryInfoListDTO {
+
+        private List<TalkBoxCategoryInfoDTO> categoryList;
+        private Long waitingCnt;
+        private Long completedCnt;
+
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ViewDto {
         @Schema(description = "질문 카테고리 id", example = "1")
         private Long questionCategoryId;

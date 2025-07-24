@@ -48,4 +48,14 @@ public class QuestionCategoryConverter {
                 .generatedNameList(generatedCategoryList)
                 .build();
     }
+
+    public static QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO toTalkBoxCategoryInfoListDTO(List<CategoryJPQLResult.CategoryInfo> result, Long waitingCnt, Long completedCnt) {
+        List<QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO> content = result.stream().map(QuestionCategoryConverter::toTalkBoxCategoryInfoDTO).toList();
+
+        return QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO.builder()
+                .categoryList(content)
+                .waitingCnt(waitingCnt)
+                .completedCnt(completedCnt)
+                .build();
+    }
 }
