@@ -46,7 +46,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     WHERE qt.questionCategory = :questionCategory
     AND q.isAnswered = :isAnswered
     """)
-    Page<Question> findAllByQuestionCategoryAndIsAnswered(QuestionCategory questionCategory, Boolean isAnswered, Pageable pageable);
+    Page<Question> findAllByQuestionCategoryAndIsAnswered(@Param("questionCategory")QuestionCategory questionCategory, @Param("isAnswered")Boolean isAnswered, Pageable pageable);
 
     @Query("""
         SELECT q FROM Question q
@@ -55,7 +55,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
           AND q.questionTag.questionCategory.id = :questionCategoryId
           AND q.questionTag.questionCategory.item.id = :itemId
     """)
-    Optional<Question> findValidQuestion(Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
+    Optional<Question> findValidQuestion(@Param("itemId")Long itemId, @Param("questionCategoryId")Long questionCategoryId, @Param("questionTagId")Long questionTagId, @Param("questionId")Long questionId);
 
     Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
 
@@ -65,5 +65,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         WHERE q.item.id IN :itemIdList
         GROUP BY q.item.id, q.isAnswered
     """)
-    List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(List<Long> itemIdList);
+    List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(@Param("itemIdList")List<Long> itemIdList);
 }

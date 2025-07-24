@@ -20,14 +20,14 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> findBySellerIdAndIsArchivedFalse(Long sellerId, Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.isArchived = false AND i.endDate > :now")
-    Page<Item> findOngoingItems(Long sellerId, LocalDateTime now, Pageable pageable);
+    Page<Item> findOngoingItems(@Param("sellerId")Long sellerId, @Param("now")LocalDateTime now, Pageable pageable);
 
     @Query("SELECT new com.influy.domain.item.dto.jpql.ItemJPQLResponse(p.isArchived, COUNT(p)) " +
             "FROM Item p WHERE p.seller.id = :sellerId GROUP BY p.isArchived")
     List<ItemJPQLResponse> countBySellerIdGroupByIsArchived(@Param("sellerId") Long sellerId);
 
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'")
-    List<Item> findAllBySellerIdAndTalkBoxOpenStatus(Long sellerId);
+    List<Item> findAllBySellerIdAndTalkBoxOpenStatus(@Param("sellerId")Long sellerId);
 
     @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold AND i.itemStatus != 'SOLD_OUT'")
     Page<Item> findAllByEndDateAndItemStatus(LocalDateTime now, LocalDateTime threshold, Pageable pageable);
