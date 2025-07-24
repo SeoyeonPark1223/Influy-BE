@@ -317,7 +317,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto.HomeItemViewPageDto getCloseDeadline(CustomUserDetails userDetails, PageRequestDto pageRequest) {
         Member member = memberRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-//        if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
+        if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
         // 남은 마감 시간이 24시간 이내 (itemStatus.SOLD_OUT & 마감일이 이미 지난 것 제외)
         LocalDateTime threshold = LocalDateTime.now().plusHours(24);
@@ -333,7 +333,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto.HomeItemViewPageDto getPopular(CustomUserDetails userDetails, PageRequestDto pageRequest) {
         Member member = memberRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-//        if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
+        if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
         // 질문 개수 top 3 (itemStatus.SOLD_OUT & 마감일이 이미 지난 것 제외)
         Pageable pageable = pageRequest.toPageable(1, 3);
@@ -348,7 +348,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto.HomeItemViewPageDto getRecommended(CustomUserDetails userDetails, PageRequestDto pageRequest, Long categoryId) {
         Member member = memberRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-//        if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
+        if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
         Pageable pageable = pageRequest.toPageable();
         Page<Item> itemPage;
