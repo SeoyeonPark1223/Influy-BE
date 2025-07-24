@@ -8,6 +8,7 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -45,7 +46,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
            m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
-           q.createdAt AS createdAt
+           q.createdAt AS createdAt,
+           q.isChecked AS isChecked
     FROM Question q
     JOIN q.member m
     WHERE q.questionTag.id = :tagId
@@ -88,4 +90,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Long countByQuestionTagIdAndIsCheckedFalse(Long questionTagId);
 
     Long countByItemIdAndIsCheckedFalse(Long itemId);
+
+    @Modifying
+    @Query("UPDATE Question q SET q.isChecked = true WHERE q.id IN :ids AND q.isChecked = false")
+    void setQuestionsAsChecked(@Param("ids") List<Long> questionIds);
 }

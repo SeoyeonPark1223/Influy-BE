@@ -86,5 +86,11 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
+    @Override
+    @Transactional
+    public void setAllChecked(List<Long> questionIds) {
+        questionRepository.setQuestionsAsChecked(questionIds);
+    }
+
 
 }

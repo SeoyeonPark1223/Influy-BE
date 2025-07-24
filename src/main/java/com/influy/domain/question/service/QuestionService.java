@@ -23,4 +23,6 @@ public interface QuestionService {
     Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions);
 
     Long getNewQuestionCountOf(Long questionTagId, Long questionCategoryId, Long itemId);
+
+    void setAllChecked(List<Long> questionIds);
 }

@@ -68,7 +68,7 @@ public class QuestionCategoryResponseDto {
         private Integer pendingCnt;
         private Integer answeredCnt;
         @Builder.Default
-        private List<QuestionResponseDTO.General> questions = new ArrayList<>();
+        private List<QuestionResponseDTO.SellerViewQuestion> questions = new ArrayList<>();
 
         public void setCount(Boolean isAnswered, Long cnt){
             if(isAnswered){

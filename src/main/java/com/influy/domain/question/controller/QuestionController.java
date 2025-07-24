@@ -4,7 +4,6 @@ package com.influy.domain.question.controller;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.converter.QuestionConverter;
 import com.influy.domain.question.dto.QuestionRequestDTO;
@@ -17,8 +16,6 @@ import com.influy.domain.questionCategory.service.QuestionCategoryService;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.ApiResponse;
-import com.influy.global.apiPayload.code.status.ErrorStatus;
-import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,10 +41,10 @@ public class QuestionController {
 
     @GetMapping("seller/item/talkbox/{questionTagId}/questions")
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
-    public ApiResponse<QuestionResponseDTO.GeneralPage> getQuestions(@PathVariable("questionTagId") Long questionTagId,
-                                                                     @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                     @RequestParam(value = "isAnswered",defaultValue = "true") Boolean isAnswered,
-                                                                     @ParameterObject Pageable pageable) {
+    public ApiResponse<QuestionResponseDTO.SellerViewPage> getQuestions(@PathVariable("questionTagId") Long questionTagId,
+                                                                        @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                        @RequestParam(value = "isAnswered",defaultValue = "true") Boolean isAnswered,
+                                                                        @ParameterObject Pageable pageable) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);
         sellerService.checkQuestionOwner(questionTagId, null,seller.getId());
@@ -57,9 +55,10 @@ public class QuestionController {
         Long newQuestions = questionService.getNewQuestionCountOf(questionTagId, null, null);
         //<memberId,질문 횟수> Map
         Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions.getContent());
-        QuestionResponseDTO.GeneralPage body = QuestionConverter.toGeneralPageDTO(questions, nthQuestions, newQuestions);
+        QuestionResponseDTO.SellerViewPage body = QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
 
-
+        List<Long> questionIds = questions.getContent().stream().map(QuestionJPQLResult.SellerViewQuestion::getId).toList();
+        questionService.setAllChecked(questionIds);
 
         return ApiResponse.onSuccess(body);
 

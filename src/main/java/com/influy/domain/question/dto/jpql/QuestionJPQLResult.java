@@ -13,6 +13,7 @@ public class QuestionJPQLResult {
         Long getMemberId();
         String getNickname();
         String getUsername();
+        Boolean getIsChecked();
         String getContent();
         Date getCreatedAt();
     }

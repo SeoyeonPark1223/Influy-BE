@@ -16,7 +16,7 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     boolean existsByItemIdAndName(Long itemId, String name);
     boolean existsByName(String name);
 
-    //카테고리 아이디, 이름, isAnswered에 따른 전체 질문 수, 미확인 질문 수
+    //카테고리 아이디, 이름, isAnswered 에 따른 전체 질문 수, 미확인 질문 수
     @Query(value = """
         SELECT qc.id AS id,
                qc.name AS categoryName,

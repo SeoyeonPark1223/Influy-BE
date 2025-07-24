@@ -15,7 +15,7 @@ public class QuestionResponseDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class General {
+    public static class SellerViewQuestion {
         @Schema(description = "질문 아이디", example = "1")
         private Long id;
         @Schema(description = "질문한 회원 아이디", example = "2")
@@ -24,6 +24,8 @@ public class QuestionResponseDTO {
         private String nickname;
         @Schema(description = "질문한 회원 유저네임", example = "@pullpullpull")
         private String username;
+        @Schema(description = "새로 들어온 질문인지(빨간점)", example = "true")
+        private boolean isNew;
         @Schema(description = "내용", example = "더 싸게는 안되나요?")
         private String content;
         @Schema(description = "해당 셀러에게 얼마나 질문했는지", example = "4")
@@ -36,8 +38,8 @@ public class QuestionResponseDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GeneralPage {
-        private List<General> questions;
+    public static class SellerViewPage {
+        private List<SellerViewQuestion> questions;
         @Schema(description = "이 페이지의 리스트 사이즈", example = "20")
         private Integer listSize;
         @Schema(description = "미확인 질문 개수", example = "3")

@@ -34,13 +34,14 @@ public class QuestionConverter {
 
     }
 
-    public static QuestionResponseDTO.General toGeneralDTO(QuestionJPQLResult.SellerViewQuestion question, Long nthQuestion) {
-        return QuestionResponseDTO.General.builder()
+    public static QuestionResponseDTO.SellerViewQuestion toSellerViewDTO(QuestionJPQLResult.SellerViewQuestion question, Long nthQuestion) {
+        return QuestionResponseDTO.SellerViewQuestion.builder()
                 .id(question.getId())
                 .memberId(question.getMemberId())
                 .content(question.getContent())
                 .nickname(question.getNickname())
                 .username(question.getUsername())
+                .isNew(!question.getIsChecked())
                 .nthQuestion(nthQuestion)
                 .createdAt(question.getCreatedAt().toInstant()
                         .atZone(ZoneId.systemDefault())
@@ -50,10 +51,10 @@ public class QuestionConverter {
 
 
 
-    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<QuestionJPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
-        List<QuestionResponseDTO.General> questionDTOs = questions.getContent().stream().map(question -> toGeneralDTO(question, countMap.get(question.getMemberId()))).toList();
+    public static QuestionResponseDTO.SellerViewPage toSellerViewPageDTO(Page<QuestionJPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
+        List<QuestionResponseDTO.SellerViewQuestion> questionDTOs = questions.getContent().stream().map(question -> toSellerViewDTO(question, countMap.get(question.getMemberId()))).toList();
 
-        return QuestionResponseDTO.GeneralPage.builder()
+        return QuestionResponseDTO.SellerViewPage.builder()
                 .questions(questionDTOs)
                 .newQuestionCnt(newQuestions)
                 .isFirst(questions.isFirst())
