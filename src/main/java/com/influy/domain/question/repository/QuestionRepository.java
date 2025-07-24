@@ -3,6 +3,7 @@ package com.influy.domain.question.repository;
 import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
+import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -118,4 +119,21 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     ORDER BY createdAt DESC
     """, nativeQuery = true)
     Page<AnswerJPQLResult.UserViewQNAInfo> findAllByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId, Pageable pageable);
+
+    @Query("""
+        SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
+        FROM Question q
+        JOIN q.questionTag.questionCategory qc
+        WHERE qc.id = :categoryId
+        GROUP BY q.isAnswered
+    """)
+    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(Long categoryId);
+
+    @Query("""
+        SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
+        FROM Question q
+        WHERE q.item.id = :itemId
+        GROUP BY q.isAnswered
+    """)
+    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByItemId(Long itemId);
 }

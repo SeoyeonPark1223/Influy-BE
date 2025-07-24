@@ -108,4 +108,15 @@ public class QuestionResponseDTO {
         @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
         private LocalDateTime createdAt;
     }
+
+    @Builder @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class IsAnsweredCntDTO {
+        @Schema(description = "답변 대기 개수", example = "14")
+        private Long waitingCnt;
+        @Schema(description = "답변 완료 개수", example = "30")
+        private Long completedCnt;
+    }
+
 }

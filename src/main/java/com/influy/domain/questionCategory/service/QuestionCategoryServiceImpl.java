@@ -5,6 +5,7 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.service.MemberService;
+import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
 import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
@@ -33,6 +34,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     private final SellerProfileRepository sellerRepository;
     private final AiService aiService;
     private final MemberService memberService;
+    private final QuestionRepository questionRepository;
 
     @Override
     @Transactional
@@ -80,6 +82,17 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     public QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId) {
 
         return questionCategoryRepository.findByIdAndItemId(questionCategoryId, itemId).orElseThrow(()->new GeneralException(ErrorStatus.QUESTION_CATEGORY_NOT_FOUND));
+    }
+
+    @Override
+    public List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId, Long itemId) {
+
+        if(categoryId!=null){
+            return questionRepository.countIsAnsweredByCategoryId(categoryId);
+        }else if(itemId!=null){
+            return questionRepository.countIsAnsweredByItemId(itemId);
+        }
+        return null;
     }
 
     private void checkSellerAndItem(Long sellerId, Long itemId) {

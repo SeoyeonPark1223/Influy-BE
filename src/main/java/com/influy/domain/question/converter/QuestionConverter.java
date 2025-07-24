@@ -7,6 +7,7 @@ import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
+import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionTag.entity.QuestionTag;
 import org.springframework.data.domain.Page;
 
@@ -95,6 +96,23 @@ public class QuestionConverter {
                 .totalElements(userQNAList.getTotalElements())
                 .isFirst(userQNAList.isFirst())
                 .isLast(userQNAList.isLast())
+                .build();
+    }
+
+    public static QuestionResponseDTO.IsAnsweredCntDTO toIsAnsweredCntDTO(List<CategoryJPQLResult.IsAnswered> isAnsweredCntList) {
+        Long waitingCnt = 0L;
+        Long completedCnt = 0L;
+
+        for(CategoryJPQLResult.IsAnswered questionCnt : isAnsweredCntList){
+            if(questionCnt.getIsAnswered()){
+                completedCnt +=questionCnt.getTotalQuestions();
+            }else{
+                waitingCnt +=questionCnt.getTotalQuestions();
+            }
+        }
+        return QuestionResponseDTO.IsAnsweredCntDTO.builder()
+                .waitingCnt(waitingCnt)
+                .completedCnt(completedCnt)
                 .build();
     }
 }

@@ -7,6 +7,7 @@ import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.global.jwt.CustomUserDetails;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface QuestionCategoryService {
@@ -15,4 +16,5 @@ public interface QuestionCategoryService {
     List<String> generateCategory(CustomUserDetails userDetails, Long itemId);
     QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
 
+    List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId, Long itemId);
 }

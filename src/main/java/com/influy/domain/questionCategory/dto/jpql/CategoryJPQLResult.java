@@ -7,4 +7,9 @@ public class CategoryJPQLResult {
         Long getTotalQuestions();
         Long getUncheckedQuestions();
     }
+
+    public interface IsAnswered{
+        Boolean getIsAnswered();
+        Long getTotalQuestions();
+    }
 }
