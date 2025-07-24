@@ -54,16 +54,12 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.save(question);
     }
 
-    @Override
-    public Long getTimesMemberAskedSeller(Member member, SellerProfile seller) {
-        return questionRepository.countByMemberAndSeller(member,seller);
-    }
 
     //멤버 id별 seller에 대한 질문 횟수 구하는 메서드
     @Override
     public Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions) {
         List<Long> memberIds = questions.stream()
-                .map(q -> q.getMemberId())
+                .map(QuestionJPQLResult.SellerViewQuestion::getMemberId)
                 .distinct()
                 .collect(Collectors.toList());
 

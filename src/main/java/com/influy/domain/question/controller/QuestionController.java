@@ -93,8 +93,7 @@ public class QuestionController {
         return ApiResponse.onSuccess(body);
     }
 
-    
-    //itemId 받게 수정하기
+
     @PostMapping("user/items/{itemId}/talkbox/{questionCategoryId}")
     @Operation(summary = "질문 작성", description = "질문 작성 API")
     public ApiResponse<QuestionResponseDTO.CreationResult> postQuestion(@RequestBody QuestionRequestDTO.Create request,
@@ -116,9 +115,6 @@ public class QuestionController {
         QuestionCategory category = questionCategoryService.findByCategoryIdAndItemId(questionCategoryId, itemId);
 
         Question question = questionService.createQuestion(member, item, category,request.getContent());
-
-        //질문 생성시 응답에는 불필요
-        //Long nthQuestion = questionService.getTimesMemberAskedSeller(member, item.getSeller());
 
         QuestionResponseDTO.CreationResult body = QuestionConverter.toCreationResult(question, category.getName());
 

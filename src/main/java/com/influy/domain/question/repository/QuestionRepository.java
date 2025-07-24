@@ -21,13 +21,7 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
-    @Query("SELECT COUNT(q) AS cnt " +
-            "FROM Question q " +
-            "JOIN q.item i " +
-            "JOIN i.seller s " +
-            "WHERE s = :seller AND q.member = :member " +
-            "GROUP BY q.member.id")
-    Long countByMemberAndSeller(@Param("member") Member member, @Param("seller") SellerProfile seller);
+
 
     @Query("SELECT q.member.id AS memberId, COUNT(q) AS cnt " +
             "FROM Question q " +
@@ -52,7 +46,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     FROM Question q
     JOIN q.member m
     JOIN q.questionTag qt
-    WHERE q.questionTag.id = :tagId
+    WHERE q.questionTag.id = :tagId AND q.isHidden = false
       AND q.isAnswered = :isAnswered
 """)
     Page<QuestionJPQLResult.SellerViewQuestion> findAllByQuestionTagIdAndIsAnswered(@Param("tagId") Long questionTagId, @Param("isAnswered") Boolean isAnswered, Pageable pageable);
@@ -72,6 +66,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     JOIN q.questionTag qt
     WHERE qt.questionCategory.id = :categoryId
       AND q.isAnswered = :isAnswered
+      AND q.isHidden = false
     ORDER BY q.createdAt
     
     """)

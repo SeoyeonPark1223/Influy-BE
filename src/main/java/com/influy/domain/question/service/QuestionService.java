@@ -18,8 +18,6 @@ public interface QuestionService {
 
     Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content);
 
-    Long getTimesMemberAskedSeller(Member member, SellerProfile seller);
-
     Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions);
 
     Long getNewQuestionCountOf(Long questionTagId, Long questionCategoryId, Long itemId);
