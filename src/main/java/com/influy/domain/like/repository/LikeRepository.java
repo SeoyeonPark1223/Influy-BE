@@ -37,6 +37,12 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     boolean existsByMemberAndSellerAndLikeStatus(Member member, SellerProfile seller, LikeStatus likeStatus);
 
-    @Query("SELECT l.item.id FROM Like l WHERE l.member = :member AND l.item IS NOT NULL")
+//    @Query("SELECT l.item.id FROM Like l WHERE l.member = :member AND l.item IS NOT NULL")
+        @Query("""
+        SELECT i.id
+        FROM Like l
+        JOIN l.item i
+        WHERE l.member = :member
+    """)
     List<Long> findLikedItemIdsByMember(@Param("member") Member member);
 }
