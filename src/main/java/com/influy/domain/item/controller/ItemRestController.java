@@ -18,7 +18,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @Tag(name = "셀러 아이템", description = "셀러 아이템 관련 API")
 @RestController

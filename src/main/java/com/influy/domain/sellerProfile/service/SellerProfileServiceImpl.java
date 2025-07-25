@@ -51,15 +51,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
         return sellerProfile.setItemSortType(sortBy);
     }
 
-    @Override
-    public void checkItemMatchSeller(Long sellerId, Long itemId) {
-        SellerProfile seller = getSellerProfile(sellerId);
-        Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
-        if(!item.getSeller().equals(seller)) {
-            throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
-        }
-    }
 
     @Override
     @Transactional
@@ -79,5 +71,20 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     @Override
     public List<ItemJPQLResponse> getMarketItems(Long sellerId) {
         return itemRepository.countBySellerIdGroupByIsArchived(sellerId);
+    }
+
+    @Override
+    public Boolean checkQuestionOwner(Long tagId, Long categoryId, Long sellerId) {
+        if(tagId!=null){
+            if(!sellerProfileRepository.existsByIdAndTagId(sellerId, tagId)){
+                throw new GeneralException(ErrorStatus.NOT_OWNER);
+            }
+        }else if(categoryId!=null){
+            if(!sellerProfileRepository.existsByIdAndCategoryId(sellerId, categoryId)){
+                throw new GeneralException(ErrorStatus.NOT_OWNER);
+            }
+        }else return false;
+
+        return true;
     }
 }

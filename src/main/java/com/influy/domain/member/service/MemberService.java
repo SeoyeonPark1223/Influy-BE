@@ -3,6 +3,8 @@ package com.influy.domain.member.service;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
+import com.influy.domain.questionCategory.entity.QuestionCategory;
+import com.influy.domain.questionTag.entity.QuestionTag;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.jwt.CustomUserDetails;
 
