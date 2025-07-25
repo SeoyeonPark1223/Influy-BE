@@ -336,7 +336,7 @@ public class ItemServiceImpl implements ItemService {
         if (member.getRole() == MemberRole.SELLER) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
         // 질문 개수 top 3 (SOLD_OUT & 마감일이 이미 지난 것 제외)
-        Pageable pageable = pageRequest.toPageable(1, 3);
+        Pageable pageable = pageRequest.toPageable();
         Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
         List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
 
