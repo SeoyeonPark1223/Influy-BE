@@ -3,6 +3,7 @@ package com.influy.domain.item.repository;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.ItemStatus;
+import com.influy.domain.member.entity.Member;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'")
     List<Item> findAllBySellerIdAndTalkBoxOpenStatus(Long sellerId);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold AND i.itemStatus != 'SOLD_OUT'")
+    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true")
     Page<Item> findAllByEndDateAndItemStatus(LocalDateTime now, LocalDateTime threshold, Pageable pageable);
 
     @Query("""
@@ -38,20 +39,25 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         LEFT JOIN i.questionList q
         WHERE i.endDate > :now
         AND i.itemStatus != 'SOLD_OUT'
+        AND i.seller.isPublic = true
         GROUP BY i
         ORDER BY COUNT(q) DESC
     """)
     Page<Item> findTop3ByQuestionCnt(LocalDateTime now, Pageable pageable);
 
     @Query("""
-        SELECT DISTINCT ic.item FROM ItemCategory ic
+        SELECT ic.item FROM ItemCategory ic
         WHERE ic.category.id = :categoryId
           AND ic.item.endDate > :now
-          AND i.itemStatus != 'SOLD_OUT'
+          AND ic.item.itemStatus != 'SOLD_OUT'
+          AND ic.item.seller.isPublic = true
           ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(Long categoryId, Pageable pageable, LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT'")
+    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true")
     Page<Item> findAllNow(Pageable pageable, LocalDateTime now);
+
+    @Query("SELECT l.item.id FROM Like l WHERE l.member = :member AND l.item IS NOT NULL")
+    List<Long> findLikedItemIdsByMember(@Param("member") Member member);
 }

@@ -170,7 +170,7 @@ public class ItemServiceImpl implements ItemService {
         MemberRole memberRole = MemberRole.SELLER;
 
         if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
-        List<Long> likeItems = getLikeItems(member);
+        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
@@ -323,7 +323,7 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime threshold = LocalDateTime.now().plusHours(24);
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "endDate"));
         Page<Item> itemPage = itemRepository.findAllByEndDateAndItemStatus(LocalDateTime.now(), threshold, pageable);
-        List<Long> likeItems = getLikeItems(member);
+        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
@@ -338,7 +338,7 @@ public class ItemServiceImpl implements ItemService {
         // 질문 개수 top 3 (SOLD_OUT & 마감일이 이미 지난 것 제외)
         Pageable pageable = pageRequest.toPageable(1, 3);
         Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
-        List<Long> likeItems = getLikeItems(member);
+        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
@@ -358,17 +358,8 @@ public class ItemServiceImpl implements ItemService {
         } else {
             itemPage = itemRepository.findAllNow(pageable, LocalDateTime.now());
         }
-        List<Long> likeItems = getLikeItems(member);
+        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
-    }
-
-    private List<Long> getLikeItems(Member member) {
-        return member
-                .getLikeList()
-                .stream()
-                .filter(like -> like.getItem() != null)
-                .map(like -> like.getItem().getId())
-                .toList();
     }
 }
