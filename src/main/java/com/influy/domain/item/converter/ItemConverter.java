@@ -215,10 +215,10 @@ public class ItemConverter {
         return ItemResponseDto.HomeItemViewPageDto.builder()
                 .itemPreviewList(itemDtoList)
                 .listSize(itemDtoList.size())
-                .totalPage(itemPage.getTotalPages())
-                .totalElements(itemPage.getTotalElements())
-                .isFirst(itemPage.isFirst())
-                .isLast(itemPage.isLast())
+                .totalPage(itemPage == null ? 0: itemPage.getTotalPages())
+                .totalElements(itemPage == null ? 0: itemPage.getTotalElements())
+                .isFirst(itemPage == null || itemPage.isFirst())
+                .isLast(itemPage == null || itemPage.isLast())
                 .build();
     }
 }

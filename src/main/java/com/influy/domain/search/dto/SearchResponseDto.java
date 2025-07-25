@@ -1,6 +1,5 @@
 package com.influy.domain.search.dto;
 
-import com.influy.domain.item.dto.ItemResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,18 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 public class SearchResponseDto {
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SearchResultDto {
-        @Schema(description = "셀러 리스트")
-        private SellerPageResultDto sellerPageDtoList;
-
-        @Schema(description = "아이템 리스트")
-        private ItemResponseDto.HomeItemViewPageDto itemPageDtoList;
-    }
-
     @Getter
     @Builder
     @NoArgsConstructor

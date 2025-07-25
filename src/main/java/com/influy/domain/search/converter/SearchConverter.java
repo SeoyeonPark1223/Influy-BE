@@ -1,7 +1,5 @@
 package com.influy.domain.search.converter;
 
-import com.influy.domain.item.converter.ItemConverter;
-import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.search.dto.SearchResponseDto;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
@@ -11,14 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class SearchConverter {
-    public static SearchResponseDto.SearchResultDto toSearchResultDto(Page<SellerProfile> sellerPage, Page<Item> itemPage, List<Long> likeSellers, List<Long> likeItems) {
-        return SearchResponseDto.SearchResultDto.builder()
-                .sellerPageDtoList(sellerPage == null ? null : toSellerPageResultDto(sellerPage, likeSellers))
-                .itemPageDtoList(itemPage == null ? null : ItemConverter.toHomeItemViewPageDto(itemPage, likeItems))
-                .build();
-
-    }
-
     public static SearchResponseDto.SellerPageResultDto toSellerPageResultDto(Page<SellerProfile> sellerPage, List<Long> likeSellers) {
         List<Long> safeLikeSellers = (likeSellers != null) ? likeSellers : Collections.emptyList();
 
@@ -31,10 +21,10 @@ public class SearchConverter {
         return SearchResponseDto.SellerPageResultDto.builder()
                 .sellerDtoList(sellerDtoList)
                 .listSize(sellerDtoList.size())
-                .totalPage(sellerPage.getTotalPages())
-                .totalElements(sellerPage.getTotalElements())
-                .isFirst(sellerPage.isFirst())
-                .isLast(sellerPage.isLast())
+                .totalPage(sellerPage == null? 0 : sellerPage.getTotalPages())
+                .totalElements(sellerPage == null? 0 : sellerPage.getTotalElements())
+                .isFirst(sellerPage == null || sellerPage.isFirst())
+                .isLast(sellerPage == null || sellerPage.isLast())
                 .build();
     }
 

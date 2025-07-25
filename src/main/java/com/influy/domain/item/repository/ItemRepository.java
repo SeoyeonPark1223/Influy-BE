@@ -63,4 +63,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> findAllByNameContaining(String query, Pageable pageable);
 
     Page<Item> findAllBySellerIn(List<SellerProfile> content, Pageable pageable);
+
+    Page<Item> findAllByNameContainingOrSeller_Member_UsernameContainingOrSeller_Member_NicknameContainingOrSeller_InstagramContaining(String query, String query1, String query2, String query3, Pageable pageable);
 }

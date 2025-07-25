@@ -1,5 +1,7 @@
 package com.influy.domain.search.service;
 
+import com.influy.domain.item.converter.ItemConverter;
+import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.repository.LikeRepository;
@@ -32,31 +34,38 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     @Transactional(readOnly = true)
-    public SearchResponseDto.SearchResultDto search(CustomUserDetails userDetails, String query, PageRequestDto sellerPageRequest, PageRequestDto itemPageRequest) {
+    public SearchResponseDto.SellerPageResultDto searchSeller(CustomUserDetails userDetails, String query, PageRequestDto pageRequest) {
         Member member = memberRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        Pageable pageableSeller = sellerPageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
-        Pageable pageableItem = itemPageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<SellerProfile> sellerPage = null;
-        Page<Item> itemPage = null;
 
-        if (sellerRepository.existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query)
-                && itemRepository.existsByNameContaining(query)) {
-            sellerPage = sellerRepository.findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query, pageableSeller);
-            itemPage = itemRepository.findAllByNameContaining(query, pageableItem);
-        }
         if (sellerRepository.existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query)) {
-            sellerPage = sellerRepository.findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query, pageableSeller);
-            itemPage = itemRepository.findAllBySellerIn(sellerPage.getContent(), pageableItem);
-        }
-        else if (itemRepository.existsByNameContaining(query)) {
-            itemPage = itemRepository.findAllByNameContaining(query, pageableItem);
+            sellerPage = sellerRepository.findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query, pageable);
         }
 
         List<Long> likeSellers = likeRepository.findLikedSellerIdsByMember(member);
+
+        return SearchConverter.toSellerPageResultDto(sellerPage, likeSellers);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ItemResponseDto.HomeItemViewPageDto searchItem(CustomUserDetails userDetails, String query, PageRequestDto pageRequest) {
+        Member member = memberRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Item> itemPage = null;
+
+        if (sellerRepository.existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query)
+                || itemRepository.existsByNameContaining(query)) {
+            itemPage = itemRepository.findAllByNameContainingOrSeller_Member_UsernameContainingOrSeller_Member_NicknameContainingOrSeller_InstagramContaining(query, query, query, query, pageable);
+        }
+
         List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
-        return SearchConverter.toSearchResultDto(sellerPage, itemPage, likeSellers, likeItems);
+        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
 }
