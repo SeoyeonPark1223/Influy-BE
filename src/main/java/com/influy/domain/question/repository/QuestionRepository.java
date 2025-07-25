@@ -137,7 +137,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         WHERE q.item.id = :itemId
         GROUP BY q.isAnswered
     """)
+    Page<Question> findAllByQuestionCategoryAndIsAnswered(@Param("questionCategory")QuestionCategory questionCategory, @Param("isAnswered")Boolean isAnswered, Pageable pageable);
+
     List<CategoryJPQLResult.IsAnswered> countIsAnsweredByItemId(@Param("itemId") Long itemId);
+
 
     @Query("""
         SELECT q FROM Question q

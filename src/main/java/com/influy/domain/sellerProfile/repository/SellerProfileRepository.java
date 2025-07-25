@@ -1,6 +1,8 @@
 package com.influy.domain.sellerProfile.repository;
 
 import com.influy.domain.sellerProfile.entity.SellerProfile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,9 @@ public interface SellerProfileRepository extends JpaRepository<SellerProfile, Lo
 
     boolean existsByInstagram(String instagram);
 
+    Boolean existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(String username, String nickname, String instagram);
+
+    Page<SellerProfile> findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(String username, String nickname, String instagram, Pageable pageable);
     @Query("SELECT EXISTS (SELECT 1 FROM QuestionTag t WHERE t.id = :tagId AND t.questionCategory.item.seller.id = :sellerId)")
     Boolean existsByIdAndTagId(@Param("sellerId") Long sellerId,@Param("tagId") Long tagId);
 

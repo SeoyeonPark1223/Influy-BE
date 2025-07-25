@@ -9,7 +9,6 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
@@ -29,7 +28,6 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -357,7 +355,9 @@ public class ItemServiceImpl implements ItemService {
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
 
-    List<Long> getLikeItems(CustomUserDetails userDetails) {
+    @Transactional
+    @Override
+    public List<Long> getLikeItems(CustomUserDetails userDetails) {
         List<Long> likeItems = new ArrayList<>();
         if (userDetails != null) {
             Member member = userDetails.getMember();

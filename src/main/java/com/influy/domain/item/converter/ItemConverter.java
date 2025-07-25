@@ -193,6 +193,7 @@ public class ItemConverter {
                 .sellerProfileImg(member.getProfileImg())
                 .sellerUsername(member.getUsername())
                 .itemId(item.getId())
+                .itemName(item.getName())
                 .itemMainImg(item.getImageList().getFirst().getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .endDate(item.getEndDate())
@@ -205,17 +206,19 @@ public class ItemConverter {
     public static ItemResponseDto.HomeItemViewPageDto toHomeItemViewPageDto(Page<Item> itemPage, List<Long> likeItems) {
         List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
 
-        List<ItemResponseDto.HomeItemViewDto> itemDtoList = itemPage.stream()
+        List<ItemResponseDto.HomeItemViewDto> itemDtoList = itemPage != null
+                ? itemPage.stream()
                 .map(item -> toHomeItemViewDto(item, safeLikeItems.contains(item.getId())))
-                .toList();
+                .toList()
+                : Collections.emptyList();
 
         return ItemResponseDto.HomeItemViewPageDto.builder()
                 .itemPreviewList(itemDtoList)
                 .listSize(itemDtoList.size())
-                .totalPage(itemPage.getTotalPages())
-                .totalElements(itemPage.getTotalElements())
-                .isFirst(itemPage.isFirst())
-                .isLast(itemPage.isLast())
+                .totalPage(itemPage == null ? 0: itemPage.getTotalPages())
+                .totalElements(itemPage == null ? 0: itemPage.getTotalElements())
+                .isFirst(itemPage == null || itemPage.isFirst())
+                .isLast(itemPage == null || itemPage.isLast())
                 .build();
     }
 }
