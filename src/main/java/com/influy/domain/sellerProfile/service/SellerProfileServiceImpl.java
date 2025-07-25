@@ -80,14 +80,4 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     public List<ItemJPQLResponse> getMarketItems(Long sellerId) {
         return itemRepository.countBySellerIdGroupByIsArchived(sellerId);
     }
-
-    @Override
-    public List<Long> getLikeSellers(Member member) {
-        return member
-                .getLikeList()
-                .stream()
-                .filter(like -> like.getSeller() != null)
-                .map(like -> like.getSeller().getId())
-                .toList();
-    }
 }

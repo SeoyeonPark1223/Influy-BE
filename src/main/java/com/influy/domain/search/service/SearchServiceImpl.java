@@ -3,6 +3,7 @@ package com.influy.domain.search.service;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.item.service.ItemService;
+import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.search.converter.SearchConverter;
@@ -30,7 +31,7 @@ public class SearchServiceImpl implements SearchService {
     private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
     private final ItemService itemService;
-    private final SellerProfileService sellerService;
+    private final LikeRepository likeRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -56,7 +57,7 @@ public class SearchServiceImpl implements SearchService {
             itemPage = itemRepository.findAllByNameContaining(query, pageableItem);
         }
 
-        List<Long> likeSellers = sellerService.getLikeSellers(member);
+        List<Long> likeSellers = likeRepository.findLikedSellerIdsByMember(member);
         List<Long> likeItems = itemService.getLikeItems(member);
 
         return SearchConverter.toSearchResultDto(sellerPage, itemPage, likeSellers, likeItems);
