@@ -48,7 +48,9 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, Pageable pageable) {
+    public Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, PageRequestDto pageableDTO) {
+        Pageable pageable = pageableDTO.toPageable();
+
         if(questionTagId!=null){
             return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
         }else{

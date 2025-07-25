@@ -22,7 +22,7 @@ import java.util.Map;
 
 public interface QuestionService {
 
-    Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, Pageable pageable);
+    Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, PageRequestDto pageable);
 
     Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content);
 

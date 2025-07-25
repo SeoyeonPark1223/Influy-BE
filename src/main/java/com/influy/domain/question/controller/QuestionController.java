@@ -55,7 +55,7 @@ public class QuestionController {
     public ApiResponse<QuestionResponseDTO.SellerViewPage> getQuestions(@PathVariable("questionTagId") Long questionTagId,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
                                                                         @RequestParam(value = "isAnswered",defaultValue = "false") Boolean isAnswered,
-                                                                        @ParameterObject Pageable pageable) {
+                                                                        @ParameterObject PageRequestDto pageable) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);
         sellerService.checkQuestionOwner(questionTagId, null,seller.getId());
@@ -82,7 +82,7 @@ public class QuestionController {
     public ApiResponse<QuestionResponseDTO.SellerViewPage> getCategoryQuestions(@PathVariable("questionCategoryId") Long categoryId,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
                                                                         @RequestParam(value = "isAnswered",defaultValue = "false") Boolean isAnswered,
-                                                                        @ParameterObject Pageable pageable) {
+                                                                        @ParameterObject PageRequestDto pageable) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);
         sellerService.checkQuestionOwner(null, categoryId,seller.getId());
