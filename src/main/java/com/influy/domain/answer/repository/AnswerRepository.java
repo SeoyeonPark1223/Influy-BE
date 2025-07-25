@@ -1,14 +1,14 @@
 package com.influy.domain.answer.repository;
 
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.answer.entity.Answer;
-import com.influy.domain.answer.entity.AnswerType;
-import com.influy.domain.question.entity.Question;
-import com.influy.domain.questionTag.entity.QuestionTag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("""
@@ -16,12 +16,13 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
         WHERE a.question.questionTag.id = :questionTagId
           AND (a.answerType = 'INDIVIDUAL' OR a.answerType = 'FAQ')
     """)
-    List<Answer> findIndividualAndFaqAnswersByQuestionTagId(Long questionTagId);
+    List<Answer> findIndividualAndFaqAnswersByQuestionTagId(@Param("questionTagId") Long questionTagId);
 
     @Query("""
     SELECT a FROM Answer a
     WHERE a.question.questionTag.id = :questionTagId
     AND a.answerType = 'COMMON'
     """)
-    List<Answer> findCommonAnswersByQuestionTagId(Long questionTagId);
+    List<Answer> findCommonAnswersByQuestionTagId(@Param("questionTagId") Long questionTagId);
+
 }

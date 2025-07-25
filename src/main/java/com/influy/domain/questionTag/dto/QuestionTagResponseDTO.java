@@ -17,6 +17,9 @@ public class QuestionTagResponseDTO {
         @Schema(description = "태그 이름", example = "예약 변경")
         private String name;
         @Schema(description = "해당 태그에 포함된 질문 수", example = "24")
-        private Integer questionCount;
+        private Long totalQuestions;
+        @Schema(description = "빨간 점 표시 여부", example = "true")
+        private boolean uncheckedExists;
     }
+
 }

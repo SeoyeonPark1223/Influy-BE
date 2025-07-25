@@ -39,7 +39,7 @@ public class KakaoAuthServiceImpl implements AuthService {
     private String kakaoRestApiKey;
     @Value("${social.redirect-uri}")
     private String redirectUri;
-    private final String prodRedirectUri = "https://influy.com/oauth/kakap/callback";
+    private final String prodRedirectUri = "https://influy.com/oauth/kakao/callback";
     @Value("${kakao.admin-key}")
     private String kakaoAdminKey;
 

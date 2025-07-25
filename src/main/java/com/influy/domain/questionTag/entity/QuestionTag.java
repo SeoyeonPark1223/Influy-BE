@@ -15,6 +15,12 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "question_tag",
+        indexes = {
+                @Index(name = "idx_question_tag_category", columnList = "question_category_id")
+        }
+)
 public class QuestionTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

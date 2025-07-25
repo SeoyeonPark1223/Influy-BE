@@ -1,19 +1,19 @@
 package com.influy.domain.question.converter;
 
 import com.influy.domain.answer.converter.AnswerConverter;
+import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
+import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
+import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionTag.entity.QuestionTag;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -39,30 +39,82 @@ public class QuestionConverter {
 
     }
 
-    public static QuestionResponseDTO.General toGeneralDTO(Question question, Long nthQuestion) {
-        return QuestionResponseDTO.General.builder()
-                .id(question.getId())
-                .memberId(question.getMember().getId())
+    public static QuestionResponseDTO.SellerViewQuestion toSellerViewDTO(QuestionJPQLResult.SellerViewQuestion question, Long nthQuestion) {
+        return QuestionResponseDTO.SellerViewQuestion.builder()
+                .questionId(question.getId())
+                .memberId(question.getMemberId())
                 .content(question.getContent())
-                .nickname(question.getMember().getNickname())
-                .username(question.getMember().getUsername())
+                .username(question.getUsername())
+                .tagName(question.getTagName())
+                .isNew(!question.getIsChecked())
                 .nthQuestion(nthQuestion)
-                .createdAt(question.getCreatedAt())
+                .createdAt(question.getCreatedAt().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime())
                 .build();
     }
 
 
 
-    public static QuestionResponseDTO.GeneralPage toGeneralPageDTO(Page<Question> questions, Map<Long, Long> countMap) {
+    public static QuestionResponseDTO.SellerViewPage toSellerViewPageDTO(Page<QuestionJPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
+        List<QuestionResponseDTO.SellerViewQuestion> questionDTOs = questions.getContent().stream().map(question -> toSellerViewDTO(question, countMap.get(question.getMemberId()))).toList();
 
-
-        return QuestionResponseDTO.GeneralPage.builder()
+        return QuestionResponseDTO.SellerViewPage.builder()
+                .questions(questionDTOs)
+                .newQuestionCnt(newQuestions)
                 .isFirst(questions.isFirst())
                 .isLast(questions.isLast())
                 .totalPage(questions.getTotalPages())
                 .totalElements(questions.getTotalElements())
                 .listSize(questions.getSize())
-                .questions(questions.map(question->QuestionConverter.toGeneralDTO(question, countMap.get(question.getMember().getId()))).getContent())
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo question) {
+        return QuestionResponseDTO.UserViewQuestion.builder()
+                .type(question.getType())
+                .id(question.getId())
+                .categoryName(question.getCategoryName())
+                .content(question.getContent())
+                .createdAt(question.getCreatedAt())
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserViewQNAPage toUserViewQNAPage(Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList) {
+        List<QuestionResponseDTO.UserViewQNA> content = userQNAList.getContent().stream().map(
+                qna->{
+                    if(qna.getType().equals("Q")){
+                        return toUserViewDTO(qna);
+                    } else{
+                        return AnswerConverter.toUserViewDTO(qna);
+                    }
+                }
+        ).toList();
+
+        return QuestionResponseDTO.UserViewQNAPage.builder()
+                .chatList(content)
+                .listSize(userQNAList.getSize())
+                .totalPage(userQNAList.getTotalPages())
+                .totalElements(userQNAList.getTotalElements())
+                .isFirst(userQNAList.isFirst())
+                .isLast(userQNAList.isLast())
+                .build();
+    }
+
+    public static QuestionResponseDTO.IsAnsweredCntDTO toIsAnsweredCntDTO(List<CategoryJPQLResult.IsAnswered> isAnsweredCntList) {
+        Long waitingCnt = 0L;
+        Long completedCnt = 0L;
+
+        for(CategoryJPQLResult.IsAnswered questionCnt : isAnsweredCntList){
+            if(questionCnt.getIsAnswered()){
+                completedCnt +=questionCnt.getTotalQuestions();
+            }else{
+                waitingCnt +=questionCnt.getTotalQuestions();
+            }
+        }
+        return QuestionResponseDTO.IsAnsweredCntDTO.builder()
+                .waitingCnt(waitingCnt)
+                .completedCnt(completedCnt)
                 .build();
     }
 

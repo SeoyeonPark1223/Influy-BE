@@ -17,11 +17,11 @@ public interface SellerProfileService {
 
     SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy);
 
-    void checkItemMatchSeller(Long sellerId, Long itemId);
-
     SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request);
 
     boolean getIsLikedByMember(SellerProfile seller, Member member);
 
     List<ItemJPQLResponse> getMarketItems(Long sellerId);
+
+    Boolean checkQuestionOwner(Long tagId, Long categoryId, Long sellerId);
 }
