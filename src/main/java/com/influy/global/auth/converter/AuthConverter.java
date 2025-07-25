@@ -3,7 +3,7 @@ package com.influy.global.auth.converter;
 import com.influy.global.auth.dto.AuthResponseDTO;
 
 public class AuthConverter {
-    public static AuthResponseDTO.UserIdAndToken toIdAndTokenDto(Long memberId, String accessToken) {
+    public static AuthResponseDTO.UserIdAndToken toUserIdAndTokenDto(Long memberId, String accessToken) {
 
         return AuthResponseDTO.UserIdAndToken.builder()
                 .memberId(memberId)

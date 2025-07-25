@@ -1,6 +1,7 @@
 package com.influy.global.auth.service;
 
 import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
@@ -75,12 +76,16 @@ public class KakaoAuthServiceImpl implements AuthService {
             //쿠키에 담기
             CookieUtil.refreshTokenInCookie(response,tokenPair.refreshToken());
 
-            return AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
+            if(member.getRole()== MemberRole.USER){
+                return AuthConverter.toUserIdAndTokenDto(member.getId(), tokenPair.accessToken());
+            }else{
+                return AuthConverter.toSellerIdAndToken(member.getId(), Objects.requireNonNull(member.getSellerProfile()).getId(),tokenPair.accessToken());
+            }
+
 
         } catch (GeneralException e) {
             return AuthConverter.toRequestSignUp(kakaoId);
         }
-
 
     }
 
