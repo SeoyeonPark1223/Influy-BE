@@ -36,6 +36,8 @@ public class AnswerResponseDto {
         private Long id;
         @Schema(description = "답변한 질문 아이디", example = "3")
         private Long questionId;
+        @Schema(description = "답변 타입", example = "일괄 답변")
+        private String answerType;
         @Schema(description = "답변한 질문 내용", example = "더 싸게는 안되나요?")
         private String questionContent;
         @Schema(description = "내용", example = "네 그건 좀 어렵습니다 ㅜㅜ")

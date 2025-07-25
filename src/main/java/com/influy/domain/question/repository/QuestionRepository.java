@@ -104,13 +104,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = """
 
-    SELECT 'Q' AS type, q.id AS id, q.content AS content, q.created_at AS createdAt, NULL AS questionId, NULL as questionContent
+    SELECT 'Q' AS type, q.id AS id, q.content AS content, q.created_at AS createdAt, NULL AS questionId, NULL AS questionContent, NULL AS answerType, qc.name AS categoryName
     FROM question q
+    LEFT JOIN question_tag qt ON q.question_tag_id = qt.id
+    LEFT JOIN question_category qc ON qt.question_category_id = qc.id
     WHERE q.member_id = :memberId
     
     UNION ALL
     
-    SELECT 'A' AS type, a.id AS id, a.content AS content, a.created_at AS createdAt, q.id AS questionId, q.content AS questionContent
+    SELECT 'A' AS type, a.id AS id, a.content AS content, a.created_at AS createdAt, q.id AS questionId, q.content AS questionContent, a.answer_type AS answerType, NULL AS categoryName
     FROM answer a
     JOIN question q ON a.question_id = q.id
     WHERE q.member_id = :memberId AND q.item_id = :itemId

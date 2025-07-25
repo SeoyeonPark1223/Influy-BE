@@ -41,6 +41,8 @@ public class QuestionResponseDTO {
         private String type;
         @Schema(description = "질문 아이디", example = "1")
         private Long id;
+        @Schema(description = "질문이 속한 카테고리 이름", example = "색상")
+        private String categoryName;
         @Schema(description = "내용", example = "더 싸게는 안되나요?")
         private String content;
         @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")

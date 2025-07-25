@@ -7,6 +7,8 @@ public class AnswerJPQLResult {
         String getType();
         Long getId();
         Long getQuestionId();
+        String getCategoryName();
+        String getAnswerType();
         String getQuestionContent();
         String getContent();
         LocalDateTime getCreatedAt();

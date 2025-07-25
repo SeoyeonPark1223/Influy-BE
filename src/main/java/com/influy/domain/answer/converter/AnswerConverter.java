@@ -67,14 +67,15 @@ public class AnswerConverter {
                 .answerViewList(answerDtoList).build();
     }
 
-    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo qna) {
+    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo answer) {
         return AnswerResponseDto.UserViewAnswer.builder()
-                .type(qna.getType())
-                .id(qna.getId())
-                .questionId(qna.getQuestionId())
-                .questionContent(qna.getQuestionContent())
-                .content(qna.getContent())
-                .createdAt(qna.getCreatedAt())
+                .type(answer.getType())
+                .id(answer.getId())
+                .answerType(answer.getAnswerType())
+                .questionId(answer.getQuestionId())
+                .questionContent(answer.getQuestionContent())
+                .content(answer.getContent())
+                .createdAt(answer.getCreatedAt())
                 .build();
     }
 }

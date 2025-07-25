@@ -74,6 +74,7 @@ public class QuestionConverter {
         return QuestionResponseDTO.UserViewQuestion.builder()
                 .type(question.getType())
                 .id(question.getId())
+                .categoryName(question.getCategoryName())
                 .content(question.getContent())
                 .createdAt(question.getCreatedAt())
                 .build();
