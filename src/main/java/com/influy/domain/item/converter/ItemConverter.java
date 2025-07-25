@@ -6,6 +6,7 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.Member;
@@ -182,6 +183,39 @@ public class ItemConverter {
         return ItemResponseDto.TalkBoxOpenedListDto.builder()
                 .cnt(itemList.size())
                 .talkBoxOpenedDtoList(itemDtoList)
+                .build();
+    }
+
+    public static ItemResponseDto.HomeItemViewDto toHomeItemViewDto(Item item, Boolean liked) {
+        Member member = item.getSeller().getMember();
+
+        return ItemResponseDto.HomeItemViewDto.builder()
+                .sellerProfileImg(member.getProfileImg())
+                .sellerUsername(member.getUsername())
+                .itemId(item.getId())
+                .itemMainImg(item.getImageList().getFirst().getImageLink())
+                .itemPeriod(item.getItemPeriod())
+                .endDate(item.getEndDate())
+                .tagline(item.getTagline())
+                .currentStatus(item.getItemStatus())
+                .liked(liked)
+                .build();
+    }
+
+    public static ItemResponseDto.HomeItemViewPageDto toHomeItemViewPageDto(Page<Item> itemPage, List<Long> likeItems) {
+        List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
+
+        List<ItemResponseDto.HomeItemViewDto> itemDtoList = itemPage.stream()
+                .map(item -> toHomeItemViewDto(item, safeLikeItems.contains(item.getId())))
+                .toList();
+
+        return ItemResponseDto.HomeItemViewPageDto.builder()
+                .itemPreviewList(itemDtoList)
+                .listSize(itemDtoList.size())
+                .totalPage(itemPage.getTotalPages())
+                .totalElements(itemPage.getTotalElements())
+                .isFirst(itemPage.isFirst())
+                .isLast(itemPage.isLast())
                 .build();
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,4 +36,13 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Page<Like> findByMemberIdAndTargetTypeAndLikeStatus(Long memberId, TargetType targetType, LikeStatus likeStatus, Pageable pageable);
 
     boolean existsByMemberAndSellerAndLikeStatus(Member member, SellerProfile seller, LikeStatus likeStatus);
+
+//    @Query("SELECT l.item.id FROM Like l WHERE l.member = :member AND l.item IS NOT NULL")
+        @Query("""
+        SELECT i.id
+        FROM Like l
+        JOIN l.item i
+        WHERE l.member = :member
+    """)
+    List<Long> findLikedItemIdsByMember(@Param("member") Member member);
 }

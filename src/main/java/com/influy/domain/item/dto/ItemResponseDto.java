@@ -241,4 +241,55 @@ public class ItemResponseDto {
         @Schema(description = "해당 상품에 새로 들어온 질문 총개수", example = "5")
         private Integer newCnt;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HomeItemViewDto {
+        @Schema(description = "셀러 프로필사진", example = "https://...")
+        private String sellerProfileImg;
+
+        @Schema(description = "셀러 아이디", example = "@xoyeon")
+        private String sellerUsername;
+
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+
+        @Schema(description = "아이템 대표 사진", example = "https://...")
+        private String itemMainImg;
+
+        @Schema(description = "진행 차수", example = "1")
+        private Integer itemPeriod;
+
+        @Schema(description = "아이템 이름", example = "원피스")
+        private String itemName;
+
+        @Schema(description = "마감일", example = "021-01-01T00:00")
+        private LocalDateTime endDate;
+
+        @Schema(description = "한줄 소개", example = "빤짝거리는 원피스입니다")
+        private String tagline;
+
+        @Schema(description = "아이템 상태 [ DEFAULT, EXTEND, SOLD_OUT ]", example = "DEFAULT")
+        private ItemStatus currentStatus;
+
+        @Schema(description = "찜 여부", example = "false")
+        private Boolean liked;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HomeItemViewPageDto {
+        @Schema(description = "아이템 홈 뷰 리스트")
+        private List<HomeItemViewDto> itemPreviewList;
+
+        private Integer listSize;
+        private Integer totalPage;
+        private Long totalElements;
+        private Boolean isFirst;
+        private Boolean isLast;
+    }
 }

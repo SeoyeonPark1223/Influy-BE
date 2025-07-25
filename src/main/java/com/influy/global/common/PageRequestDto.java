@@ -22,4 +22,5 @@ public class PageRequestDto {
     public Pageable toPageable() {
         return PageRequest.of(page-1, size);
     }
+    public Pageable toPageable(int page, int size) {return PageRequest.of(page-1, size);}
 }

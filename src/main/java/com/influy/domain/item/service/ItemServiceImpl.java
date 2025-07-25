@@ -9,11 +9,13 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
@@ -27,6 +29,7 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     @Transactional
@@ -168,12 +173,7 @@ public class ItemServiceImpl implements ItemService {
         MemberRole memberRole = MemberRole.SELLER;
 
         if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
-        List<Long> likeItems = member
-                            .getLikeList()
-                            .stream()
-                            .filter(like -> like.getItem() != null)
-                            .map(like -> like.getItem().getId())
-                            .toList();
+        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
@@ -289,12 +289,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Item findById(Long itemId) {
-
         return itemRepository.findById(itemId).orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList) {
         List<Long> itemIdList = itemList.stream().map(Item::getId).toList();
 
@@ -312,5 +313,56 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return new TalkBoxInfoPair(waitingCntMap, completedCntMap);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ItemResponseDto.HomeItemViewPageDto getCloseDeadline(CustomUserDetails userDetails, PageRequestDto pageRequest) {
+        List<Long> likeItems = getLikeItems(userDetails);
+
+        // 남은 마감 시간이 24시간 이내 (SOLD_OUT & 마감일이 이미 지난 것 제외)
+        LocalDateTime threshold = LocalDateTime.now().plusHours(24);
+        Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "endDate"));
+        Page<Item> itemPage = itemRepository.findAllByEndDateAndItemStatus(LocalDateTime.now(), threshold, pageable);
+
+        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ItemResponseDto.HomeItemViewPageDto getPopular(CustomUserDetails userDetails, PageRequestDto pageRequest) {
+        List<Long> likeItems = getLikeItems(userDetails);
+
+        // 질문 개수 top 3 (SOLD_OUT & 마감일이 이미 지난 것 제외)
+        Pageable pageable = pageRequest.toPageable();
+        Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
+
+        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ItemResponseDto.HomeItemViewPageDto getRecommended(CustomUserDetails userDetails, PageRequestDto pageRequest, Long categoryId) {
+        List<Long> likeItems = getLikeItems(userDetails);
+
+        Pageable pageable = pageRequest.toPageable();
+        Page<Item> itemPage;
+        if (categoryId != null) {
+            if (!categoryRepository.existsById(categoryId)) throw new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND);
+            itemPage = itemRepository.findAllByCategoryId(categoryId, pageable, LocalDateTime.now());
+        } else {
+            itemPage = itemRepository.findAllNow(pageable, LocalDateTime.now());
+        }
+
+        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
+    }
+
+    List<Long> getLikeItems(CustomUserDetails userDetails) {
+        List<Long> likeItems = new ArrayList<>();
+        if (userDetails != null) {
+            Member member = userDetails.getMember();
+            likeItems = likeRepository.findLikedItemIdsByMember(member);
+        }
+        return likeItems;
     }
 }
