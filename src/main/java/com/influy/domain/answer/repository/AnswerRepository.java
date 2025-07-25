@@ -25,11 +25,4 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     """)
     List<Answer> findCommonAnswersByQuestionTagId(@Param("questionTagId") Long questionTagId);
 
-    @Query("""
-    SELECT 'A' as type, a.id, a.content, a.createdAt, q.id as question_id, q.content as question_content
-    FROM Answer a
-    JOIN Question q ON a.question.id = q.id
-    WHERE q.member.id = :memberId AND a.item.id=:itemId
-    """)
-    Page<AnswerJPQLResult.UserViewQNAInfo> findAllByMemberIdAndItemId(Long memberId, Long itemId, Pageable pageable);
 }

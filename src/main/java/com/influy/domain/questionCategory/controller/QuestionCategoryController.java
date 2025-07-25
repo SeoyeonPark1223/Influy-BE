@@ -20,7 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -56,9 +55,9 @@ public class QuestionCategoryController {
                                                                                        @RequestParam(name = "isAnswered", defaultValue = "false") Boolean isAnswered) {
         SellerProfile seller = memberService.checkSeller(userDetails);
 
-        List<CategoryJPQLResult.CategoryInfo> result = questionCategoryService.getList(seller.getId(),isAnswered, itemId);
-        List<CategoryJPQLResult.IsAnswered> isAnsweredCntList = questionCategoryService.getIsAnsweredMap(null,itemId);
-        QuestionResponseDTO.IsAnsweredCntDTO cntDTO = QuestionConverter.toIsAnsweredCntDTO(isAnsweredCntList);
+        List<CategoryJPQLResult.CategoryInfo> result = questionCategoryService.getListAndIsAnsweredCnt(seller.getId(),isAnswered, itemId);
+        List<CategoryJPQLResult.IsAnswered> isAnsweredCntList= questionCategoryService.getIsAnsweredMap(null,itemId);
+        QuestionResponseDTO.IsAnsweredCntDTO cntDTO= QuestionConverter.toIsAnsweredCntDTO(isAnsweredCntList);
 
         QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO body = QuestionCategoryConverter
                 .toTalkBoxCategoryInfoListDTO(result,cntDTO.getWaitingCnt(),cntDTO.getCompletedCnt());

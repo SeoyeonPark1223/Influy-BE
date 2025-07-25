@@ -40,40 +40,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
-    private final QuestionCategoryRepository questionCategoryRepository;
-    private final QuestionTagRepository questionTagRepository;
     private final AiService aiService;
-    private final AnswerRepository answerRepository;
     private final MemberService memberService;
 
 
     @Override
-    public Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, PageRequestDto pageableDTO) {
-        Pageable pageable = pageableDTO.toPageable();
-
-        if(questionTagId!=null){
-            return questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
-        }else{
-            return questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategoryId, isAnswered, pageable);
-        }
-    }
-
-    @Override
     @Transactional
-    public Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content) {
+    public QuestionResponseDTO.CreationResult createQuestion(Member member, Item item, QuestionCategory questionCategory, String content) {
 
         QuestionTag questionTag = aiService.classifyQuestion(content, questionCategory);
         Question question = QuestionConverter.toQuestion(item,member,content, questionTag);
         questionTag.getQuestionList().add(question);
         item.getQuestionList().add(question);
+        member.getQuestionList().add(question);
 
-
-        return questionRepository.save(question);
+        return QuestionConverter.toCreationResult(questionRepository.save(question), questionCategory.getName());
     }
 
 
     //멤버 id별 seller에 대한 질문 횟수 구하는 메서드
-    @Override
     public Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions) {
         List<Long> memberIds = questions.stream()
                 .map(QuestionJPQLResult.SellerViewQuestion::getMemberId)
@@ -86,33 +71,15 @@ public class QuestionServiceImpl implements QuestionService {
                 .collect(Collectors.toMap(QuestionJPQLResult.MemberQuestionCount::getMemberId, QuestionJPQLResult.MemberQuestionCount::getCnt));
     }
 
-    //isChecked==false인 질문 구하기
-    @Override
-    public Long getNewQuestionCountOf(Long questionTagId, Long questionCategoryId, Long itemId) {
-
-        if(questionTagId!=null){
-            return questionRepository.countByQuestionTagIdAndIsCheckedFalse(questionTagId);
-        } else if (questionCategoryId!=null) {
-            return questionRepository.countByQuestionCategoryIdAndIsCheckedFalse(questionCategoryId);
-        }else if (itemId!=null) {
-            return questionRepository.countByItemIdAndIsCheckedFalse(itemId);
-        }else{
-            return 0L;
-        }
-    }
 
     @Override
-    @Transactional
-    public void setAllChecked(List<Long> questionIds) {
-        questionRepository.setQuestionsAsChecked(questionIds);
-    }
-
-    @Override
-    public Page<AnswerJPQLResult.UserViewQNAInfo> getQNAsOf(Long memberId, Long itemId, PageRequestDto pageableDto) {
+    public QuestionResponseDTO.UserViewQNAPage getQNAsOf(Long memberId, Long itemId, PageRequestDto pageableDto) {
 
         Pageable pageable = pageableDto.toPageable();
         //유저에게는 question 의 Hidden 상태와 무관하게 모두 보여줌
-        return questionRepository.findAllByMemberIdAndItemId(memberId, itemId, pageable);
+        Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList= questionRepository.findAllByMemberIdAndItemId(memberId, itemId, pageable);
+
+        return QuestionConverter.toUserViewQNAPage(userQNAList);
     }
 
     @Override
@@ -139,4 +106,50 @@ public class QuestionServiceImpl implements QuestionService {
 
         return QuestionConverter.toDeleteResultDto(request.getQuestionIdList());
     }
+
+    @Override
+    public QuestionResponseDTO.SellerViewPage getSellerViewQuestionPage(Long questionTagId, Long questionCategoryId, SellerProfile seller, Boolean isAnswered, PageRequestDto pageableDTO) {
+
+        //질문 리스트
+        Page<QuestionJPQLResult.SellerViewQuestion> questions;
+        Pageable pageable = pageableDTO.toPageable();
+
+        if(questionTagId!=null){
+            questions =  questionRepository.findAllByQuestionTagIdAndIsAnswered(questionTagId,isAnswered,pageable);
+        }else{
+            questions = questionRepository.findAllByQuestionCategoryAndIsAnswered(questionCategoryId, isAnswered, pageable);
+        }
+
+        //새 질문 개수(새 질문 수>페이지 사이즈보다 클 수 있으므로 반복문보다는 쿼리 날리는게 맞음)
+        Long newQuestions;
+        if(questionTagId!=null){
+            newQuestions = questionRepository.countByQuestionTagIdAndIsCheckedFalse(questionTagId);
+        } else if (questionCategoryId!=null) {
+            newQuestions = questionRepository.countByQuestionCategoryIdAndIsCheckedFalse(questionCategoryId);
+        }else{
+            newQuestions = 0L;
+        }
+
+        //<memberId,질문 횟수> Map
+        Map<Long,Long> nthQuestions;
+
+        List<Long> memberIds = questions.stream()
+                .map(QuestionJPQLResult.SellerViewQuestion::getMemberId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<QuestionJPQLResult.MemberQuestionCount> counts = questionRepository.countQuestionsBySellerAndMemberIds(seller, memberIds);
+
+        nthQuestions =  counts.stream()
+                .collect(Collectors.toMap(QuestionJPQLResult.MemberQuestionCount::getMemberId, QuestionJPQLResult.MemberQuestionCount::getCnt));
+
+
+        //set처리
+        List<Long> questionIds = questions.getContent().stream().map(QuestionJPQLResult.SellerViewQuestion::getId).toList();
+        questionRepository.setQuestionsAsChecked(questionIds);
+
+        //응답 dto
+        return QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
+    }
+
 }

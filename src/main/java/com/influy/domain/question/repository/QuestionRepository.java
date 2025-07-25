@@ -81,9 +81,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
 
-    /*
-     밑 3개는 태그, 카테고리, 아이템 별 새 질문 수 구하는 함수
-     */
+    //밑 2개는 태그, 카테고리 별 새 질문 수 구하는 함수
     @Query("""
     SELECT COUNT(q)
     FROM QuestionTag qt
@@ -95,13 +93,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Long countByQuestionCategoryIdAndIsCheckedFalse(@Param("categoryId") Long categoryId);
 
     Long countByQuestionTagIdAndIsCheckedFalse(Long questionTagId);
+    // 여기까지
 
-    Long countByItemIdAndIsCheckedFalse(Long itemId);
 
     @Modifying
     @Query("UPDATE Question q SET q.isChecked = true WHERE q.id IN :ids AND q.isChecked = false")
     void setQuestionsAsChecked(@Param("ids") List<Long> questionIds);
 
+    //question과 answer를 created 순으로(채팅형식)
     @Query(value = """
 
     SELECT 'Q' AS type, q.id AS id, q.content AS content, q.created_at AS createdAt, NULL AS questionId, NULL AS questionContent, NULL AS answerType, qc.name AS categoryName
@@ -130,6 +129,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     """)
     List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);
 
+
+    //답변 완료/답변 대기 개수를 isAnswered 별로 구분하여 조회
     @Query("""
         SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
         FROM Question q

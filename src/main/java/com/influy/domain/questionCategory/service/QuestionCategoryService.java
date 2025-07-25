@@ -1,18 +1,16 @@
 package com.influy.domain.questionCategory.service;
 
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
-import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.global.jwt.CustomUserDetails;
 
 import java.util.List;
-import java.util.Map;
 
 
 public interface QuestionCategoryService {
     List<QuestionCategory> addAll(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.AddListDto request);
-    List<CategoryJPQLResult.CategoryInfo> getList(Long sellerId, Boolean isAnswered, Long itemId);
+    List<CategoryJPQLResult.CategoryInfo> getListAndIsAnsweredCnt(Long sellerId, Boolean isAnswered, Long itemId);
     List<String> generateCategory(CustomUserDetails userDetails, Long itemId);
     QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
 

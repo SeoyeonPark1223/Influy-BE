@@ -61,23 +61,15 @@ public class QuestionController {
         sellerService.checkQuestionOwner(questionTagId, null,seller.getId());
 
 
-        //질문 리스트
-        Page<QuestionJPQLResult.SellerViewQuestion> questions = questionService
-                .getQuestionsByTagOrCategoryAndIsAnswered(questionTagId, null, isAnswered, pageable);
-        //새 질문 개수(새 질문 수>페이지 사이즈보다 클 수 있으므로 반복문보다는 쿼리 날리는게 맞음)
-        Long newQuestions = questionService.getNewQuestionCountOf(questionTagId, null, null);
+        QuestionResponseDTO.SellerViewPage body = questionService
+                .getSellerViewQuestionPage(questionTagId,null, seller,isAnswered, pageable);
 
-        //<memberId,질문 횟수> Map
-        Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions.getContent());
-        QuestionResponseDTO.SellerViewPage body = QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
 
-        List<Long> questionIds = questions.getContent().stream().map(QuestionJPQLResult.SellerViewQuestion::getId).toList();
-        questionService.setAllChecked(questionIds);
 
         return ApiResponse.onSuccess(body);
     }
 
-    @GetMapping("seller/item/talkbox/items/{questionCategoryId}/questions")
+    @GetMapping("seller/item/talkbox/{questionCategoryId}/questions")
     @Operation(summary = "각 카테고리 별 전체 질문 조회", description = "태그별 질문 리스트와 동일한데 태그 id 대신 카테고리 id 필요")
     public ApiResponse<QuestionResponseDTO.SellerViewPage> getCategoryQuestions(@PathVariable("questionCategoryId") Long categoryId,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -88,18 +80,8 @@ public class QuestionController {
         sellerService.checkQuestionOwner(null, categoryId,seller.getId());
 
 
-        //질문 리스트
-        Page<QuestionJPQLResult.SellerViewQuestion> questions = questionService
-                .getQuestionsByTagOrCategoryAndIsAnswered(null, categoryId, isAnswered, pageable);
-        //새 질문 개수(새 질문 수>페이지 사이즈보다 클 수 있으므로 반복문보다는 쿼리 날리는게 맞음)
-        Long newQuestions = questionService.getNewQuestionCountOf(null, categoryId, null);
-
-        //<memberId,질문 횟수> Map
-        Map<Long,Long> nthQuestions = questionService.getNthQuestionMap(seller, questions.getContent());
-        QuestionResponseDTO.SellerViewPage body = QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
-
-        List<Long> questionIds = questions.getContent().stream().map(QuestionJPQLResult.SellerViewQuestion::getId).toList();
-        questionService.setAllChecked(questionIds);
+        QuestionResponseDTO.SellerViewPage body = questionService
+                .getSellerViewQuestionPage(null,categoryId, seller,isAnswered, pageable);
 
         return ApiResponse.onSuccess(body);
     }
@@ -112,8 +94,7 @@ public class QuestionController {
 
         Member member = memberService.findById(userDetails.getId());
 
-        Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList = questionService.getQNAsOf(member.getId(),itemId,pageable);
-        QuestionResponseDTO.UserViewQNAPage body = QuestionConverter.toUserViewQNAPage(userQNAList);
+        QuestionResponseDTO.UserViewQNAPage body = questionService.getQNAsOf(member.getId(),itemId,pageable);
 
         return ApiResponse.onSuccess(body);
     }
@@ -142,11 +123,7 @@ public class QuestionController {
 
         QuestionCategory category = questionCategoryService.findByCategoryIdAndItemId(questionCategoryId, itemId);
 
-        Question question = questionService.createQuestion(member, item, category,request.getContent());
-
-        QuestionResponseDTO.CreationResult body = QuestionConverter.toCreationResult(question, category.getName());
-
-
+        QuestionResponseDTO.CreationResult body = questionService.createQuestion(member, item, category,request.getContent());
 
         return ApiResponse.onSuccess(body);
     }

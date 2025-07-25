@@ -22,19 +22,15 @@ import java.util.Map;
 
 public interface QuestionService {
 
-    Page<QuestionJPQLResult.SellerViewQuestion> getQuestionsByTagOrCategoryAndIsAnswered(Long questionTagId, Long questionCategoryId, Boolean isAnswered, PageRequestDto pageable);
 
-    Question createQuestion(Member member, Item item, QuestionCategory questionCategory, String content);
 
-    Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions);
+    QuestionResponseDTO.CreationResult createQuestion(Member member, Item item, QuestionCategory questionCategory, String content);
 
-    Long getNewQuestionCountOf(Long questionTagId, Long questionCategoryId, Long itemId);
-
-    void setAllChecked(List<Long> questionIds);
-
-    Page<AnswerJPQLResult.UserViewQNAInfo> getQNAsOf(Long memberId, Long itemId, PageRequestDto pageable);
+    QuestionResponseDTO.UserViewQNAPage getQNAsOf(Long memberId, Long itemId, PageRequestDto pageable);
 
     QuestionResponseDTO.QnAListDto viewQnA(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, Long questionTagId, Long questionId);
 
     QuestionResponseDTO.DeleteResultDto delete(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, QuestionRequestDTO.DeleteDto request);
+
+    QuestionResponseDTO.SellerViewPage getSellerViewQuestionPage(Long questionTagId, Long questionCategoryId, SellerProfile seller, Boolean isAnswered, PageRequestDto pageable);
 }
