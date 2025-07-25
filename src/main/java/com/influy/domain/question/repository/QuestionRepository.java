@@ -126,7 +126,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         WHERE qc.id = :categoryId
         GROUP BY q.isAnswered
     """)
-    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(Long categoryId);
+    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);
 
     @Query("""
         SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
@@ -134,7 +134,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         WHERE q.item.id = :itemId
         GROUP BY q.isAnswered
     """)
-    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByItemId(Long itemId);
+    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByItemId(@Param("itemId") Long itemId);
+
+    @Query("""
+        SELECT q FROM Question q
+        WHERE q.id = :questionId
+          AND q.questionTag.id = :questionTagId
+          AND q.questionTag.questionCategory.id = :questionCategoryId
+          AND q.questionTag.questionCategory.item.id = :itemId
+    """)
     Optional<Question> findValidQuestion(@Param("itemId")Long itemId, @Param("questionCategoryId")Long questionCategoryId, @Param("questionTagId")Long questionTagId, @Param("questionId")Long questionId);
 
     Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
