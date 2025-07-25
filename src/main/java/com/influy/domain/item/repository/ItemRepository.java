@@ -57,7 +57,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true")
     Page<Item> findAllNow(Pageable pageable, LocalDateTime now);
-
-    @Query("SELECT l.item.id FROM Like l WHERE l.member = :member AND l.item IS NOT NULL")
-    List<Long> findLikedItemIdsByMember(@Param("member") Member member);
 }

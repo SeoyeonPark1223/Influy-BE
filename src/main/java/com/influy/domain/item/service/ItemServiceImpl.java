@@ -15,6 +15,7 @@ import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
@@ -50,6 +51,7 @@ public class ItemServiceImpl implements ItemService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     @Transactional
@@ -170,7 +172,7 @@ public class ItemServiceImpl implements ItemService {
         MemberRole memberRole = MemberRole.SELLER;
 
         if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
-        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
+        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
@@ -323,7 +325,7 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime threshold = LocalDateTime.now().plusHours(24);
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "endDate"));
         Page<Item> itemPage = itemRepository.findAllByEndDateAndItemStatus(LocalDateTime.now(), threshold, pageable);
-        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
+        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
@@ -338,7 +340,7 @@ public class ItemServiceImpl implements ItemService {
         // 질문 개수 top 3 (SOLD_OUT & 마감일이 이미 지난 것 제외)
         Pageable pageable = pageRequest.toPageable();
         Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
-        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
+        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
@@ -358,7 +360,7 @@ public class ItemServiceImpl implements ItemService {
         } else {
             itemPage = itemRepository.findAllNow(pageable, LocalDateTime.now());
         }
-        List<Long> likeItems = itemRepository.findLikedItemIdsByMember(member);
+        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
