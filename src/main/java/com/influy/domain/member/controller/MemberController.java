@@ -45,7 +45,7 @@ public class MemberController {
     public ApiResponse<AuthResponseDTO.UserIdAndToken> registerUser(@Valid @RequestBody MemberRequestDTO.UserJoin requestBody, HttpServletResponse response) {
         Member member = memberService.joinUser(requestBody, MemberRole.USER);
         TokenPair tokenPair = authService.issueToken(member);
-        AuthResponseDTO.UserIdAndToken body = AuthConverter.toIdAndTokenDto(member.getId(), tokenPair.accessToken());
+        AuthResponseDTO.UserIdAndToken body = AuthConverter.toUserIdAndTokenDto(member.getId(), tokenPair.accessToken());
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
 
@@ -79,7 +79,7 @@ public class MemberController {
         AuthResponseDTO.LoginResponse body = null;
 
         if(member.getRole()==MemberRole.USER){
-            body = AuthConverter.toIdAndTokenDto(memberId, tokenPair.accessToken());
+            body = AuthConverter.toUserIdAndTokenDto(memberId, tokenPair.accessToken());
         }else if(member.getRole()==MemberRole.SELLER){
             body = AuthConverter.toSellerIdAndToken(memberId,member.getSellerProfile().getId(),tokenPair.accessToken());
         }
