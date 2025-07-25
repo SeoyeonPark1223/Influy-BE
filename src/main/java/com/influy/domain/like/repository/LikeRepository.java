@@ -44,4 +44,12 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
           AND l.seller IS NOT NULL
     """)
     List<Long> findLikedSellerIdsByMember(@Param("member") Member member);
+
+    @Query("""
+        SELECT l.item.id
+        FROM Like l
+        WHERE l.member = :member
+          AND l.item IS NOT NULL
+    """)
+    List<Long> findLikedItemIdsByMember(@Param("member")Member member);
 }

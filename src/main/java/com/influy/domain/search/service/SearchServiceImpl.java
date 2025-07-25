@@ -2,7 +2,6 @@ package com.influy.domain.search.service;
 
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
-import com.influy.domain.item.service.ItemService;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
@@ -10,7 +9,6 @@ import com.influy.domain.search.converter.SearchConverter;
 import com.influy.domain.search.dto.SearchResponseDto;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
-import com.influy.domain.sellerProfile.service.SellerProfileService;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.PageRequestDto;
@@ -30,7 +28,6 @@ public class SearchServiceImpl implements SearchService {
     private final MemberRepository memberRepository;
     private final SellerProfileRepository sellerRepository;
     private final ItemRepository itemRepository;
-    private final ItemService itemService;
     private final LikeRepository likeRepository;
 
     @Override
@@ -58,7 +55,7 @@ public class SearchServiceImpl implements SearchService {
         }
 
         List<Long> likeSellers = likeRepository.findLikedSellerIdsByMember(member);
-        List<Long> likeItems = itemService.getLikeItems(member);
+        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         return SearchConverter.toSearchResultDto(sellerPage, itemPage, likeSellers, likeItems);
     }

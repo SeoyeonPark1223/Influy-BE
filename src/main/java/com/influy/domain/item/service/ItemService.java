@@ -14,6 +14,7 @@ import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,6 @@ public interface ItemService {
     ItemResponseDto.HomeItemViewPageDto getCloseDeadline(CustomUserDetails userDetails, PageRequestDto pageRequest);
     ItemResponseDto.HomeItemViewPageDto getPopular(CustomUserDetails userDetails, PageRequestDto pageRequest);
     ItemResponseDto.HomeItemViewPageDto getRecommended(CustomUserDetails userDetails, PageRequestDto pageRequest, Long itemCategoryId);
-    List<Long> getLikeItems(Member member);
     Item findById(Long itemId);
+    List<Long> getLikeItems(CustomUserDetails userDetails);
 }
