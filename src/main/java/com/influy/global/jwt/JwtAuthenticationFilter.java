@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -31,13 +32,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
     private final RedisService redisService;
-
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     //로그인, 회원가입, 재발급 시 인증 건너뛰기
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURI = request.getRequestURI();
-        return Arrays.stream(SHOULD_NOT_FILTER_LIST).anyMatch(requestURI::startsWith);
+
+        return Arrays.stream(SHOULD_NOT_FILTER_LIST)
+                .anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
     }
 
     @Override
