@@ -32,6 +32,10 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
         if(linkCount==5){
             throw new GeneralException(ErrorStatus.LINK_COUNT_LIMIT);
         }
+
+        if(request.getLinkName().isBlank()||request.getLink().isBlank()){
+            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        }
         ProfileLink profileLink = ProfileLinkConverter.toEntity(request,seller);
         return profileLinkRepository.save(profileLink);
     }

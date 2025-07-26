@@ -39,6 +39,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public Announcement addAnnouncementOf(SellerProfile seller, AnnouncementRequestDTO requestDTO) {
 
+        if(requestDTO.getTitle().isBlank()||requestDTO.getContent().isBlank()) {
+            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        }
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
 
         return announcementRepository.save(announcement);
