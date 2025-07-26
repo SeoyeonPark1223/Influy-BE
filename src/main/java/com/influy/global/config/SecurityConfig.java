@@ -37,7 +37,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/oauth/**").permitAll()
                         .requestMatchers("/member/register/**","member/*/profile","member/auth/reissue").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/seller/*/items", "/search/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/seller/*/items", "/search/**", "/home/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/seller/items/*/questions/**").authenticated()
                         .requestMatchers(request -> request.getRequestURI().contains("/talkbox/")).authenticated()
                         .requestMatchers(HttpMethod.GET,"/**").permitAll()
