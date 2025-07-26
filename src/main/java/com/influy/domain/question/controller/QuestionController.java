@@ -54,7 +54,7 @@ public class QuestionController {
     @Operation(summary = "각 태그(소분류)별 전체 질문 조회", description = "답변 완료/대기 요청 따로따로 보내야함(파라미터로)")
     public ApiResponse<QuestionResponseDTO.SellerViewPage> getQuestions(@PathVariable("questionTagId") Long questionTagId,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                        @RequestParam(value = "isAnswered",defaultValue = "false") Boolean isAnswered,
+                                                                        @RequestParam("isAnswered") Boolean isAnswered,
                                                                         @ParameterObject PageRequestDto pageable) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);
@@ -73,7 +73,7 @@ public class QuestionController {
     @Operation(summary = "각 카테고리 별 전체 질문 조회", description = "태그별 질문 리스트와 동일한데 태그 id 대신 카테고리 id 필요")
     public ApiResponse<QuestionResponseDTO.SellerViewPage> getCategoryQuestions(@PathVariable("questionCategoryId") Long categoryId,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                        @RequestParam(value = "isAnswered",defaultValue = "false") Boolean isAnswered,
+                                                                        @RequestParam("isAnswered") Boolean isAnswered,
                                                                         @ParameterObject PageRequestDto pageable) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);

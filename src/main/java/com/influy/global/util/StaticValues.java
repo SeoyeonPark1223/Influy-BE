@@ -8,11 +8,16 @@ public class StaticValues {
     // 경로 + 허용 메서드 조합 정의
     public static final String[] SHOULD_NOT_FILTER_LIST = {
             "/member/register",
-            "/member/reissue",
+            "/member/auth/reissue",
             "/swagger-ui",
             "/api-docs",
             "/v3/api-docs",
-            "/favicon.ico"
+            "/favicon.ico",
+            "/seller/*/market-links",
+            "/seller/*/announcements",
+            "/member/*/profile",
+            "/oauth/kakao"
+
     };
     public static final String[] DEFAULT_QUESTION_CATEGORIES = {"진행일정", "결제", "배송", "기타"};
 
