@@ -14,6 +14,7 @@ import com.influy.domain.questionTag.entity.QuestionTag;
 import org.springframework.data.domain.Page;
 
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -57,16 +58,18 @@ public class QuestionConverter {
 
 
     public static QuestionResponseDTO.SellerViewPage toSellerViewPageDTO(Page<QuestionJPQLResult.SellerViewQuestion> questions, Map<Long, Long> countMap, Long newQuestions) {
-        List<QuestionResponseDTO.SellerViewQuestion> questionDTOs = questions.getContent().stream().map(question -> toSellerViewDTO(question, countMap.get(question.getMemberId()))).toList();
+        List<QuestionResponseDTO.SellerViewQuestion> questionDTOs = questions != null ?
+                questions.getContent().stream().map(question -> toSellerViewDTO(question, countMap.get(question.getMemberId()))).toList()
+                : Collections.emptyList();
 
         return QuestionResponseDTO.SellerViewPage.builder()
                 .questions(questionDTOs)
                 .newQuestionCnt(newQuestions)
-                .isFirst(questions.isFirst())
-                .isLast(questions.isLast())
-                .totalPage(questions.getTotalPages())
-                .totalElements(questions.getTotalElements())
-                .listSize(questions.getSize())
+                .totalPage(questions == null ? 0: questions.getTotalPages())
+                .totalElements(questions == null ? 0: questions.getTotalElements())
+                .isFirst(questions == null || questions.isFirst())
+                .isLast(questions == null || questions.isLast())
+                .listSize(questionDTOs.size())
                 .build();
     }
 
@@ -81,7 +84,8 @@ public class QuestionConverter {
     }
 
     public static QuestionResponseDTO.UserViewQNAPage toUserViewQNAPage(Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList) {
-        List<QuestionResponseDTO.UserViewQNA> content = userQNAList.getContent().stream().map(
+        List<QuestionResponseDTO.UserViewQNA> content = userQNAList != null ?
+                userQNAList.getContent().stream().map(
                 qna->{
                     if(qna.getType().equals("Q")){
                         return toUserViewDTO(qna);
@@ -89,15 +93,16 @@ public class QuestionConverter {
                         return AnswerConverter.toUserViewDTO(qna);
                     }
                 }
-        ).toList();
+        ).toList()
+                : Collections.emptyList();
 
         return QuestionResponseDTO.UserViewQNAPage.builder()
                 .chatList(content)
-                .listSize(userQNAList.getSize())
-                .totalPage(userQNAList.getTotalPages())
-                .totalElements(userQNAList.getTotalElements())
-                .isFirst(userQNAList.isFirst())
-                .isLast(userQNAList.isLast())
+                .listSize(content.size())
+                .totalPage(userQNAList == null ? 0: userQNAList.getTotalPages())
+                .totalElements(userQNAList == null ? 0: userQNAList.getTotalElements())
+                .isFirst(userQNAList == null || userQNAList.isFirst())
+                .isLast(userQNAList == null || userQNAList.isLast())
                 .build();
     }
 

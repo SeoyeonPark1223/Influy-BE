@@ -7,6 +7,7 @@ import com.influy.domain.faqCategory.entity.FaqCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FaqCardConverter {
@@ -32,16 +33,18 @@ public class FaqCardConverter {
     }
 
     public static FaqCardResponseDto.QuestionCardPageDto toQuestionCardPageDto(Page<FaqCard> questionCardPage) {
-        List<FaqCardResponseDto.QuestionCardDto> questionCardDtoList = questionCardPage.stream()
-                .map(FaqCardConverter::toQuestionCardDto).toList();
+        List<FaqCardResponseDto.QuestionCardDto> questionCardDtoList = questionCardPage != null ?
+                questionCardPage.stream()
+                .map(FaqCardConverter::toQuestionCardDto).toList()
+                : Collections.emptyList();
 
         return FaqCardResponseDto.QuestionCardPageDto.builder()
                 .questionCardList(questionCardDtoList)
-                .listSize(questionCardPage.getContent().size())
-                .totalPage(questionCardPage.getTotalPages())
-                .totalElements(questionCardPage.getTotalElements())
-                .isFirst(questionCardPage.isFirst())
-                .isLast(questionCardPage.isLast())
+                .listSize(questionCardDtoList.size())
+                .totalPage(questionCardPage != null? questionCardPage.getTotalPages() : 0)
+                .totalElements(questionCardPage != null? questionCardPage.getTotalElements() : 0)
+                .isFirst(questionCardPage == null || questionCardPage.isFirst())
+                .isLast(questionCardPage == null || questionCardPage.isLast())
                 .build();
     }
 
@@ -66,16 +69,18 @@ public class FaqCardConverter {
     }
 
     public static FaqCardResponseDto.FaqCardPageDto toFaqCardPageDto(Page<FaqCard> faqCardPage) {
-        List<FaqCardResponseDto.FaqCardDto> faqCardDtoList = faqCardPage.stream()
-                .map(FaqCardConverter::toFaqCardDto).toList();
+        List<FaqCardResponseDto.FaqCardDto> faqCardDtoList = faqCardPage != null ?
+                faqCardPage.stream()
+                .map(FaqCardConverter::toFaqCardDto).toList()
+                : Collections.emptyList();
 
         return FaqCardResponseDto.FaqCardPageDto.builder()
                 .faqCardList(faqCardDtoList)
-                .listSize(faqCardPage.getContent().size())
-                .totalPage(faqCardPage.getTotalPages())
-                .totalElements(faqCardPage.getTotalElements())
-                .isFirst(faqCardPage.isFirst())
-                .isLast(faqCardPage.isLast())
+                .listSize(faqCardDtoList.size())
+                .totalPage(faqCardPage != null? faqCardPage.getTotalPages() : 0)
+                .totalElements(faqCardPage != null? faqCardPage.getTotalElements() : 0)
+                .isFirst(faqCardPage == null || faqCardPage.isFirst())
+                .isLast(faqCardPage == null || faqCardPage.isLast())
                 .build();
     }
 

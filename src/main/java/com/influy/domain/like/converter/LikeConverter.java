@@ -13,6 +13,7 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
 import java.lang.annotation.Target;
+import java.util.Collections;
 import java.util.List;
 
 public class LikeConverter {
@@ -85,30 +86,34 @@ public class LikeConverter {
     }
 
     public static LikeResponseDto.SellerLikePageDto toSellerLikePageDto(Page<Like> likePage) {
-        List<LikeResponseDto.ViewSellerLikeDto> viewLikeList = likePage.stream()
-                .map(LikeConverter::toViewSellerLikeDto).toList();
+        List<LikeResponseDto.ViewSellerLikeDto> viewLikeList = likePage != null ?
+                likePage.stream()
+                .map(LikeConverter::toViewSellerLikeDto).toList()
+                : Collections.emptyList();
 
         return LikeResponseDto.SellerLikePageDto.builder()
                 .sellerLikeList(viewLikeList)
-                .listSize(likePage.getContent().size())
-                .totalPage(likePage.getTotalPages())
-                .totalElements(likePage.getTotalElements())
-                .isFirst(likePage.isFirst())
-                .isLast(likePage.isLast())
+                .listSize(viewLikeList.size())
+                .totalPage(likePage == null ? 0: likePage.getTotalPages())
+                .totalElements(likePage == null ? 0: likePage.getTotalElements())
+                .isFirst(likePage == null || likePage.isFirst())
+                .isLast(likePage == null || likePage.isLast())
                 .build();
     }
 
     public static LikeResponseDto.ItemLikePageDto toItemLikePageDto(Page<Like> likePage, MemberRole memberRole, TalkBoxInfoPair talkBoxInfoPair) {
-        List<LikeResponseDto.ViewItemLikeDto> viewLikeList = likePage.stream()
-                .map(like -> toViewItemLikeDto(like, memberRole, talkBoxInfoPair)).toList();
+        List<LikeResponseDto.ViewItemLikeDto> viewLikeList = likePage != null ?
+                likePage.stream()
+                .map(like -> toViewItemLikeDto(like, memberRole, talkBoxInfoPair)).toList()
+                : Collections.emptyList();
 
         return LikeResponseDto.ItemLikePageDto.builder()
                 .itemLikeList(viewLikeList)
-                .listSize(likePage.getContent().size())
-                .totalPage(likePage.getTotalPages())
-                .totalElements(likePage.getTotalElements())
-                .isFirst(likePage.isFirst())
-                .isLast(likePage.isLast())
+                .listSize(viewLikeList.size())
+                .totalPage(likePage == null ? 0: likePage.getTotalPages())
+                .totalElements(likePage == null ? 0: likePage.getTotalElements())
+                .isFirst(likePage == null || likePage.isFirst())
+                .isLast(likePage == null || likePage.isLast())
                 .build();
     }
 }
