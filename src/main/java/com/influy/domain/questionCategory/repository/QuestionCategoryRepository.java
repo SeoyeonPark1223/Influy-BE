@@ -33,4 +33,6 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
 
 
     Optional<QuestionCategory> findByIdAndItemId(Long questionCategoryId, Long itemId);
+
+    List<QuestionCategory> findAllByItemId(Long itemId);
 }

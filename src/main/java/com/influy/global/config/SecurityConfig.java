@@ -33,11 +33,11 @@ public class SecurityConfig {
                                 "/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/home/**"
+                                "/swagger-resources/**"
                         ).permitAll()
                         .requestMatchers("/oauth/**").permitAll()
                         .requestMatchers("/member/register/**","member/*/profile","member/auth/reissue").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/seller/*/items", "/search/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/seller/items/*/questions/**").authenticated()
                         .requestMatchers(HttpMethod.GET,"/**").permitAll()
                         .anyRequest().authenticated())

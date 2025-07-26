@@ -161,17 +161,18 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(CustomUserDetails userDetails, Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing) {
-        Member member = memberRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        MemberRole memberRole = MemberRole.SELLER;
+        List<Long> likeItems = new ArrayList<>();
+        if (userDetails != null) {
+            Member member = memberRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+            if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
+            likeItems = likeRepository.findLikedItemIdsByMember(member);
+        }
 
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
-
-        MemberRole memberRole = MemberRole.SELLER;
-
-        if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
-        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";

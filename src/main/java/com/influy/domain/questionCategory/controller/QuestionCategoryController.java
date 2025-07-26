@@ -49,7 +49,7 @@ public class QuestionCategoryController {
     }
 
     @GetMapping("seller/items/{itemId}/talkbox/question-categories")
-    @Operation(summary = "질문 카테고리 리스트 조회 (질문 많은 순)", description = "미확인인 질문 개수는 질문 파트 개발 이후 수정할 예정입니다.")
+    @Operation(summary = "대분류 질문 카테고리 리스트 조회 (질문 많은 순)")
     public ApiResponse<QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO> getList(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                        @PathVariable("itemId") Long itemId,
                                                                                        @RequestParam(name = "isAnswered", defaultValue = "false") Boolean isAnswered) {
@@ -80,7 +80,12 @@ public class QuestionCategoryController {
         return ApiResponse.onSuccess(body);
     }
 
-
+    @GetMapping("user/items/{itemId}/talkbox/question-categories")
+    @Operation(summary = "유저용 질문 카테고리 (대분류) 조회")
+    public ApiResponse<QuestionCategoryResponseDto.ViewListDto> getListUser (@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                             @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(questionCategoryService.getListUser(userDetails, itemId));
+    }
 
 
 }
