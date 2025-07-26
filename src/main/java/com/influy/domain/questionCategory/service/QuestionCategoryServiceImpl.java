@@ -4,6 +4,8 @@ import com.influy.domain.ai.service.AiService;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.member.entity.Member;
+import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.converter.QuestionCategoryConverter;
@@ -35,6 +37,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     private final AiService aiService;
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -93,6 +96,17 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
             return questionRepository.countIsAnsweredByItemId(itemId);
         }
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public QuestionCategoryResponseDto.ViewListDto getListUser(CustomUserDetails userDetails, Long itemId) {
+        if (!itemRepository.existsById(itemId)) throw new GeneralException(ErrorStatus.ITEM_NOT_FOUND);
+        if (!memberRepository.existsById(userDetails.getId())) throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+
+        List<QuestionCategory> questionCategoryList = questionCategoryRepository.findAllByItemId(itemId);
+
+        return QuestionCategoryConverter.toViewListDto(questionCategoryList);
     }
 
     private void checkSellerAndItem(Long sellerId, Long itemId) {

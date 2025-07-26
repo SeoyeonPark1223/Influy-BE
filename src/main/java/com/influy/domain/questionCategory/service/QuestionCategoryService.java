@@ -1,6 +1,7 @@
 package com.influy.domain.questionCategory.service;
 
 import com.influy.domain.questionCategory.dto.QuestionCategoryRequestDto;
+import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.global.jwt.CustomUserDetails;
@@ -15,4 +16,6 @@ public interface QuestionCategoryService {
     QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
 
     List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId, Long itemId);
+
+    QuestionCategoryResponseDto.ViewListDto getListUser(CustomUserDetails userDetails, Long itemId);
 }

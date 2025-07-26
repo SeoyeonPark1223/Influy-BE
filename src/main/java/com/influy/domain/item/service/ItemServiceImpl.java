@@ -82,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public void delete(CustomUserDetails userDetails, Long itemId) {
         SellerProfile seller = memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         seller.getItemList().remove(item);
@@ -92,9 +92,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item update(CustomUserDetails userDetails, Long itemId, ItemRequestDto.DetailDto request) {
-        memberService.checkSeller(userDetails);
+        SellerProfile seller = memberService.checkSeller(userDetails);
 
-        Item item = itemRepository.findById(itemId)
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if (request.getName() != null) item.setName(request.getName());
@@ -124,8 +124,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item setAccess(CustomUserDetails userDetails, Long itemId, ItemRequestDto.AccessDto request) {
-        memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if (request.getArchiveRecommended() != null) item.setArchiveRecommended(request.getArchiveRecommended());
@@ -137,9 +137,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item setStatus(CustomUserDetails userDetails, Long itemId, ItemRequestDto.StatusDto request) {
-        memberService.checkSeller(userDetails);
+        SellerProfile seller = memberService.checkSeller(userDetails);
 
-        Item item = itemRepository.findById(itemId)
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if (request.getStatus() != null) item.setItemStatus(request.getStatus());
@@ -161,17 +161,18 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(CustomUserDetails userDetails, Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing) {
-        Member member = memberRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        MemberRole memberRole = MemberRole.SELLER;
+        List<Long> likeItems = new ArrayList<>();
+        if (userDetails != null) {
+            Member member = memberRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+            if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
+            likeItems = likeRepository.findLikedItemIdsByMember(member);
+        }
 
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
-
-        MemberRole memberRole = MemberRole.SELLER;
-
-        if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
-        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
@@ -238,8 +239,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemResponseDto.TalkBoxOpenStatusDto changeOpenStatus(CustomUserDetails userDetails, Long itemId, TalkBoxOpenStatus openStatus) {
-        memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         if (openStatus == TalkBoxOpenStatus.INITIAL) throw new GeneralException((ErrorStatus.INVALID_TALKBOX_REQUEST));
@@ -251,8 +252,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemResponseDto.ResultDto updateTalkBoxComment(CustomUserDetails userDetails, Long itemId, ItemRequestDto.TalkBoxCommentDto request) {
-        memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         item.setTalkBoxComment(request.getTalkBoxComment());
@@ -263,7 +264,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public ItemResponseDto.ViewTalkBoxCommentDto getTalkBoxComment(CustomUserDetails userDetails, Long itemId) {
         SellerProfile seller = memberService.checkSeller(userDetails);
-        Item item = itemRepository.findById(itemId)
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
         return ItemConverter.toViewTalkBoxCommentDto(seller, item);
     }

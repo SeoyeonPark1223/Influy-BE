@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,8 +36,13 @@ public class SearchServiceImpl implements SearchService {
     @Override
     @Transactional(readOnly = true)
     public SearchResponseDto.SellerPageResultDto searchSeller(CustomUserDetails userDetails, String query, PageRequestDto pageRequest) {
-        Member member = memberRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        List<Long> likeSellers = new ArrayList<>();
+        if (userDetails != null) {
+            Member member = memberRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+            likeSellers = likeRepository.findLikedSellerIdsByMember(member);
+        }
+
 
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<SellerProfile> sellerPage = null;
@@ -45,16 +51,18 @@ public class SearchServiceImpl implements SearchService {
             sellerPage = sellerRepository.findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query, pageable);
         }
 
-        List<Long> likeSellers = likeRepository.findLikedSellerIdsByMember(member);
-
         return SearchConverter.toSellerPageResultDto(sellerPage, likeSellers);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ItemResponseDto.HomeItemViewPageDto searchItem(CustomUserDetails userDetails, String query, PageRequestDto pageRequest) {
-        Member member = memberRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        List<Long> likeItems = new ArrayList<>();
+        if (userDetails != null) {
+            Member member = memberRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+            likeItems = likeRepository.findLikedItemIdsByMember(member);
+        }
 
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Item> itemPage = null;
@@ -63,8 +71,6 @@ public class SearchServiceImpl implements SearchService {
                 || itemRepository.existsByNameContaining(query)) {
             itemPage = itemRepository.findAllByNameContainingOrSeller_Member_UsernameContainingOrSeller_Member_NicknameContainingOrSeller_InstagramContaining(query, query, query, query, pageable);
         }
-
-        List<Long> likeItems = likeRepository.findLikedItemIdsByMember(member);
 
         return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }

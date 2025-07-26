@@ -70,7 +70,8 @@ public class ItemConverter {
     public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap) {
         List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
 
-        List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage.stream()
+        List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage != null
+                ? itemPage.stream()
                 .map(item -> {
                     Long itemId = item.getId();
                     boolean liked = safeLikeItems.contains(item.getId());
@@ -78,15 +79,16 @@ public class ItemConverter {
                     Integer completedCnt = completedCntMap.getOrDefault(itemId, 0);
                     return toDetailPreviewDto(item, liked, memberRole, waitingCnt, completedCnt);
                 })
-                .toList();
+                .toList()
+                : Collections.emptyList();
 
         return ItemResponseDto.DetailPreviewPageDto.builder()
                 .itemPreviewList(itemPreviewList)
-                .listSize(itemPage.getContent().size())
-                .totalPage(itemPage.getTotalPages())
-                .totalElements(itemPage.getTotalElements())
-                .isFirst(itemPage.isFirst())
-                .isLast(itemPage.isLast())
+                .listSize(itemPreviewList.size())
+                .totalPage(itemPage != null? itemPage.getTotalPages() : 0)
+                .totalElements(itemPage != null? itemPage.getTotalElements() : 0)
+                .isFirst(itemPage == null || itemPage.isFirst())
+                .isLast(itemPage == null || itemPage.isLast())
                 .build();
     }
 

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.influy.global.util.StaticValues.SHOULD_NOT_FILTER_LIST;
+import static com.influy.global.util.StaticValues.SHOULD_NOT_FILTER_GET_LIST;
 
 @Component
 @RequiredArgsConstructor
@@ -38,9 +39,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURI = request.getRequestURI();
+        String method = request.getMethod();
 
-        return Arrays.stream(SHOULD_NOT_FILTER_LIST)
-                .anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+        if ("GET".equalsIgnoreCase(method)) {
+            return Arrays.stream(SHOULD_NOT_FILTER_GET_LIST)
+                    .anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+        } else {
+            return Arrays.stream(SHOULD_NOT_FILTER_LIST)
+                    .anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+        }
     }
 
     @Override

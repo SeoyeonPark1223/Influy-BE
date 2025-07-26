@@ -3,6 +3,7 @@ package com.influy.domain.image.service;
 import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.dto.ImageRequestDto;
 import com.influy.domain.image.dto.ImageResponseDto;
+import com.influy.global.jwt.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public ImageResponseDto.UploadResultDto uploadImg(ImageRequestDto.UploadDto request) {
+    public ImageResponseDto.UploadResultDto uploadImg(CustomUserDetails userDetails, ImageRequestDto.UploadDto request) {
         String original = request.getImgName(); // influy.png
         String baseName = original.substring(0, original.lastIndexOf('.')); // influy
         String extension = original.substring(original.lastIndexOf('.') + 1); // png
