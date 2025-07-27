@@ -70,7 +70,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         SUM(CASE WHEN q.isAnswered = false THEN 1 ELSE 0 END) AS pendingQuestions
     FROM Item i
     LEFT JOIN Question q ON q.item = i
-    WHERE i.seller.id = :sellerId
+    WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'
     GROUP BY i.id
     """, countQuery = """
         SELECT COUNT(i)
