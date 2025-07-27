@@ -1,9 +1,8 @@
 package com.influy.domain.sellerProfile.controller;
 
-import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
@@ -73,7 +72,7 @@ public class SellerProfileController {
         SellerProfile seller = memberService.checkSeller(userDetails);
         boolean isLiked = sellerService.getIsLikedByMember(seller,seller.getMember());
 
-        List<ItemJPQLResponse> itemCountList = sellerService.getMarketItems(seller.getId());
+        List<IsArchivedItemCount> itemCountList = sellerService.getMarketItems(seller.getId());
         Long reviews = 0L;
 
         SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked,itemCountList, reviews);

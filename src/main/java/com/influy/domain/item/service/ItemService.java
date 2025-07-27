@@ -9,6 +9,7 @@ import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
@@ -39,4 +40,6 @@ public interface ItemService {
     ItemResponseDto.HomeItemViewPageDto getRecommended(CustomUserDetails userDetails, PageRequestDto pageRequest, Long itemCategoryId);
     Item findById(Long itemId);
     List<Long> getLikeItems(CustomUserDetails userDetails);
+
+    ItemResponseDto.SellerHomeItemPageDTO getSellerHomeItemWithQuestionStatus(SellerProfile seller, PageRequestDto pageRequestDto);
 }

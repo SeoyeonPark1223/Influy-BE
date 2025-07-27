@@ -35,4 +35,22 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     Optional<QuestionCategory> findByIdAndItemId(Long questionCategoryId, Long itemId);
 
     List<QuestionCategory> findAllByItemId(Long itemId);
+
+    @Query(value = """
+    SELECT item_id AS itemId, category_name AS categoryName
+    FROM (
+        SELECT
+            q.item_id AS item_id,
+            c.name AS category_name,
+            RANK() OVER (PARTITION BY q.item_id ORDER BY COUNT(*) DESC) AS rk
+        FROM question q
+        JOIN question_tag qt ON q.question_tag_id = qt.id
+        JOIN question_category c ON qt.question_category_id = c.id
+        WHERE q.item_id IN (:itemIds)
+          AND q.is_checked = false
+        GROUP BY q.item_id, c.id
+    ) ranked
+    WHERE rk <= 2
+    """, nativeQuery = true)
+    List<CategoryJPQLResult.Top2Categories> getTop2CategoriesByNewQuestion(@Param("itemIds") List<Long> itemIds);
 }

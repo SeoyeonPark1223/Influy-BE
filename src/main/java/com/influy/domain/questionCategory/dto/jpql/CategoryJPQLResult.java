@@ -12,4 +12,9 @@ public class CategoryJPQLResult {
         Boolean getIsAnswered();
         Long getTotalQuestions();
     }
+
+    public interface Top2Categories{
+        Long getItemId();
+        String getCategoryName();
+    }
 }

@@ -14,6 +14,46 @@ import java.util.List;
 public class ItemResponseDto {
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SellerHomeItemPageDTO {
+        @Schema(description = "아이템 preview 리스트")
+        private List<SellerHomeItemDTO> itemList;
+
+        private Integer listSize;
+        private Integer totalPage;
+        private Long totalElements;
+        private Boolean isFirst;
+        private Boolean isLast;
+    }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SellerHomeItemDTO {
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+        @Schema(description = "아이템 사진",example = "https://amazon~")
+        private String imageUrl;
+        @Schema(description = "아이템 상태", example = "DEFAULT")
+        private ItemStatus itemStatus;
+        @Schema(description = "아이템 진행 차수",example = "2")
+        private Integer itemPeriod;
+        @Schema(description = "상품 이름",example = "신나는 여행 패키지")
+        private String itemTitle;
+        @Schema(description = "마감 시간",example = "2025-09-20Z18:29:44")
+        private LocalDateTime endDate;
+        @Schema(description = "전체 질문(질문 대기)",example = "12")
+        private Long totalPendingQuestions;
+        @Schema(description = "확인하지 않은 질문 수",example = "3")
+        private Long newQuestions;
+        @Schema(description = "질문이 가장 많이 들어오는 2개 카테고리",example = "[\"일자 조정\",\"인원 수 문의\"]")
+        private List<String> top2Categories;
+    }
+
+
+    @Getter
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ResultDto {

@@ -1,25 +1,20 @@
 package com.influy.domain.item.converter;
 
-import com.influy.domain.answer.dto.AnswerResponseDto;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.image.entity.Image;
-import com.influy.domain.item.entity.ItemStatus;
-import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ItemConverter {
     public static Item toItem(SellerProfile seller, ItemRequestDto.DetailDto request) {
@@ -221,6 +216,33 @@ public class ItemConverter {
                 .totalElements(itemPage == null ? 0: itemPage.getTotalElements())
                 .isFirst(itemPage == null || itemPage.isFirst())
                 .isLast(itemPage == null || itemPage.isLast())
+                .build();
+    }
+
+    public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> top2Categories) {
+
+        return ItemResponseDto.SellerHomeItemDTO.builder()
+                .itemId(itemJPQLResult.getItem().getId())
+                .imageUrl(itemJPQLResult.getItem().getImageList().getFirst().getImageLink())//리팩토링 필요
+                .itemTitle(itemJPQLResult.getItem().getName())
+                .itemStatus(itemJPQLResult.getItem().getItemStatus())
+                .itemPeriod(itemJPQLResult.getItem().getItemPeriod())
+                .endDate(itemJPQLResult.getItem().getEndDate())
+                .newQuestions(itemJPQLResult.getNewQuestions())
+                .totalPendingQuestions(itemJPQLResult.getPendingQuestions())
+                .top2Categories(top2Categories)
+                .build();
+    }
+
+    public static ItemResponseDto.SellerHomeItemPageDTO toSellerHomeItemPageDTO(Page<ItemJPQLResponse.ItemWithQuestionStatus> itmePage, Map<Long, List<String>> top2CategoryMap) {
+        List<ItemResponseDto.SellerHomeItemDTO> itemsList = itmePage.stream().map(item->toSellerHomeItemDTO(item, top2CategoryMap.get(item.getItem().getId()))).toList();
+        return ItemResponseDto.SellerHomeItemPageDTO.builder()
+                .itemList(itemsList)
+                .totalPage(itmePage.getTotalPages())
+                .totalElements(itmePage.getTotalElements())
+                .isFirst(itmePage.isFirst())
+                .isLast(itmePage.isLast())
+                .listSize(itemsList.size())
                 .build();
     }
 }
