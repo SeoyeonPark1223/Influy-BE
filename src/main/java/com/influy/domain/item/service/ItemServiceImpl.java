@@ -376,11 +376,15 @@ public class ItemServiceImpl implements ItemService {
         Pageable pageable = pageRequestDto.toPageable();
         Page<ItemJPQLResponse.ItemWithQuestionStatus> items = itemRepository.getItemsWithQuestionStatus(seller.getId(), pageable);
         List<Long> itemIds = items.getContent().stream().map(item->item.getItem().getId()).toList();
-        List<CategoryJPQLResult.Top2Categories> top2Categories = questionCategoryRepository.getTop2CategoriesByNewQuestion(itemIds);
-
+        List<CategoryJPQLResult.Top2Categories> top2Categories;
         Map<Long,List<String>> top2CategoryMap = new HashMap<>();
-        for(CategoryJPQLResult.Top2Categories category : top2Categories) {
-            top2CategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
+
+        if(!itemIds.isEmpty()){
+            top2Categories = questionCategoryRepository.getTop2CategoriesByNewQuestion(itemIds);
+
+            for(CategoryJPQLResult.Top2Categories category : top2Categories) {
+                top2CategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
+            }
         }
 
         return ItemConverter.toSellerHomeItemPageDTO(items, top2CategoryMap);

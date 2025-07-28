@@ -72,6 +72,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     LEFT JOIN Question q ON q.item = i
     WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'
     GROUP BY i.id
+    ORDER BY newQuestions
     """, countQuery = """
         SELECT COUNT(i)
         FROM Item i
