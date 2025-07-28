@@ -1,14 +1,11 @@
 package com.influy.domain.sellerProfile.service;
 
-import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
-import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.repository.MemberRepository;
-import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.converter.SellerProfileConverter;
 import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
@@ -69,7 +66,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     }
 
     @Override
-    public List<ItemJPQLResponse> getMarketItems(Long sellerId) {
+    public List<IsArchivedItemCount> getMarketItems(Long sellerId) {
         return itemRepository.countBySellerIdGroupByIsArchived(sellerId);
     }
 

@@ -6,7 +6,9 @@ import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
+import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ItemRestController {
     private final ItemService itemService;
+    private final MemberService memberService;
 
     @PostMapping("/seller/items")
     @Operation(summary = "셀러 상품 상세정보 작성 후 생성")
@@ -154,4 +157,13 @@ public class ItemRestController {
                                                                                @RequestParam(name = "categoryId", required = false) Long categoryId) {
         return ApiResponse.onSuccess(itemService.getRecommended(userDetails, pageRequest, categoryId));
     }
+
+    @GetMapping("seller/home/questions")
+    @Operation(summary = "셀러 홈 상품 질문 안내", description = "아이템 별 많이 들어오는 질문 카테고리")
+    public ApiResponse<ItemResponseDto.SellerHomeItemPageDTO> getSellerHomeItem(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                            @Valid @ParameterObject PageRequestDto pageRequestDto){
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        return ApiResponse.onSuccess(itemService.getSellerHomeItemWithQuestionStatus(seller, pageRequestDto));
+    }
+
 }
