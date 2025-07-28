@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Setter
 @Builder
 @Getter
 @AllArgsConstructor
@@ -32,42 +31,56 @@ public class Item extends BaseEntity {
     private SellerProfile seller;
 
     @NotBlank
+    @Setter
     private String name;
 
+    @Setter
     private Long regularPrice;
 
+    @Setter
     private Long salePrice;
 
+    @Setter
     private String tagline;
 
     @NotNull
+    @Setter
     private LocalDateTime startDate;
 
     @NotNull
+    @Setter
     private LocalDateTime endDate;
 
     @Builder.Default
+    @Setter
     private Boolean archiveRecommended = true;
 
     @Builder.Default
+    @Setter
     private Boolean searchAvailable = true;
 
     @Builder.Default
+    @Setter
     private Integer itemPeriod = 1;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
+    @Setter
     private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
     @NotBlank
+    @Setter
     private String marketLink;
 
+    @Setter
     private String comment;
 
     @Builder.Default
+    @Setter
     private String talkBoxComment = "";
 
     @Builder.Default
+    @Setter
     private Boolean isArchived = false; //보관 여부
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
@@ -79,7 +92,12 @@ public class Item extends BaseEntity {
     private List<Question> questionList = new ArrayList<>();
 
     @Builder.Default
+    @Setter
+    private String mainImg = "";
+
+    @Builder.Default
     @Enumerated(EnumType.STRING)
+    @Setter
     private TalkBoxOpenStatus talkBoxOpenStatus = TalkBoxOpenStatus.INITIAL; // [INITIAL, OPENED, CLOSED]
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -93,10 +111,6 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<QuestionCategory> questionCategoryList = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @Builder.Default
-//    private List<Image> imageList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "item_image", joinColumns = @JoinColumn(name = "item_id"))

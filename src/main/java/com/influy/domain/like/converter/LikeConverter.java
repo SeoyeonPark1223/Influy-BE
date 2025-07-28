@@ -75,7 +75,7 @@ public class LikeConverter {
         return LikeResponseDto.ViewItemLikeDto.builder()
                 .itemId(item.getId())
                 .sellerId(seller.getId())
-                .mainImg(item.getImageList().getFirst())
+                .mainImg(item.getMainImg())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(seller.getMember().getUsername())

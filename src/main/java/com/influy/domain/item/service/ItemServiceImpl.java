@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
-        item.getImageList().addAll(request.getItemImgList());
+        createItemImgList(request, item);
         createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
@@ -108,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
 
         if (request.getItemImgList() != null) {
             item.getImageList().clear();
-            item.getImageList().addAll(request.getItemImgList());
+            createItemImgList(request, item);
         }
 
         if (request.getItemCategoryIdList() != null) {
@@ -214,9 +214,10 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-//    private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
-//        item.getImageList().addAll(request.getItemImgList());
-//    }
+    private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
+        item.getImageList().addAll(request.getItemImgList());
+        item.setMainImg(item.getMainImg());
+    }
 
     @Override
     @Transactional(readOnly = true)

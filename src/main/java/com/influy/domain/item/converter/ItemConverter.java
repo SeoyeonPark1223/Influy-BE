@@ -47,7 +47,7 @@ public class ItemConverter {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .sellerId(item.getSeller().getId())
-                .mainImg(item.getImageList().getFirst())
+                .mainImg(item.getMainImg())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(item.getSeller().getMember().getUsername())
@@ -129,7 +129,7 @@ public class ItemConverter {
                 .id(item.getId())
                 .itemName(item.getName())
                 .tagline(item.getTagline())
-                .mainImg(item.getImageList().getFirst())
+                .mainImg(item.getMainImg())
                 .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
                 .build();
     }
@@ -156,7 +156,7 @@ public class ItemConverter {
     public static ItemResponseDto.TalkBoxOpenedDto toTalkBoxOpenedDto(Item item, Integer waitingCnt, Integer completedCnt, Integer unCheckedCnt) {
         return ItemResponseDto.TalkBoxOpenedDto.builder()
                 .itemId(item.getId())
-                .itemMainImg(item.getImageList().getFirst())
+                .itemMainImg(item.getMainImg())
                 .itemName(item.getName())
                 .talkBoxCntInfo(toTalkBoxInfoDto(item, waitingCnt, completedCnt))
                 .newCnt(unCheckedCnt)
@@ -188,7 +188,7 @@ public class ItemConverter {
                 .sellerUsername(member.getUsername())
                 .itemId(item.getId())
                 .itemName(item.getName())
-                .itemMainImg(item.getImageList().getFirst())
+                .itemMainImg(item.getMainImg())
                 .itemPeriod(item.getItemPeriod())
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())
