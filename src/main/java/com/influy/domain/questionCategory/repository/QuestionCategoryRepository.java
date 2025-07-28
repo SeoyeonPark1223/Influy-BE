@@ -18,18 +18,21 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
 
     //카테고리 아이디, 이름, isAnswered 에 따른 전체 질문 수, 미확인 질문 수
     @Query(value = """
-        SELECT qc.id AS id,
-               qc.name AS categoryName,
-               COUNT(q.id) AS totalQuestions,
-               SUM(CASE WHEN q.is_checked = false THEN 1 ELSE 0 END) AS uncheckedQuestions
+        SELECT
+            qc.id AS id,
+            b.is_answered AS isAnswered,
+            qc.name AS categoryName,
+            COUNT(q.id) AS totalQuestions,
+            SUM(CASE WHEN q.is_checked = false THEN 1 ELSE 0 END) AS uncheckedQuestions
         FROM question_category qc
+        CROSS JOIN (SELECT TRUE AS is_answered UNION SELECT FALSE) b
         LEFT JOIN question_tag qt ON qt.question_category_id = qc.id
-        LEFT JOIN question q ON q.question_tag_id = qt.id AND q.is_answered = :isAnswered
+        LEFT JOIN question q ON q.question_tag_id = qt.id AND q.is_answered = b.is_answered AND q.is_hidden = false
         WHERE qc.item_id = :itemId
-        GROUP BY qc.id
-        ORDER BY uncheckedQuestions DESC,totalQuestions DESC, categoryName ASC;
+        GROUP BY qc.id, b.is_answered, qc.name
+        ORDER BY uncheckedQuestions DESC, totalQuestions DESC, categoryName ASC;
 """, nativeQuery = true)
-    List<CategoryJPQLResult.CategoryInfo> findQuestionCategories(@Param("itemId") Long itemId, @Param("isAnswered") Boolean isAnswered);
+    List<CategoryJPQLResult.CategoryInfo> findQuestionCategories(@Param("itemId") Long itemId);
 
 
     Optional<QuestionCategory> findByIdAndItemId(Long questionCategoryId, Long itemId);

@@ -29,10 +29,10 @@ public interface QuestionTagRepository extends JpaRepository<QuestionTag, Long> 
                COUNT(q.id) AS totalQuestions,
                MAX(CASE WHEN q.is_checked = false THEN 1 ELSE 0 END) AS uncheckedQuestions
         FROM question_tag qt
-        LEFT JOIN question q ON q.question_tag_id = qt.id AND q.is_answered = :isAnswered
+        LEFT JOIN question q ON q.question_tag_id = qt.id AND q.is_answered = :isAnswered AND q.is_hidden = false
         WHERE qt.question_category_id = :categoryId
-        GROUP BY qt.id
-        ORDER BY uncheckedQuestions DESC ,totalQuestions DESC,tagName ASC;
+        GROUP BY qt.id, tagName
+        ORDER BY uncheckedQuestions DESC ,totalQuestions DESC, tagName;
 """, nativeQuery = true)
     List<TagJPQLResult.QuestionTagInfo> findTagAndCountByCategoryIdOrderByCount(@Param("categoryId") Long categoryId,
                                                                                 @Param("isAnswered") boolean isAnswered);

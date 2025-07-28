@@ -49,18 +49,15 @@ public class QuestionCategoryController {
     }
 
     @GetMapping("seller/items/{itemId}/talkbox/question-categories")
-    @Operation(summary = "대분류 질문 카테고리 리스트 조회 (질문 많은 순)")
+    @Operation(summary = "대분류 질문 카테고리 리스트 조회 (새 질문->대기 질문 많은 순)")
     public ApiResponse<QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO> getList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                       @PathVariable("itemId") Long itemId,
-                                                                                       @RequestParam(name = "isAnswered", defaultValue = "false") Boolean isAnswered) {
+                                                                                       @PathVariable("itemId") Long itemId) {
         SellerProfile seller = memberService.checkSeller(userDetails);
 
-        List<CategoryJPQLResult.CategoryInfo> result = questionCategoryService.getListAndIsAnsweredCnt(seller.getId(),isAnswered, itemId);
-        List<CategoryJPQLResult.IsAnswered> isAnsweredCntList= questionCategoryService.getIsAnsweredMap(null,itemId);
-        QuestionResponseDTO.IsAnsweredCntDTO cntDTO= QuestionConverter.toIsAnsweredCntDTO(isAnsweredCntList);
+        List<CategoryJPQLResult.CategoryInfo> result = questionCategoryService.getListAndIsAnsweredCnt(seller.getId(), itemId);
 
         QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO body = QuestionCategoryConverter
-                .toTalkBoxCategoryInfoListDTO(result,cntDTO.getWaitingCnt(),cntDTO.getCompletedCnt());
+                .toTalkBoxCategoryInfoListDTO(result);
 
         return ApiResponse.onSuccess(body);
     }

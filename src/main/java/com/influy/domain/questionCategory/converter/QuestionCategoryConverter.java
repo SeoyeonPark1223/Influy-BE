@@ -5,6 +5,7 @@ import com.influy.domain.questionCategory.dto.QuestionCategoryResponseDto;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionCategoryConverter {
@@ -49,11 +50,26 @@ public class QuestionCategoryConverter {
                 .build();
     }
 
-    public static QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO toTalkBoxCategoryInfoListDTO(List<CategoryJPQLResult.CategoryInfo> result, Long waitingCnt, Long completedCnt) {
-        List<QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO> content = result.stream().map(QuestionCategoryConverter::toTalkBoxCategoryInfoDTO).toList();
+    public static QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO toTalkBoxCategoryInfoListDTO(List<CategoryJPQLResult.CategoryInfo> result) {
+        List<QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO> waitingCategoryList = new ArrayList<>();
+        List<QuestionCategoryResponseDto.TalkBoxCategoryInfoDTO> completedCategoryList = new ArrayList<>();
+        Long waitingCnt = 0L;
+        Long completedCnt = 0L;
+
+        for(CategoryJPQLResult.CategoryInfo categoryInfo : result) {
+            if(categoryInfo.getIsAnswered()==1L){
+                completedCategoryList.add(toTalkBoxCategoryInfoDTO(categoryInfo));
+                completedCnt+=categoryInfo.getTotalQuestions();
+            }else if(categoryInfo.getIsAnswered()==0L){
+                waitingCategoryList.add(toTalkBoxCategoryInfoDTO(categoryInfo));
+                waitingCnt+=categoryInfo.getTotalQuestions();
+            }
+        }
+
 
         return QuestionCategoryResponseDto.TalkBoxCategoryInfoListDTO.builder()
-                .categoryList(content)
+                .waitingCategoryList(waitingCategoryList)
+                .completedCategoryList(completedCategoryList)
                 .waitingCnt(waitingCnt)
                 .completedCnt(completedCnt)
                 .build();

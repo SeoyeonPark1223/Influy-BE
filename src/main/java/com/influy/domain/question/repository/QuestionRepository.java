@@ -6,7 +6,6 @@ import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
-import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,11 +45,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
+           m.profileImg AS profileImg,
+           m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,
            q.isChecked AS isChecked,
-           qt.name AS tagName
+           qt.name AS tagName,
+           qt.id AS tagId
     FROM Question q
     JOIN q.member m
     JOIN q.questionTag qt
@@ -63,11 +65,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
+           m.profileImg AS profileImg,
+           m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,
            q.isChecked AS isChecked,
-           qt.name AS tagName
+           qt.name AS tagName,
+           qt.id AS tagId
     FROM Question q
     JOIN q.member m
     JOIN q.questionTag qt
@@ -84,15 +89,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     //밑 2개는 태그, 카테고리 별 새 질문 수 구하는 함수
     @Query("""
     SELECT COUNT(q)
-    FROM QuestionTag qt
-    JOIN Question q ON q.questionTag = qt
+    FROM Question q
+    JOIN QuestionTag qt ON q.questionTag = qt
     WHERE qt.questionCategory.id = :categoryId
-      AND q.isAnswered = true
+      AND q.isAnswered = :isAnswered
       AND q.isChecked = false
     """)
-    Long countByQuestionCategoryIdAndIsCheckedFalse(@Param("categoryId") Long categoryId);
+    Long countByQuestionCategoryIdAndIsCheckedFalse(@Param("categoryId") Long categoryId, @Param("isAnswered")Boolean isAnswered);
 
-    Long countByQuestionTagIdAndIsCheckedFalse(Long questionTagId);
+    Long countByQuestionTagIdAndIsCheckedFalseAndIsAnswered(Long questionTagId, Boolean isAnswered);
     // 여기까지
 
 
@@ -124,7 +129,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
         FROM Question q
         JOIN q.questionTag.questionCategory qc
-        WHERE qc.id = :categoryId
+        WHERE qc.id = :categoryId AND q.isHidden = false
         GROUP BY q.isAnswered
     """)
     List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);

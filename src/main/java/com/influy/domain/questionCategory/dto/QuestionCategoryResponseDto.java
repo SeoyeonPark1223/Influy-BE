@@ -44,7 +44,8 @@ public class QuestionCategoryResponseDto {
     @NoArgsConstructor
     public static class TalkBoxCategoryInfoListDTO {
 
-        private List<TalkBoxCategoryInfoDTO> categoryList;
+        private List<TalkBoxCategoryInfoDTO> waitingCategoryList;
+        private List<TalkBoxCategoryInfoDTO> completedCategoryList;
         private Long waitingCnt;
         private Long completedCnt;
 

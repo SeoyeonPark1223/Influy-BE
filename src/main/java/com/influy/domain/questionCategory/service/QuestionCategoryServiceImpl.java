@@ -64,11 +64,11 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoryJPQLResult.CategoryInfo> getListAndIsAnsweredCnt(Long sellerId, Boolean isAnswered, Long itemId) {
+    public List<CategoryJPQLResult.CategoryInfo> getListAndIsAnsweredCnt(Long sellerId, Long itemId) {
         checkSellerAndItem(sellerId, itemId);
 
         // 정렬 순서: 질문 많은 순
-        return questionCategoryRepository.findQuestionCategories(itemId, isAnswered);
+        return questionCategoryRepository.findQuestionCategories(itemId);
     }
 
     @Override

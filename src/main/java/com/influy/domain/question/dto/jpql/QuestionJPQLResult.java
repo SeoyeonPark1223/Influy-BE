@@ -11,10 +11,13 @@ public class QuestionJPQLResult {
     public interface SellerViewQuestion {
         Long getId();
         Long getMemberId();
+        String getProfileImg();
+        String getNickname();
         String getUsername();
         Boolean getIsChecked();
         String getContent();
         String getTagName();
+        Long getTagId();
         Date getCreatedAt();
     }
 }

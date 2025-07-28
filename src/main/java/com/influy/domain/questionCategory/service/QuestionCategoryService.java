@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface QuestionCategoryService {
     List<QuestionCategory> addAll(CustomUserDetails userDetails, Long itemId, QuestionCategoryRequestDto.AddListDto request);
-    List<CategoryJPQLResult.CategoryInfo> getListAndIsAnsweredCnt(Long sellerId, Boolean isAnswered, Long itemId);
+    List<CategoryJPQLResult.CategoryInfo> getListAndIsAnsweredCnt(Long sellerId, Long itemId);
     List<String> generateCategory(CustomUserDetails userDetails, Long itemId);
     QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
 
