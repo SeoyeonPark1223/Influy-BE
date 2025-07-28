@@ -1,25 +1,18 @@
 package com.influy.domain.item.converter;
 
-import com.influy.domain.answer.dto.AnswerResponseDto;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.image.entity.Image;
-import com.influy.domain.item.entity.ItemStatus;
-import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ItemConverter {
     public static Item toItem(SellerProfile seller, ItemRequestDto.DetailDto request) {
@@ -54,7 +47,7 @@ public class ItemConverter {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .sellerId(item.getSeller().getId())
-                .mainImg(item.getImageList().getFirst().getImageLink())
+                .mainImg(item.getImageList().getFirst())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(item.getSeller().getMember().getUsername())
@@ -101,8 +94,7 @@ public class ItemConverter {
     }
 
     public static ItemResponseDto.DetailViewDto toDetailViewDto(Item item) {
-        List<String> itemImgLinkList = item.getImageList().stream()
-                .map(Image::getImageLink).toList();
+        List<String> itemImgLinkList = item.getImageList();
 
         List<String> itemCategoryList = item.getItemCategoryList().stream()
                 .map(ic -> ic.getCategory().getCategory())
@@ -137,7 +129,7 @@ public class ItemConverter {
                 .id(item.getId())
                 .itemName(item.getName())
                 .tagline(item.getTagline())
-                .mainImg(item.getImageList().getFirst().getImageLink())
+                .mainImg(item.getImageList().getFirst())
                 .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
                 .build();
     }
@@ -164,7 +156,7 @@ public class ItemConverter {
     public static ItemResponseDto.TalkBoxOpenedDto toTalkBoxOpenedDto(Item item, Integer waitingCnt, Integer completedCnt, Integer unCheckedCnt) {
         return ItemResponseDto.TalkBoxOpenedDto.builder()
                 .itemId(item.getId())
-                .itemMainImg(item.getImageList().getFirst().getImageLink())
+                .itemMainImg(item.getImageList().getFirst())
                 .itemName(item.getName())
                 .talkBoxCntInfo(toTalkBoxInfoDto(item, waitingCnt, completedCnt))
                 .newCnt(unCheckedCnt)
@@ -196,7 +188,7 @@ public class ItemConverter {
                 .sellerUsername(member.getUsername())
                 .itemId(item.getId())
                 .itemName(item.getName())
-                .itemMainImg(item.getImageList().getFirst().getImageLink())
+                .itemMainImg(item.getImageList().getFirst())
                 .itemPeriod(item.getItemPeriod())
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())

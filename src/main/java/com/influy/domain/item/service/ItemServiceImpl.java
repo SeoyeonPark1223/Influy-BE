@@ -2,8 +2,6 @@ package com.influy.domain.item.service;
 
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
-import com.influy.domain.image.converter.ImageConverter;
-import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
@@ -59,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
-        createImageList(request, item);
+        item.getImageList().addAll(request.getItemImgList());
         createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
@@ -110,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
 
         if (request.getItemImgList() != null) {
             item.getImageList().clear();
-            createImageList(request, item);
+            item.getImageList().addAll(request.getItemImgList());
         }
 
         if (request.getItemCategoryIdList() != null) {
@@ -205,15 +203,6 @@ public class ItemServiceImpl implements ItemService {
         return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap());
     }
 
-    private void createImageList(ItemRequestDto.DetailDto request, Item item) {
-        List<String> imageLinkList = request.getItemImgList();
-        for (int i = 0; i < imageLinkList.size(); i++) {
-            boolean isMain = (i == 0);
-            Image image = ImageConverter.toImage(item, imageLinkList.get(i), isMain);
-            item.getImageList().add(image);
-        }
-    }
-
     private void createItemCategoryList(ItemRequestDto.DetailDto request, Item item) {
         List<Long> itemCategoryLongList = request.getItemCategoryIdList();
         for (Long lg : itemCategoryLongList) {
@@ -224,6 +213,10 @@ public class ItemServiceImpl implements ItemService {
             item.getItemCategoryList().add(itemCategory);
         }
     }
+
+//    private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
+//        item.getImageList().addAll(request.getItemImgList());
+//    }
 
     @Override
     @Transactional(readOnly = true)

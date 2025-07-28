@@ -1,22 +1,15 @@
 package com.influy.domain.like.converter;
 
-import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.entity.Item;
-import com.influy.domain.item.entity.ItemStatus;
-import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.like.dto.LikeResponseDto;
 import com.influy.domain.like.dto.jpql.SellerLikeWithCntDto;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
-import java.lang.annotation.Target;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,7 +75,7 @@ public class LikeConverter {
         return LikeResponseDto.ViewItemLikeDto.builder()
                 .itemId(item.getId())
                 .sellerId(seller.getId())
-                .mainImg(item.getImageList().getFirst().getImageLink())
+                .mainImg(item.getImageList().getFirst())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(seller.getMember().getUsername())

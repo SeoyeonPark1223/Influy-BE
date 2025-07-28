@@ -2,14 +2,12 @@ package com.influy.domain.item.entity;
 
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.faqCategory.entity.FaqCategory;
-import com.influy.domain.image.entity.Image;
 import com.influy.domain.itemCategory.entity.ItemCategory;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.BaseEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -96,9 +94,15 @@ public class Item extends BaseEntity {
     @Builder.Default
     private List<QuestionCategory> questionCategoryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @Builder.Default
+//    private List<Image> imageList = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "item_image", joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "image_url")
     @Builder.Default
-    private List<Image> imageList = new ArrayList<>();
+    private List<String> imageList = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
