@@ -216,7 +216,7 @@ public class ItemServiceImpl implements ItemService {
 
     private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
         item.getImageList().addAll(request.getItemImgList());
-        item.setMainImg(item.getMainImg());
+        item.setMainImg(item.getImageList().getFirst());
     }
 
     @Override
