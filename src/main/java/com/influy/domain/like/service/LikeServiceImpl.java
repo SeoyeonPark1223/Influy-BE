@@ -144,15 +144,10 @@ public class LikeServiceImpl implements LikeService {
     @Transactional(readOnly = true)
     public LikeResponseDto.ItemLikePageDto toGetItemLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest) {
         Member member = userDetails.getMember();
-        MemberRole memberRole = MemberRole.USER;
-        if (member.getRole() == MemberRole.SELLER) memberRole = MemberRole.SELLER;
 
         // 정렬: 아이템 마감일 빠른순
         Pageable pageable = pageRequest.toPageable(Sort.by("item.endDate").ascending());
         Page<Like> likePage = likeRepository.findByMemberIdAndTargetTypeAndLikeStatus(member.getId(), TargetType.ITEM, LikeStatus.LIKE, pageable);
-
-        List<Item> likedItemList = likePage.getContent().stream().map(Like::getItem).toList();
-        TalkBoxInfoPair talkBoxInfoPair = itemService.getTalkBoxInfoPair(likedItemList);
-        return LikeConverter.toItemLikePageDto(likePage, memberRole, talkBoxInfoPair);
+        return LikeConverter.toItemLikePageDto(likePage);
     }
 }

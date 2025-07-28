@@ -1,11 +1,13 @@
 package com.influy.domain.like.dto;
 
 import com.influy.domain.item.dto.ItemResponseDto;
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class LikeResponseDto {
@@ -98,11 +100,35 @@ public class LikeResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ViewItemLikeDto {
-        @Schema(description = "셀러/아이템 찜", example = "ITEM")
-        private TargetType targetType;
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
 
-        @Schema(description = "상품 썸네일 (4.0.0)")
-        private ItemResponseDto.DetailPreviewDto itemPreviewDto;
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
+        @Schema(description = "대표 사진", example = "xxxx.png")
+        private String mainImg;
+
+        @Schema(description = "진행 차수", example = "1")
+        private Integer itemPeriod;
+
+        @Schema(description = "아이템 이름", example = "원피스")
+        private String itemName;
+
+        @Schema(description = "셀러 이름", example = "@thgusthgus")
+        private String sellerName;
+
+        @Schema(description = "마감일", example = "021-01-01T00:00")
+        private LocalDateTime endDate;
+
+        @Schema(description = "한줄 소개", example = "빤짝거리는 원피스입니다")
+        private String tagline;
+
+        @Schema(description = "아이템 상태", example = "DEFAULT")
+        private ItemStatus currentStatus;
+
+        @Schema(description = "찜 여부", example = "false")
+        private Boolean liked;
     }
 
     @Getter

@@ -2,6 +2,7 @@ package com.influy.domain.like.converter;
 
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.like.dto.LikeResponseDto;
 import com.influy.domain.like.dto.jpql.SellerLikeWithCntDto;
@@ -11,9 +12,11 @@ import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
 import java.lang.annotation.Target;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,16 +76,20 @@ public class LikeConverter {
                 .build();
     }
 
-    public static LikeResponseDto.ViewItemLikeDto toViewItemLikeDto(Like like, MemberRole memberRole, TalkBoxInfoPair talkBoxInfoPair) {
+    public static LikeResponseDto.ViewItemLikeDto toViewItemLikeDto(Like like) {
         Item item = like.getItem();
+        SellerProfile seller = item.getSeller();
         return LikeResponseDto.ViewItemLikeDto.builder()
-                .targetType(like.getTargetType())
-                .itemPreviewDto(item != null ? ItemConverter.toDetailPreviewDto(
-                item,
-                true,
-                memberRole,
-                talkBoxInfoPair.waitingCntMap().getOrDefault(item.getId(), 0),
-                talkBoxInfoPair.completedCntMap().getOrDefault(item.getId(), 0)) : null)
+                .itemId(item.getId())
+                .sellerId(seller.getId())
+                .mainImg(item.getImageList().getFirst().getImageLink())
+                .itemPeriod(item.getItemPeriod())
+                .itemName(item.getName())
+                .sellerName(seller.getMember().getUsername())
+                .endDate(item.getEndDate())
+                .tagline(item.getTagline())
+                .currentStatus(item.getItemStatus())
+                .liked(like.getLikeStatus() == LikeStatus.LIKE)
                 .build();
     }
 
@@ -102,10 +109,10 @@ public class LikeConverter {
                 .build();
     }
 
-    public static LikeResponseDto.ItemLikePageDto toItemLikePageDto(Page<Like> likePage, MemberRole memberRole, TalkBoxInfoPair talkBoxInfoPair) {
+    public static LikeResponseDto.ItemLikePageDto toItemLikePageDto(Page<Like> likePage) {
         List<LikeResponseDto.ViewItemLikeDto> viewLikeList = likePage != null ?
                 likePage.stream()
-                .map(like -> toViewItemLikeDto(like, memberRole, talkBoxInfoPair)).toList()
+                .map(LikeConverter::toViewItemLikeDto).toList()
                 : Collections.emptyList();
 
         return LikeResponseDto.ItemLikePageDto.builder()

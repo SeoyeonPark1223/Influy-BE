@@ -54,7 +54,7 @@ public class ItemConverter {
         return ItemResponseDto.DetailPreviewDto.builder()
                 .itemId(item.getId())
                 .sellerId(item.getSeller().getId())
-                .MainImg(item.getImageList().getFirst().getImageLink())
+                .mainImg(item.getImageList().getFirst().getImageLink())
                 .itemPeriod(item.getItemPeriod())
                 .itemName(item.getName())
                 .sellerName(item.getSeller().getMember().getUsername())
