@@ -127,7 +127,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
         FROM Question q
         JOIN q.questionTag.questionCategory qc
-        WHERE qc.id = :categoryId
+        WHERE qc.id = :categoryId AND q.isHidden = false
         GROUP BY q.isAnswered
     """)
     List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);
