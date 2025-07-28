@@ -18,7 +18,7 @@ public class FaqCategoryResponseDto {
         private Long id;
 
         @Schema(description = "faq 카테고리", example = "상품구성")
-        private String category;
+        private String name;
 
         @Schema(description = "faq 카테고리 순서", example = "1")
         private Integer categoryOrder;
