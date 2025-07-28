@@ -31,24 +31,18 @@ public class Item extends BaseEntity {
     private SellerProfile seller;
 
     @NotBlank
-    @Setter
     private String name;
 
-    @Setter
     private Long regularPrice;
 
-    @Setter
     private Long salePrice;
 
-    @Setter
     private String tagline;
 
     @NotNull
-    @Setter
     private LocalDateTime startDate;
 
     @NotNull
-    @Setter
     private LocalDateTime endDate;
 
     @Builder.Default
@@ -60,7 +54,6 @@ public class Item extends BaseEntity {
     private Boolean searchAvailable = true;
 
     @Builder.Default
-    @Setter
     private Integer itemPeriod = 1;
 
     @Builder.Default
@@ -69,10 +62,8 @@ public class Item extends BaseEntity {
     private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
     @NotBlank
-    @Setter
     private String marketLink;
 
-    @Setter
     private String comment;
 
     @Builder.Default
@@ -80,7 +71,6 @@ public class Item extends BaseEntity {
     private String talkBoxComment = "";
 
     @Builder.Default
-    @Setter
     private Boolean isArchived = false; //보관 여부
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
@@ -114,7 +104,7 @@ public class Item extends BaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "item_image", joinColumns = @JoinColumn(name = "item_id"))
-    @Column(name = "image_url")
+    @OrderColumn(name = "image_url")
     @Builder.Default
     private List<String> imageList = new ArrayList<>();
 
