@@ -1,5 +1,6 @@
 package com.influy.domain.like.repository;
 
+import com.influy.domain.like.dto.jpql.SellerLikeWithCntDto;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
@@ -21,18 +22,25 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Integer countBySellerIdAndTargetTypeAndLikeStatus(Long sellerId, TargetType targetType, LikeStatus likeStatus);
     Integer countByItemIdAndTargetTypeAndLikeStatus(Long itemId, TargetType targetType, LikeStatus likeStatus);
     @Query("""
-        SELECT l
+        SELECT new com.influy.domain.like.dto.jpql.SellerLikeWithCntDto(
+            l,
+            COUNT(l2)
+        )
         FROM Like l
+        JOIN Like l2 ON l2.seller = l.seller
+            AND l2.targetType = 'SELLER'
+            AND l2.likeStatus = 'LIKE'
         WHERE l.member.id = :memberId
           AND l.targetType = 'SELLER'
           AND l.likeStatus = 'LIKE'
+        GROUP BY l
         ORDER BY (
             SELECT MAX(i.updatedAt)
             FROM Item i
             WHERE i.seller = l.seller
         ) DESC
     """)
-    Page<Like> findSellerLikesOrderByRecentItem(Long memberId, Pageable pageable);
+    Page<SellerLikeWithCntDto> findSellerLikesOrderByRecentItem(Long memberId, Pageable pageable);
     Page<Like> findByMemberIdAndTargetTypeAndLikeStatus(Long memberId, TargetType targetType, LikeStatus likeStatus, Pageable pageable);
 
     boolean existsByMemberAndSellerAndLikeStatus(Member member, SellerProfile seller, LikeStatus likeStatus);
@@ -41,7 +49,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
         SELECT l.seller.id
         FROM Like l
         WHERE l.member = :member
-          AND l.seller IS NOT NULL
+          AND l.targetType = 'SELLER'
     """)
     List<Long> findLikedSellerIdsByMember(@Param("member") Member member);
 
@@ -49,7 +57,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
         SELECT l.item.id
         FROM Like l
         WHERE l.member = :member
-          AND l.item IS NOT NULL
+          AND l.targetType = 'ITEM'
     """)
     List<Long> findLikedItemIdsByMember(@Param("member")Member member);
 }

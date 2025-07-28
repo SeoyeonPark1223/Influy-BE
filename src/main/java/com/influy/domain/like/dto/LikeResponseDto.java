@@ -77,9 +77,6 @@ public class LikeResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ViewSellerLikeDto {
-        @Schema(description = "셀러/아이템 찜", example = "SELLER")
-        private TargetType targetType;
-
         @Schema(description = "셀러 id", example = "1")
         private Long sellerId;
 
@@ -91,6 +88,9 @@ public class LikeResponseDto {
 
         @Schema(description = "프로필 사진", example = "https://influy-s3...")
         private String profileImgLink;
+
+        @Schema(description = "셀러 좋아요 개수", example = "23")
+        private Long likeCnt;
     }
 
     @Getter
