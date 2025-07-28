@@ -6,7 +6,6 @@ import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
-import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -84,15 +83,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     //밑 2개는 태그, 카테고리 별 새 질문 수 구하는 함수
     @Query("""
     SELECT COUNT(q)
-    FROM QuestionTag qt
-    JOIN Question q ON q.questionTag = qt
+    FROM Question q
+    JOIN QuestionTag qt ON q.questionTag = qt
     WHERE qt.questionCategory.id = :categoryId
-      AND q.isAnswered = true
+      AND q.isAnswered = :isAnswered
       AND q.isChecked = false
     """)
-    Long countByQuestionCategoryIdAndIsCheckedFalse(@Param("categoryId") Long categoryId);
+    Long countByQuestionCategoryIdAndIsCheckedFalse(@Param("categoryId") Long categoryId, @Param("isAnswered")Boolean isAnswered);
 
-    Long countByQuestionTagIdAndIsCheckedFalse(Long questionTagId);
+    Long countByQuestionTagIdAndIsCheckedFalseAndIsAnswered(Long questionTagId, Boolean isAnswered);
     // 여기까지
 
 

@@ -2,10 +2,6 @@ package com.influy.domain.question.service;
 
 import com.influy.domain.ai.service.AiService;
 import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
-import com.influy.domain.answer.repository.AnswerRepository;
-import com.influy.domain.answer.converter.AnswerConverter;
-import com.influy.domain.answer.dto.AnswerRequestDto;
-import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
@@ -17,9 +13,7 @@ import com.influy.domain.question.dto.QuestionResponseDTO;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
-import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.questionTag.entity.QuestionTag;
-import com.influy.domain.questionTag.repository.QuestionTagRepository;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
@@ -124,13 +118,13 @@ public class QuestionServiceImpl implements QuestionService {
         //새 질문 개수(새 질문 수>페이지 사이즈보다 클 수 있으므로 반복문보다는 쿼리 날리는게 맞음)
         Long newQuestions;
         if(questionTagId!=null){
-            newQuestions = questionRepository.countByQuestionTagIdAndIsCheckedFalse(questionTagId);
+            newQuestions = questionRepository.countByQuestionTagIdAndIsCheckedFalseAndIsAnswered(questionTagId, isAnswered );
         } else if (questionCategoryId!=null) {
-            newQuestions = questionRepository.countByQuestionCategoryIdAndIsCheckedFalse(questionCategoryId);
+            newQuestions = questionRepository.countByQuestionCategoryIdAndIsCheckedFalse(questionCategoryId, isAnswered);
         }else{
             newQuestions = 0L;
         }
-
+        System.out.println(newQuestions);
         //<memberId,질문 횟수> Map
         Map<Long,Long> nthQuestions;
 
