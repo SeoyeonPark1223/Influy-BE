@@ -1,8 +1,7 @@
 package com.influy.domain.sellerProfile.converter;
-import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
-import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 
@@ -50,12 +49,12 @@ public class SellerProfileConverter {
                 .build();
     }
 
-    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<ItemJPQLResponse> itemCountList, Long reviews) {
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<IsArchivedItemCount> itemCountList, Long reviews) {
         SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
 
         Long publicItems = null;
         Long privateItems = null;
-        for(ItemJPQLResponse itemCount : itemCountList) {
+        for(IsArchivedItemCount itemCount : itemCountList) {
             if(itemCount.getIsArchived()){
                 privateItems = itemCount.getCount();
             }else {

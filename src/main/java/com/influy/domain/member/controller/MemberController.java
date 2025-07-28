@@ -70,9 +70,9 @@ public class MemberController {
 
     @GetMapping("/auth/reissue")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰(쿠키)만 있으면 됨")
-    public ApiResponse<AuthResponseDTO.LoginResponse> reissueToken(@CookieValue("refreshToken")String refreshToken, HttpServletResponse response){
+    public ApiResponse<AuthResponseDTO.LoginResponse> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
-        TokenPair tokenPair = authService.reissueToken(refreshToken, response);
+        TokenPair tokenPair = authService.reissueToken(request, response);
         Long memberId = jwtTokenProvider.getId(tokenPair.refreshToken());
         Member member = memberService.findById(memberId);
 

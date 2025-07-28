@@ -125,10 +125,10 @@ public class KakaoAuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenPair reissueToken(String refreshToken, HttpServletResponse response) {
+    public TokenPair reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
         // 1. 쿠키에서 토큰 가져오기
-        //String refreshToken = CookieUtil.extractRefreshTokenFromCookie(request);
+        String refreshToken = CookieUtil.extractRefreshTokenFromCookie(request);
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
