@@ -99,16 +99,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
-        if (request.getName() != null) item.setName(request.getName());
-        if (request.getStartDate() != null) item.setStartDate(request.getStartDate());
-        if (request.getEndDate() != null) item.setEndDate(request.getEndDate());
-        if (request.getTagline() != null) item.setTagline(request.getTagline());
-        if (request.getRegularPrice() != null) item.setRegularPrice(request.getRegularPrice());
-        if (request.getSalePrice() != null) item.setSalePrice(request.getSalePrice());
-        if (request.getMarketLink() != null) item.setMarketLink(request.getMarketLink());
-        if (request.getItemPeriod() != null) item.setItemPeriod(request.getItemPeriod());
-        if (request.getComment() != null) item.setComment(request.getComment());
-        if (request.getIsArchived() != null) item.setIsArchived(request.getIsArchived());
+        item.updateItem(request.getName(), request.getStartDate(), request.getEndDate(), request.getTagline(),
+                request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived());
 
         if (request.getItemImgList() != null) {
             item.getImageList().clear();

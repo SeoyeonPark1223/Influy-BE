@@ -221,7 +221,7 @@ public class ItemConverter {
 
         return ItemResponseDto.SellerHomeItemDTO.builder()
                 .itemId(itemJPQLResult.getItem().getId())
-                .imageUrl(itemJPQLResult.getItem().getImageList().getFirst().getImageLink())//리팩토링 필요
+                .imageUrl(itemJPQLResult.getItem().getMainImg())
                 .itemTitle(itemJPQLResult.getItem().getName())
                 .itemStatus(itemJPQLResult.getItem().getItemStatus())
                 .itemPeriod(itemJPQLResult.getItem().getItemPeriod())

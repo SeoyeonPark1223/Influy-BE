@@ -121,4 +121,18 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Like> likeList = new ArrayList<>();
+
+    public void updateItem (String name, LocalDateTime startDate, LocalDateTime endDate, String tagline,
+                            Long regularPrice, Long salePrice, String marketLink, Integer itemPeriod, String comment, Boolean isArchived) {
+        this.name = name != null ? name : this.name;
+        this.startDate = startDate != null ? startDate : this.startDate;
+        this.endDate = endDate != null ? endDate : this.endDate;
+        this.tagline = tagline != null ? tagline : this.tagline;
+        this.regularPrice = regularPrice != null ? regularPrice : this.regularPrice;
+        this.salePrice = salePrice != null ? salePrice : this.salePrice;
+        this.marketLink = marketLink != null ? marketLink : this.marketLink;
+        this.itemPeriod = itemPeriod != null ? itemPeriod : this.itemPeriod;
+        this.comment = comment != null ? comment : this.comment;
+        this.isArchived = isArchived != null ? isArchived : this.isArchived;
+    }
 }
