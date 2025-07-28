@@ -104,7 +104,8 @@ public class Item extends BaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "item_image", joinColumns = @JoinColumn(name = "item_id"))
-    @OrderColumn(name = "image_url")
+    @Column(name = "image_url")
+    @OrderColumn(name = "image_order")
     @Builder.Default
     private List<String> imageList = new ArrayList<>();
 
