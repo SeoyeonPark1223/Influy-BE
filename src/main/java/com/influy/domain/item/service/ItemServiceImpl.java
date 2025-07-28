@@ -7,6 +7,7 @@ import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
@@ -20,6 +21,8 @@ import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
 import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.repository.QuestionRepository;
+import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
+import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
@@ -51,6 +54,7 @@ public class ItemServiceImpl implements ItemService {
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
     private final LikeRepository likeRepository;
+    private final QuestionCategoryRepository questionCategoryRepository;
 
     @Override
     @Transactional
@@ -365,5 +369,24 @@ public class ItemServiceImpl implements ItemService {
             likeItems = likeRepository.findLikedItemIdsByMember(member);
         }
         return likeItems;
+    }
+
+    @Override
+    public ItemResponseDto.SellerHomeItemPageDTO getSellerHomeItemWithQuestionStatus(SellerProfile seller, PageRequestDto pageRequestDto) {
+        Pageable pageable = pageRequestDto.toPageable();
+        Page<ItemJPQLResponse.ItemWithQuestionStatus> items = itemRepository.getItemsWithQuestionStatus(seller.getId(), pageable);
+        List<Long> itemIds = items.getContent().stream().map(item->item.getItem().getId()).toList();
+        List<CategoryJPQLResult.Top2Categories> top2Categories;
+        Map<Long,List<String>> top2CategoryMap = new HashMap<>();
+
+        if(!itemIds.isEmpty()){
+            top2Categories = questionCategoryRepository.getTop2CategoriesByNewQuestion(itemIds);
+
+            for(CategoryJPQLResult.Top2Categories category : top2Categories) {
+                top2CategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
+            }
+        }
+
+        return ItemConverter.toSellerHomeItemPageDTO(items, top2CategoryMap);
     }
 }
