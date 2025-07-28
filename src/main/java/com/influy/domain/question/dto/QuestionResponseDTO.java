@@ -58,6 +58,10 @@ public class QuestionResponseDTO {
         private Long questionId;
         @Schema(description = "질문한 회원 아이디", example = "2")
         private Long memberId;
+        @Schema(description = "질문한 회원 프사", example = "https://amazon.~")
+        private String profileImg;
+        @Schema(description = "질문한 회원 닉네임", example = "당기당기당기누")
+        private String nickname;
         @Schema(description = "질문한 회원 유저네임", example = "@pullpullpull")
         private String username;
         @Schema(description = "질문 태그 이름")

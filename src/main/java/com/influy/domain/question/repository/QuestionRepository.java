@@ -45,6 +45,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
+           m.profileImg AS profileImg,
+           m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,
@@ -62,6 +64,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
     SELECT q.id AS id,
            m.id AS memberId,
+           m.profileImg AS profileImg,
+           m.nickname AS nickname,
            m.username AS username,
            q.content AS content,
            q.createdAt AS createdAt,

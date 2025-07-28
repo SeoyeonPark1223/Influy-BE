@@ -44,6 +44,8 @@ public class QuestionConverter {
         return QuestionResponseDTO.SellerViewQuestion.builder()
                 .questionId(question.getId())
                 .memberId(question.getMemberId())
+                .profileImg(question.getProfileImg())
+                .nickname(question.getNickname())
                 .content(question.getContent())
                 .username(question.getUsername())
                 .tagName(question.getTagName())
