@@ -66,6 +66,8 @@ public class QuestionResponseDTO {
         private String username;
         @Schema(description = "질문 태그 이름")
         private String tagName;
+        @Schema(description = "질문 태그 아이디")
+        private Long tagId;
         @Schema(description = "새로 들어온 질문인지(빨간점)", example = "true")
         private boolean isNew;
         @Schema(description = "내용", example = "더 싸게는 안되나요?")

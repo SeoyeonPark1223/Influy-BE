@@ -51,7 +51,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
            q.content AS content,
            q.createdAt AS createdAt,
            q.isChecked AS isChecked,
-           qt.name AS tagName
+           qt.name AS tagName,
+           qt.id AS tagId
     FROM Question q
     JOIN q.member m
     JOIN q.questionTag qt
@@ -70,7 +71,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
            q.content AS content,
            q.createdAt AS createdAt,
            q.isChecked AS isChecked,
-           qt.name AS tagName
+           qt.name AS tagName,
+           qt.id AS tagId
     FROM Question q
     JOIN q.member m
     JOIN q.questionTag qt

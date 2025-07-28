@@ -49,6 +49,7 @@ public class QuestionConverter {
                 .content(question.getContent())
                 .username(question.getUsername())
                 .tagName(question.getTagName())
+                .tagId(question.getTagId())
                 .isNew(!question.getIsChecked())
                 .nthQuestion(nthQuestion)
                 .createdAt(question.getCreatedAt().toInstant()
