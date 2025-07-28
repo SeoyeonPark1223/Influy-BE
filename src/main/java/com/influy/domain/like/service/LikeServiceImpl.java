@@ -6,6 +6,7 @@ import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.like.converter.LikeConverter;
 import com.influy.domain.like.dto.LikeResponseDto;
+import com.influy.domain.like.dto.jpql.SellerLikeWithCntDto;
 import com.influy.domain.like.entity.Like;
 import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.like.entity.TargetType;
@@ -133,24 +134,20 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Like> toGetSellerLikePage(Long memberId, PageRequestDto pageRequest) {
+    public LikeResponseDto.SellerLikePageDto toGetSellerLikePage(Long memberId, PageRequestDto pageRequest) {
         // 정렬: 최근 상품 올린 셀러가 위로 가도록 (seller -> 가장 최근 updatedAt 아이템 기준 정렬)
-        return likeRepository.findSellerLikesOrderByRecentItem(memberId, pageRequest.toPageable());
+        Page<SellerLikeWithCntDto> likePage = likeRepository.findSellerLikesOrderByRecentItem(memberId, pageRequest.toPageable());
+        return LikeConverter.toSellerLikePageDto(likePage);
     }
 
     @Override
     @Transactional(readOnly = true)
     public LikeResponseDto.ItemLikePageDto toGetItemLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest) {
         Member member = userDetails.getMember();
-        MemberRole memberRole = MemberRole.USER;
-        if (member.getRole() == MemberRole.SELLER) memberRole = MemberRole.SELLER;
 
         // 정렬: 아이템 마감일 빠른순
         Pageable pageable = pageRequest.toPageable(Sort.by("item.endDate").ascending());
         Page<Like> likePage = likeRepository.findByMemberIdAndTargetTypeAndLikeStatus(member.getId(), TargetType.ITEM, LikeStatus.LIKE, pageable);
-
-        List<Item> likedItemList = likePage.getContent().stream().map(Like::getItem).toList();
-        TalkBoxInfoPair talkBoxInfoPair = itemService.getTalkBoxInfoPair(likedItemList);
-        return LikeConverter.toItemLikePageDto(likePage, memberRole, talkBoxInfoPair);
+        return LikeConverter.toItemLikePageDto(likePage);
     }
 }

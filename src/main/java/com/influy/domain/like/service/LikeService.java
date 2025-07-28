@@ -13,6 +13,6 @@ public interface LikeService {
     Like toCancelItemLike(Long sellerId, Long itemId, Long memberId);
     LikeResponseDto.LikeCountDto toCountSellerLikes(Long sellerId);
     LikeResponseDto.LikeCountDto toCountItemLikes(Long sellerId, Long itemId);
-    Page<Like> toGetSellerLikePage(Long memberId, PageRequestDto pageRequest);
+    LikeResponseDto.SellerLikePageDto toGetSellerLikePage(Long memberId, PageRequestDto pageRequest);
     LikeResponseDto.ItemLikePageDto toGetItemLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest);
 }

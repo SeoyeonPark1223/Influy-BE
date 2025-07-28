@@ -1,6 +1,6 @@
 package com.influy.domain.image.controller;
 
-import com.influy.domain.image.converter.ImageConverter;
+
 import com.influy.domain.image.dto.ImageRequestDto;
 import com.influy.domain.image.dto.ImageResponseDto;
 import com.influy.domain.image.service.ImageService;
@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URL;
 
 @Tag(name = "이미지 업로드", description = "이미지 PresignedURL 발급")
 @RestController

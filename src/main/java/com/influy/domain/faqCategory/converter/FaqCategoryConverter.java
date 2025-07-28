@@ -13,7 +13,7 @@ public class FaqCategoryConverter {
     public static FaqCategoryResponseDto.ViewDto toViewDto(FaqCategory faqCategory) {
         return FaqCategoryResponseDto.ViewDto.builder()
                 .id(faqCategory.getId())
-                .category(faqCategory.getCategory())
+                .name(faqCategory.getCategory())
                 .categoryOrder(faqCategory.getCategoryOrder())
                 .build();
     }
@@ -47,7 +47,7 @@ public class FaqCategoryConverter {
         List<FaqCategoryResponseDto.ViewDto> updatedList = faqCategoryList.stream()
                 .map(f -> FaqCategoryResponseDto.ViewDto.builder()
                         .id(f.getId())
-                        .category(f.getCategory())
+                        .name(f.getCategory())
                         .categoryOrder(f.getCategoryOrder())
                         .build())
                 .toList();

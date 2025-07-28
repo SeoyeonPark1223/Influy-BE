@@ -2,8 +2,6 @@ package com.influy.domain.item.service;
 
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
-import com.influy.domain.image.converter.ImageConverter;
-import com.influy.domain.image.entity.Image;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
@@ -63,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
-        createImageList(request, item);
+        createItemImgList(request, item);
         createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
@@ -101,20 +99,12 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
-        if (request.getName() != null) item.setName(request.getName());
-        if (request.getStartDate() != null) item.setStartDate(request.getStartDate());
-        if (request.getEndDate() != null) item.setEndDate(request.getEndDate());
-        if (request.getTagline() != null) item.setTagline(request.getTagline());
-        if (request.getRegularPrice() != null) item.setRegularPrice(request.getRegularPrice());
-        if (request.getSalePrice() != null) item.setSalePrice(request.getSalePrice());
-        if (request.getMarketLink() != null) item.setMarketLink(request.getMarketLink());
-        if (request.getItemPeriod() != null) item.setItemPeriod(request.getItemPeriod());
-        if (request.getComment() != null) item.setComment(request.getComment());
-        if (request.getIsArchived() != null) item.setIsArchived(request.getIsArchived());
+        item.updateItem(request.getName(), request.getStartDate(), request.getEndDate(), request.getTagline(),
+                request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived());
 
         if (request.getItemImgList() != null) {
             item.getImageList().clear();
-            createImageList(request, item);
+            createItemImgList(request, item);
         }
 
         if (request.getItemCategoryIdList() != null) {
@@ -209,15 +199,6 @@ public class ItemServiceImpl implements ItemService {
         return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap());
     }
 
-    private void createImageList(ItemRequestDto.DetailDto request, Item item) {
-        List<String> imageLinkList = request.getItemImgList();
-        for (int i = 0; i < imageLinkList.size(); i++) {
-            boolean isMain = (i == 0);
-            Image image = ImageConverter.toImage(item, imageLinkList.get(i), isMain);
-            item.getImageList().add(image);
-        }
-    }
-
     private void createItemCategoryList(ItemRequestDto.DetailDto request, Item item) {
         List<Long> itemCategoryLongList = request.getItemCategoryIdList();
         for (Long lg : itemCategoryLongList) {
@@ -227,6 +208,11 @@ public class ItemServiceImpl implements ItemService {
             category.getItemCategoryList().add(itemCategory);
             item.getItemCategoryList().add(itemCategory);
         }
+    }
+
+    private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
+        item.getImageList().addAll(request.getItemImgList());
+        item.setMainImg(item.getImageList().getFirst());
     }
 
     @Override

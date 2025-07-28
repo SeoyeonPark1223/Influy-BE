@@ -74,8 +74,7 @@ public class LikeRestController {
     @Operation(summary = "멤버의 셀러 찜 리스트 조회")
     public ApiResponse<LikeResponseDto.SellerLikePageDto> getSellerLikePage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                             @Valid @ParameterObject PageRequestDto pageRequest) {
-        Page<Like> likePage = likeService.toGetSellerLikePage(userDetails.getId(), pageRequest);
-        return ApiResponse.onSuccess(LikeConverter.toSellerLikePageDto(likePage));
+        return ApiResponse.onSuccess(likeService.toGetSellerLikePage(userDetails.getId(), pageRequest));
     }
 
     @GetMapping("home/item-likes")

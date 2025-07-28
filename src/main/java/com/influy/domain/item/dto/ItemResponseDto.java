@@ -73,7 +73,7 @@ public class ItemResponseDto {
         private Long sellerId;
 
         @Schema(description = "대표 사진", example = "xxxx.png")
-        private String MainImg;
+        private String mainImg;
 
         @Schema(description = "진행 차수", example = "1")
         private Integer itemPeriod;
@@ -81,7 +81,7 @@ public class ItemResponseDto {
         @Schema(description = "아이템 이름", example = "원피스")
         private String itemName;
 
-        @Schema(description = "셀러 이름", example = "소현소현")
+        @Schema(description = "셀러 이름", example = "@thgusthgus")
         private String sellerName;
 
         @Schema(description = "시작일", example = "021-01-01T00:00")
