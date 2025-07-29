@@ -52,7 +52,7 @@ public class LikeConverter {
         return LikeResponseDto.LikeCountDto.builder()
                 .targetId(targetId)
                 .targetType(targetType)
-                .likeCount(cnt)
+                .likeCnt(cnt)
                 .build();
     }
 
