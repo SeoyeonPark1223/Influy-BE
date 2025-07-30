@@ -71,7 +71,7 @@ public class LikeResponseDto {
         private Long targetId;
 
         @Schema(description = "찜 개수", example = "10")
-        private Integer likeCount;
+        private Integer likeCnt;
     }
 
     @Getter
