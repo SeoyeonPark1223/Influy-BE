@@ -60,4 +60,14 @@ public class SellerProfileResponseDTO {
         @Schema(description = "아이템 정렬 타입", example = "END_DATE")
         private ItemSortType itemSortType;
     }
+
+    @Getter @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class IsPublic {
+        @Schema(description = "셀러(마켓) id", example = "1")
+        private Long sellerId;
+        @Schema(description = "공개 여부", example = "false")
+        private Boolean isPublic;
+    }
 }

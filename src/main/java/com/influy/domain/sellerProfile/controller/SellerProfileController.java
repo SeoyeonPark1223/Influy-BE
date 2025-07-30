@@ -105,4 +105,15 @@ public class SellerProfileController {
         return ApiResponse.onSuccess(body);
     }
 
+    @PutMapping("seller/isPublic")
+    @Operation(summary = "셀러 마켓 비공개 여부 수정 API", description = "비공개 시 홈에 안뜸")
+    public ApiResponse<SellerProfileResponseDTO.IsPublic> updateIsPublic(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                         @RequestParam("status") Boolean status){
+
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        SellerProfileResponseDTO.IsPublic body = SellerProfileConverter.toIsPublicDTO(sellerService.updateIsPublic(seller,status));
+
+        return ApiResponse.onSuccess(body);
+    }
+
 }

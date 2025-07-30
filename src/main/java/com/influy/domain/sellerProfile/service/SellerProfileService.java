@@ -17,6 +17,8 @@ public interface SellerProfileService {
 
     SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy);
 
+    SellerProfile updateIsPublic(SellerProfile sellerProfile, Boolean isPublic);
+
     SellerProfile createSellerProfile(Member member, MemberRequestDTO.SellerJoin request);
 
     boolean getIsLikedByMember(SellerProfile seller, Member member);

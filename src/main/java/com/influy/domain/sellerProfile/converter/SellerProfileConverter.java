@@ -88,4 +88,11 @@ public class SellerProfileConverter {
                 .reviews(reviews)
                 .build();
     }
+
+    public static SellerProfileResponseDTO.IsPublic toIsPublicDTO(SellerProfile sellerProfile) {
+        return SellerProfileResponseDTO.IsPublic.builder()
+                .sellerId(sellerProfile.getId())
+                .isPublic(sellerProfile.getIsPublic())
+                .build();
+    }
 }
