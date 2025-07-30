@@ -14,7 +14,7 @@ public class CategoryJPQLResult {
         Long getTotalQuestions();
     }
 
-    public interface Top2Categories{
+    public interface TopNCategories {
         Long getItemId();
         String getCategoryName();
     }
