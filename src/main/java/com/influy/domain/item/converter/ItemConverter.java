@@ -185,12 +185,15 @@ public class ItemConverter {
         Member member = item.getSeller().getMember();
 
         return ItemResponseDto.HomeItemViewDto.builder()
+                .sellerNickname(member.getNickname())
+                .sellerId(item.getSeller().getId())
                 .sellerProfileImg(member.getProfileImg())
                 .sellerUsername(member.getUsername())
                 .itemId(item.getId())
                 .itemName(item.getName())
                 .itemMainImg(item.getMainImg())
                 .itemPeriod(item.getItemPeriod())
+                .startDate(item.getStartDate())
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())
                 .currentStatus(item.getItemStatus())
@@ -219,6 +222,7 @@ public class ItemConverter {
 
     public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> topNCategories) {
 
+    public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> top2Categories) {
         return ItemResponseDto.SellerHomeItemDTO.builder()
                 .itemId(itemJPQLResult.getItem().getId())
                 .imageUrl(itemJPQLResult.getItem().getMainImg())

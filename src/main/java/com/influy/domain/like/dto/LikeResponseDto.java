@@ -100,14 +100,23 @@ public class LikeResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ViewItemLikeDto {
-        @Schema(description = "아이템 id", example = "1")
-        private Long itemId;
+        @Schema(description = "셀러 프로필사진", example = "https://...")
+        private String sellerProfileImg;
+
+        @Schema(description = "셀러 아이디", example = "@xoyeon")
+        private String sellerUsername;
+
+        @Schema(description = "셀러 닉네임", example = "소현소현")
+        private String sellerNickname;
 
         @Schema(description = "셀러 id", example = "1")
         private Long sellerId;
 
-        @Schema(description = "대표 사진", example = "xxxx.png")
-        private String mainImg;
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+
+        @Schema(description = "아이템 대표 사진", example = "https://...")
+        private String itemMainImg;
 
         @Schema(description = "진행 차수", example = "1")
         private Integer itemPeriod;
@@ -115,8 +124,8 @@ public class LikeResponseDto {
         @Schema(description = "아이템 이름", example = "원피스")
         private String itemName;
 
-        @Schema(description = "셀러 이름", example = "@thgusthgus")
-        private String sellerName;
+        @Schema(description = "시작일", example = "021-01-01T00:00")
+        private LocalDateTime startDate;
 
         @Schema(description = "마감일", example = "021-01-01T00:00")
         private LocalDateTime endDate;
@@ -124,7 +133,7 @@ public class LikeResponseDto {
         @Schema(description = "한줄 소개", example = "빤짝거리는 원피스입니다")
         private String tagline;
 
-        @Schema(description = "아이템 상태", example = "DEFAULT")
+        @Schema(description = "아이템 상태 [ DEFAULT, EXTEND, SOLD_OUT ]", example = "DEFAULT")
         private ItemStatus currentStatus;
 
         @Schema(description = "찜 여부", example = "false")
@@ -152,7 +161,7 @@ public class LikeResponseDto {
     @AllArgsConstructor
     public static class ItemLikePageDto {
         @Schema(description = "찜한 아이템 리스트")
-        private List<ViewItemLikeDto> itemLikeList;
+        private List<LikeResponseDto.ViewItemLikeDto> itemLikeList;
 
         private Integer listSize;
         private Integer totalPage;

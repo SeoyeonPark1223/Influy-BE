@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DecimalStyle;
 import java.util.List;
 
 public class ItemResponseDto {
@@ -295,6 +296,12 @@ public class ItemResponseDto {
         @Schema(description = "셀러 아이디", example = "@xoyeon")
         private String sellerUsername;
 
+        @Schema(description = "셀러 닉네임", example = "소현소현")
+        private String sellerNickname;
+
+        @Schema(description = "셀러 id", example = "1")
+        private Long sellerId;
+
         @Schema(description = "아이템 id", example = "1")
         private Long itemId;
 
@@ -306,6 +313,9 @@ public class ItemResponseDto {
 
         @Schema(description = "아이템 이름", example = "원피스")
         private String itemName;
+
+        @Schema(description = "시작일", example = "021-01-01T00:00")
+        private LocalDateTime startDate;
 
         @Schema(description = "마감일", example = "021-01-01T00:00")
         private LocalDateTime endDate;
