@@ -11,8 +11,10 @@ import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionTag.entity.QuestionTag;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
@@ -144,8 +146,10 @@ public class QuestionConverter {
                 .username(member.getUsername())
                 .content(question.getContent())
                 .nthQuestion(nth)
-                .questionTime(question.getCreatedAt())
-                .questionTag(question.getQuestionTag().getName())
+                .createdAt(question.getCreatedAt())
+                .tagName(question.getQuestionTag().getName())
+                .tagId(question.getQuestionTag().getId())
+                .profileImg(question.getMember().getProfileImg())
                 .build();
     }
 

@@ -7,6 +7,7 @@ import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
@@ -61,7 +62,7 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap) {
+    public static ItemResponseDto.DetailPreviewPageDto toDetailPreviewPageDto(Page<Item> itemPage, List<Long> likeItems, MemberRole memberRole, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap, ItemSortType sortType) {
         List<Long> safeLikeItems = (likeItems != null) ? likeItems : Collections.emptyList();
 
         List<ItemResponseDto.DetailPreviewDto> itemPreviewList = itemPage != null
@@ -78,6 +79,7 @@ public class ItemConverter {
 
         return ItemResponseDto.DetailPreviewPageDto.builder()
                 .itemPreviewList(itemPreviewList)
+                .sortType(sortType)
                 .listSize(itemPreviewList.size())
                 .totalPage(itemPage != null? itemPage.getTotalPages() : 0)
                 .totalElements(itemPage != null? itemPage.getTotalElements() : 0)

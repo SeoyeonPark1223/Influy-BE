@@ -145,10 +145,16 @@ public class QuestionResponseDTO {
         private Long nthQuestion;
 
         @Schema(description = "질문 시간", example = "2025-01-03Z13:13:13")
-        private LocalDateTime questionTime;
+        private LocalDateTime createdAt;
 
         @Schema(description = "질문 태그 이름", example = "네이비")
-        private String questionTag;
+        private String tagName;
+
+        @Schema(description = "질문 태그 id", example = "1")
+        private Long tagId;
+
+        @Schema(description = "유저 프로필 이미지", example = "1")
+        private String profileImg;
     }
 
     @Getter

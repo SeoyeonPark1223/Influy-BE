@@ -2,6 +2,7 @@ package com.influy.domain.item.dto;
 
 import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
+import com.influy.domain.sellerProfile.entity.ItemSortType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -127,6 +128,9 @@ public class ItemResponseDto {
     public static class DetailPreviewPageDto {
         @Schema(description = "아이템 preview 리스트")
         private List<DetailPreviewDto> itemPreviewList;
+
+        @Schema(description = "아이템 정렬 방식")
+        private ItemSortType sortType;
 
         private Integer listSize;
         private Integer totalPage;

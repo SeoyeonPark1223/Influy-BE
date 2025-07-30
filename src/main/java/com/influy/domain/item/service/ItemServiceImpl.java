@@ -21,6 +21,7 @@ import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.repository.QuestionRepository;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.repository.QuestionCategoryRepository;
+import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.domain.sellerProfile.repository.SellerProfileRepository;
@@ -157,6 +158,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto.DetailPreviewPageDto getDetailPreviewPage(CustomUserDetails userDetails, Long sellerId, Boolean isArchived, PageRequestDto pageRequest, ItemSortType sortType, Boolean isOnGoing) {
         MemberRole memberRole = MemberRole.SELLER;
         List<Long> likeItems = new ArrayList<>();
+
+
         if (userDetails != null) {
             Member member = memberRepository.findById(userDetails.getId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -164,9 +167,9 @@ public class ItemServiceImpl implements ItemService {
             likeItems = likeRepository.findLikedItemIdsByMember(member);
         }
 
-        if (!sellerRepository.existsById(sellerId)) {
-            throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
-        }
+        SellerProfile seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        sortType = seller.getItemSortType();
 
         String sortField = switch (sortType) {
             case CREATE_DATE -> "createdAt";
@@ -196,7 +199,7 @@ public class ItemServiceImpl implements ItemService {
 
         TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemPage.getContent());
 
-        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap());
+        return ItemConverter.toDetailPreviewPageDto(itemPage, likeItems, memberRole, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap(), sortType);
     }
 
     private void createItemCategoryList(ItemRequestDto.DetailDto request, Item item) {
