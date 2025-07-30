@@ -159,7 +159,7 @@ public class ItemRestController {
     }
 
     @GetMapping("seller/home/questions")
-    @Operation(summary = "셀러 홈 상품 질문 안내", description = "아이템 별 많이 들어오는 질문 카테고리")
+    @Operation(summary = "셀러 홈 상품 질문 안내", description = "아이템 + 아이템 별 많이 들어오는 질문 카테고리")
     public ApiResponse<ItemResponseDto.SellerHomeItemPageDTO> getSellerHomeItem(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                             @Valid @ParameterObject PageRequestDto pageRequestDto){
         SellerProfile seller = memberService.checkSeller(userDetails);

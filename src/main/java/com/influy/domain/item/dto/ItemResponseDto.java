@@ -41,14 +41,16 @@ public class ItemResponseDto {
         private Integer itemPeriod;
         @Schema(description = "상품 이름",example = "신나는 여행 패키지")
         private String itemTitle;
+        @Schema(description = "시작 시간",example = "2025-05-20Z18:29:44")
+        private LocalDateTime startDate;
         @Schema(description = "마감 시간",example = "2025-09-20Z18:29:44")
         private LocalDateTime endDate;
         @Schema(description = "전체 질문(질문 대기)",example = "12")
         private Long totalPendingQuestions;
         @Schema(description = "확인하지 않은 질문 수",example = "3")
         private Long newQuestions;
-        @Schema(description = "질문이 가장 많이 들어오는 2개 카테고리",example = "[\"일자 조정\",\"인원 수 문의\"]")
-        private List<String> top2Categories;
+        @Schema(description = "질문이 가장 많이 들어오는 3개 카테고리",example = "[\"일자 조정\",\"인원 수 문의\"]")
+        private List<String> topCategories;
     }
 
 
