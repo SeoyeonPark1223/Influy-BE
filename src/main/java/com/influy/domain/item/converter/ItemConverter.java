@@ -221,8 +221,6 @@ public class ItemConverter {
     }
 
     public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> topNCategories) {
-
-    public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> top2Categories) {
         return ItemResponseDto.SellerHomeItemDTO.builder()
                 .itemId(itemJPQLResult.getItem().getId())
                 .imageUrl(itemJPQLResult.getItem().getMainImg())
