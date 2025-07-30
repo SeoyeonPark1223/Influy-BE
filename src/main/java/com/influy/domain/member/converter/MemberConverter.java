@@ -12,9 +12,6 @@ public class MemberConverter {
     public static Member toMember(MemberRequestDTO.UserJoin requestDTO, MemberRole role, String kakaoNickname) {
 
         String username = requestDTO.getUsername();
-        if(!username.startsWith("@")){
-            username = "@"+username;
-        }
 
         //각 롤에 따라 프로필 생성로직
         return Member.builder()
