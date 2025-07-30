@@ -1,6 +1,5 @@
 package com.influy.domain.questionCategory.repository;
 
-import com.influy.domain.item.entity.Item;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,20 +39,19 @@ public interface QuestionCategoryRepository extends JpaRepository<QuestionCatego
     List<QuestionCategory> findAllByItemId(Long itemId);
 
     @Query(value = """
-    SELECT item_id AS itemId, category_name AS categoryName
-    FROM (
-        SELECT
-            q.item_id AS item_id,
-            c.name AS category_name,
-            RANK() OVER (PARTITION BY q.item_id ORDER BY COUNT(*) DESC) AS rk
-        FROM question q
-        JOIN question_tag qt ON q.question_tag_id = qt.id
-        JOIN question_category c ON qt.question_category_id = c.id
-        WHERE q.item_id IN (:itemIds)
-          AND q.is_checked = false
-        GROUP BY q.item_id, c.id
-    ) ranked
-    WHERE rk <= 2
+    SELECT ITEM_ID AS itemId, CATEGORY_NAME AS categoryName
+      FROM
+        (SELECT q.item_id AS ITEM_ID, qc.name AS CATEGORY_NAME,
+           ROW_NUMBER() OVER (PARTITION BY q.item_id ORDER BY\s
+                  SUM(CASE WHEN q.is_checked = false THEN 1 ELSE 0 END) DESC,
+                  SUM(CASE WHEN q.is_answered = false THEN 1 ELSE 0 END) DESC
+              ) AS rk
+      FROM question q
+      JOIN question_tag qt ON q.question_tag_id = qt.id
+      JOIN question_category qc ON qt.question_category_id = qc.id
+      WHERE q.item_id IN (:itemIds)
+      GROUP BY q.item_id, qc.id, qc.name) sub
+    WHERE rk <= :n
     """, nativeQuery = true)
-    List<CategoryJPQLResult.Top2Categories> getTop2CategoriesByNewQuestion(@Param("itemIds") List<Long> itemIds);
+    List<CategoryJPQLResult.TopNCategories> getTopNCategoriesByNewQuestion(@Param("itemIds") List<Long> itemIds, @Param("n") Integer n);
 }

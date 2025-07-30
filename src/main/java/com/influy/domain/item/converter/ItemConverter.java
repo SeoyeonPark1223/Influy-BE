@@ -222,22 +222,23 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> top2Categories) {
+    public static ItemResponseDto.SellerHomeItemDTO toSellerHomeItemDTO(ItemJPQLResponse.ItemWithQuestionStatus itemJPQLResult, List<String> topNCategories) {
         return ItemResponseDto.SellerHomeItemDTO.builder()
                 .itemId(itemJPQLResult.getItem().getId())
                 .imageUrl(itemJPQLResult.getItem().getMainImg())
                 .itemTitle(itemJPQLResult.getItem().getName())
                 .itemStatus(itemJPQLResult.getItem().getItemStatus())
                 .itemPeriod(itemJPQLResult.getItem().getItemPeriod())
+                .startDate(itemJPQLResult.getItem().getStartDate())
                 .endDate(itemJPQLResult.getItem().getEndDate())
                 .newQuestions(itemJPQLResult.getNewQuestions())
                 .totalPendingQuestions(itemJPQLResult.getPendingQuestions())
-                .top2Categories(top2Categories)
+                .topCategories(topNCategories)
                 .build();
     }
 
-    public static ItemResponseDto.SellerHomeItemPageDTO toSellerHomeItemPageDTO(Page<ItemJPQLResponse.ItemWithQuestionStatus> itmePage, Map<Long, List<String>> top2CategoryMap) {
-        List<ItemResponseDto.SellerHomeItemDTO> itemsList = itmePage.stream().map(item->toSellerHomeItemDTO(item, top2CategoryMap.get(item.getItem().getId()))).toList();
+    public static ItemResponseDto.SellerHomeItemPageDTO toSellerHomeItemPageDTO(Page<ItemJPQLResponse.ItemWithQuestionStatus> itmePage, Map<Long, List<String>> topNCategoryMap) {
+        List<ItemResponseDto.SellerHomeItemDTO> itemsList = itmePage.stream().map(item->toSellerHomeItemDTO(item, topNCategoryMap.get(item.getItem().getId()))).toList();
         return ItemResponseDto.SellerHomeItemPageDTO.builder()
                 .itemList(itemsList)
                 .totalPage(itmePage.getTotalPages())

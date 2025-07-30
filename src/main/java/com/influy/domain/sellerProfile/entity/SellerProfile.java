@@ -60,7 +60,6 @@ public class SellerProfile extends BaseEntity {
     @Builder.Default
     private List<Announcement> announcementList = new ArrayList<>();
 
-    //삭제하기
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "primary_announcement_id", unique = true)
     private Announcement primaryAnnouncement;
@@ -101,6 +100,11 @@ public class SellerProfile extends BaseEntity {
 
     public SellerProfile setItemSortType(ItemSortType type){
         this.itemSortType = type;
+        return this;
+    }
+
+    public SellerProfile setIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
         return this;
     }
 

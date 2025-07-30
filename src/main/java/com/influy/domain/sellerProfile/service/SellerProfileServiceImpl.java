@@ -42,10 +42,18 @@ public class SellerProfileServiceImpl implements SellerProfileService {
         return sellerProfile.setProfile(request);
     }
 
+    @Override
     @Transactional
     public SellerProfile updateItemSortType(SellerProfile sellerProfile, ItemSortType sortBy) {
 
         return sellerProfile.setItemSortType(sortBy);
+    }
+
+    @Override
+    @Transactional
+    public SellerProfile updateIsPublic(SellerProfile sellerProfile, Boolean isPublic) {
+
+        return sellerProfile.setIsPublic(isPublic);
     }
 
 

@@ -363,19 +363,26 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemResponseDto.SellerHomeItemPageDTO getSellerHomeItemWithQuestionStatus(SellerProfile seller, PageRequestDto pageRequestDto) {
         Pageable pageable = pageRequestDto.toPageable();
+
+        //아이템 조회(1순위 isChecked=false 많은 순, 2순위 pendingQuestions 많은 순)
         Page<ItemJPQLResponse.ItemWithQuestionStatus> items = itemRepository.getItemsWithQuestionStatus(seller.getId(), pageable);
         List<Long> itemIds = items.getContent().stream().map(item->item.getItem().getId()).toList();
-        List<CategoryJPQLResult.Top2Categories> top2Categories;
-        Map<Long,List<String>> top2CategoryMap = new HashMap<>();
+
+        //현재 top3
+        List<CategoryJPQLResult.TopNCategories> topNCategories;
+        Map<Long,List<String>> topNCategoryMap = new HashMap<>();
 
         if(!itemIds.isEmpty()){
-            top2Categories = questionCategoryRepository.getTop2CategoriesByNewQuestion(itemIds);
+            topNCategories = questionCategoryRepository.getTopNCategoriesByNewQuestion(itemIds,3);
+            System.out.println(topNCategories.getFirst().getCategoryName());
 
-            for(CategoryJPQLResult.Top2Categories category : top2Categories) {
-                top2CategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
+            for(CategoryJPQLResult.TopNCategories category : topNCategories) {
+                topNCategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
+                System.out.println(category.getCategoryName());
             }
+
         }
 
-        return ItemConverter.toSellerHomeItemPageDTO(items, top2CategoryMap);
+        return ItemConverter.toSellerHomeItemPageDTO(items, topNCategoryMap);
     }
 }

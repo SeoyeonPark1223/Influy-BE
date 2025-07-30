@@ -65,7 +65,6 @@ public class SellerProfileConverter {
                 .sellerProfile(sellerProfileDTO)
                 .isLiked(isLiked)
                 .isPublic(seller.getIsPublic())
-                .itemSortType(seller.getItemSortType())
                 .privateItemCnt(privateItems)
                 .publicItemCnt(publicItems)
                 .reviews(reviews)
@@ -82,10 +81,16 @@ public class SellerProfileConverter {
                 .sellerProfile(sellerProfileDTO)
                 .isLiked(isLiked)
                 .isPublic(seller.getIsPublic())
-                .itemSortType(seller.getItemSortType())
                 .privateItemCnt(null)
                 .publicItemCnt(publicItems)
                 .reviews(reviews)
+                .build();
+    }
+
+    public static SellerProfileResponseDTO.IsPublic toIsPublicDTO(SellerProfile sellerProfile) {
+        return SellerProfileResponseDTO.IsPublic.builder()
+                .sellerId(sellerProfile.getId())
+                .isPublic(sellerProfile.getIsPublic())
                 .build();
     }
 }

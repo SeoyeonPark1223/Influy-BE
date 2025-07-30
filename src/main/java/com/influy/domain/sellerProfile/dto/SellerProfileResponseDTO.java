@@ -11,8 +11,6 @@ public class SellerProfileResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class MarketProfile {
         private SellerProfile sellerProfile;
-        @Schema(description = "아이템 정렬 방식", example = "END_DATE")
-        private ItemSortType itemSortType;
         @Schema(description = "마켓 공개 여부", example = "true")
         private Boolean isPublic;
         @Schema(description = "로그인한 사용자가 해당 셀러를 찜했는지", example = "true")
@@ -59,5 +57,15 @@ public class SellerProfileResponseDTO {
     public static class SortType{
         @Schema(description = "아이템 정렬 타입", example = "END_DATE")
         private ItemSortType itemSortType;
+    }
+
+    @Getter @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class IsPublic {
+        @Schema(description = "셀러(마켓) id", example = "1")
+        private Long sellerId;
+        @Schema(description = "공개 여부", example = "false")
+        private Boolean isPublic;
     }
 }
