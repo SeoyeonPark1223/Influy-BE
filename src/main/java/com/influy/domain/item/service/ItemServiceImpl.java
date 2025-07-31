@@ -53,7 +53,6 @@ public class ItemServiceImpl implements ItemService {
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
     private final LikeRepository likeRepository;
-    private final QuestionCategoryRepository questionCategoryRepository;
 
     @Override
     @Transactional
@@ -305,84 +304,5 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return new TalkBoxInfoPair(waitingCntMap, completedCntMap);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ItemResponseDto.HomeItemViewPageDto getCloseDeadline(CustomUserDetails userDetails, PageRequestDto pageRequest) {
-        List<Long> likeItems = getLikeItems(userDetails);
-
-        // 남은 마감 시간이 24시간 이내 (SOLD_OUT & 마감일이 이미 지난 것 제외)
-        LocalDateTime threshold = LocalDateTime.now().plusHours(24);
-        Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.ASC, "endDate"));
-        Page<Item> itemPage = itemRepository.findAllByEndDateAndItemStatus(LocalDateTime.now(), threshold, pageable);
-
-        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ItemResponseDto.HomeItemViewPageDto getPopular(CustomUserDetails userDetails, PageRequestDto pageRequest) {
-        List<Long> likeItems = getLikeItems(userDetails);
-
-        // 질문 개수 top 3 (SOLD_OUT & 마감일이 이미 지난 것 제외)
-        Pageable pageable = pageRequest.toPageable();
-        Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
-
-        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ItemResponseDto.HomeItemViewPageDto getRecommended(CustomUserDetails userDetails, PageRequestDto pageRequest, Long categoryId) {
-        List<Long> likeItems = getLikeItems(userDetails);
-
-        Pageable pageable = pageRequest.toPageable();
-        Page<Item> itemPage;
-        if (categoryId != null) {
-            if (!categoryRepository.existsById(categoryId)) throw new GeneralException(ErrorStatus.ITEM_CATEGORY_NOT_FOUND);
-            itemPage = itemRepository.findAllByCategoryId(categoryId, pageable, LocalDateTime.now());
-        } else {
-            itemPage = itemRepository.findAllNow(pageable, LocalDateTime.now());
-        }
-
-        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
-    }
-
-    @Transactional
-    @Override
-    public List<Long> getLikeItems(CustomUserDetails userDetails) {
-        List<Long> likeItems = new ArrayList<>();
-        if (userDetails != null) {
-            Member member = userDetails.getMember();
-            likeItems = likeRepository.findLikedItemIdsByMember(member);
-        }
-        return likeItems;
-    }
-
-    @Override
-    public ItemResponseDto.SellerHomeItemPageDTO getSellerHomeItemWithQuestionStatus(SellerProfile seller, PageRequestDto pageRequestDto) {
-        Pageable pageable = pageRequestDto.toPageable();
-
-        //아이템 조회(1순위 isChecked=false 많은 순, 2순위 pendingQuestions 많은 순)
-        Page<ItemJPQLResponse.ItemWithQuestionStatus> items = itemRepository.getItemsWithQuestionStatus(seller.getId(), pageable);
-        List<Long> itemIds = items.getContent().stream().map(item->item.getItem().getId()).toList();
-
-        //현재 top3
-        List<CategoryJPQLResult.TopNCategories> topNCategories;
-        Map<Long,List<String>> topNCategoryMap = new HashMap<>();
-
-        if(!itemIds.isEmpty()){
-            topNCategories = questionCategoryRepository.getTopNCategoriesByNewQuestion(itemIds,3);
-            System.out.println(topNCategories.getFirst().getCategoryName());
-
-            for(CategoryJPQLResult.TopNCategories category : topNCategories) {
-                topNCategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
-                System.out.println(category.getCategoryName());
-            }
-
-        }
-
-        return ItemConverter.toSellerHomeItemPageDTO(items, topNCategoryMap);
     }
 }

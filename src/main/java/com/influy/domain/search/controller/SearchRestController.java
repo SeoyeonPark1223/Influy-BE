@@ -1,5 +1,6 @@
 package com.influy.domain.search.controller;
 
+import com.influy.domain.home.dto.HomeResponseDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.search.dto.SearchResponseDto;
 import com.influy.domain.search.service.SearchService;
@@ -31,7 +32,7 @@ public class SearchRestController {
 
     @GetMapping("/item")
     @Operation(summary = "아이템 검색", description = "Request param으로 쿼리 내용을 String으로 주세요")
-    public ApiResponse<ItemResponseDto.HomeItemViewPageDto> searchItem(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ApiResponse<HomeResponseDto.HomeItemViewPageDto> searchItem(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                        @RequestParam("query") String query,
                                                                        @ParameterObject @Valid PageRequestDto pageRequest) {
         return ApiResponse.onSuccess(searchService.searchItem(userDetails, query, pageRequest));

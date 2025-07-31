@@ -1,5 +1,7 @@
 package com.influy.domain.search.service;
 
+import com.influy.domain.home.converter.HomeConverter;
+import com.influy.domain.home.dto.HomeResponseDto;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
@@ -56,7 +58,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemResponseDto.HomeItemViewPageDto searchItem(CustomUserDetails userDetails, String query, PageRequestDto pageRequest) {
+    public HomeResponseDto.HomeItemViewPageDto searchItem(CustomUserDetails userDetails, String query, PageRequestDto pageRequest) {
         List<Long> likeItems = new ArrayList<>();
         if (userDetails != null) {
             Member member = memberRepository.findById(userDetails.getId())
@@ -72,6 +74,6 @@ public class SearchServiceImpl implements SearchService {
             itemPage = itemRepository.findAllByNameContainingOrSeller_Member_UsernameContainingOrSeller_Member_NicknameContainingOrSeller_InstagramContaining(query, query, query, query, pageable);
         }
 
-        return ItemConverter.toHomeItemViewPageDto(itemPage, likeItems);
+        return HomeConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
 }
