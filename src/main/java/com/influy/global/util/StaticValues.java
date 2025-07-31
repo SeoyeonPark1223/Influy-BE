@@ -23,5 +23,7 @@ public class StaticValues {
             "/seller/*/announcements",
             "/member/*/profile",
             "/oauth/kakao",
+            "/home/trending-seller",
+            "/home/*/pick"
     };
 }

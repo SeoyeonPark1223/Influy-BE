@@ -35,11 +35,5 @@ public interface ItemService {
     ItemResponseDto.ViewTalkBoxCommentDto getTalkBoxComment(CustomUserDetails userDetails, Long itemId);
     ItemResponseDto.TalkBoxOpenedListDto getTalkBoxOpened(CustomUserDetails userDetails);
     TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList);
-    ItemResponseDto.HomeItemViewPageDto getCloseDeadline(CustomUserDetails userDetails, PageRequestDto pageRequest);
-    ItemResponseDto.HomeItemViewPageDto getPopular(CustomUserDetails userDetails, PageRequestDto pageRequest);
-    ItemResponseDto.HomeItemViewPageDto getRecommended(CustomUserDetails userDetails, PageRequestDto pageRequest, Long itemCategoryId);
     Item findById(Long itemId);
-    List<Long> getLikeItems(CustomUserDetails userDetails);
-
-    ItemResponseDto.SellerHomeItemPageDTO getSellerHomeItemWithQuestionStatus(SellerProfile seller, PageRequestDto pageRequestDto);
 }

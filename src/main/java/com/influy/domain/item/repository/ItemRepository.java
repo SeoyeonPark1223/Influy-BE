@@ -79,4 +79,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         WHERE i.seller.id = :sellerId
         """)
     Page<ItemJPQLResponse.ItemWithQuestionStatus> getItemsWithQuestionStatus(@Param("sellerId") Long sellerId, Pageable pageable);
+
+    List<Item> findTop3BySellerId(Long sellerId);
 }
