@@ -52,8 +52,8 @@ public class SellerProfileConverter {
     public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<IsArchivedItemCount> itemCountList, Long reviews) {
         SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
 
-        Long publicItems = null;
-        Long privateItems = null;
+        Long publicItems = 0L;
+        Long privateItems = 0L;
         for(IsArchivedItemCount itemCount : itemCountList) {
             if(itemCount.getIsArchived()){
                 privateItems = itemCount.getCount();
