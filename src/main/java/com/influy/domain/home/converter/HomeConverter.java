@@ -95,11 +95,18 @@ public class HomeConverter {
                 .build();
     }
 
+    public static HomeResponseDto.SellerPickItemDto toSellerPickItemDto(Item item) {
+        return HomeResponseDto.SellerPickItemDto.builder()
+                .itemId(item.getId())
+                .mainImg(item.getMainImg())
+                .build();
+    }
+
     public static HomeResponseDto.SellerPick3Dto toSellerPick3Dto(SellerProfile seller, List<Item> itemList) {
         return HomeResponseDto.SellerPick3Dto.builder()
                 .sellerId(seller.getId())
                 .sellerNickname(seller.getMember().getNickname())
-                .mainImgList(itemList.stream().map(Item::getMainImg).toList())
+                .mainImgList(itemList.stream().map(HomeConverter::toSellerPickItemDto).toList())
                 .build();
     }
 }

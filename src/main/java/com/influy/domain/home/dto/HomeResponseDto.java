@@ -110,7 +110,19 @@ public class HomeResponseDto {
         private String sellerNickname;
 
         @Schema(description = "상품 3개 대표 이미지 리스트")
-        private List<String> mainImgList;
+        private List<SellerPickItemDto> mainImgList;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SellerPickItemDto {
+        @Schema(description = "아이템 id", example = "1")
+        private Long itemId;
+
+        @Schema(description = "상품 대표 이미지")
+        private String mainImg;
     }
 
     @Getter
