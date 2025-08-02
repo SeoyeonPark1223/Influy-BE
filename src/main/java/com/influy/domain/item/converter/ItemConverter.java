@@ -166,7 +166,7 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.TalkBoxOpenedListDto toTalkBoxOpenedListDto(List<Item> itemList, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap, Map<Long, Integer> unCheckedCntMap) {
+    public static ItemResponseDto.TalkBoxOpenedListDto toTalkBoxOpenedListDto(List<Item> itemList, Boolean flag, Map<Long, Integer> waitingCntMap, Map<Long, Integer> completedCntMap, Map<Long, Integer> unCheckedCntMap) {
         List<ItemResponseDto.TalkBoxOpenedDto> itemDtoList = itemList.stream()
                 .map(item -> {
                     Long itemId = item.getId();
@@ -179,6 +179,7 @@ public class ItemConverter {
 
         return ItemResponseDto.TalkBoxOpenedListDto.builder()
                 .cnt(itemList.size())
+                .isNone(flag)
                 .talkBoxOpenedDtoList(itemDtoList)
                 .build();
     }

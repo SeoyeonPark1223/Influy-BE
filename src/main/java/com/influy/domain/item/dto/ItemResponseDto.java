@@ -223,6 +223,9 @@ public class ItemResponseDto {
         @Schema(description = "톡박스가 활성화된 아이템 리스트")
         private List<TalkBoxOpenedDto> talkBoxOpenedDtoList;
 
+        @Schema(description = "셀러의 아이템 유무 여부", example = "true")
+        private Boolean isNone;
+
         @Schema(description = "톡박스가 활성화된 아이템 개수", example = "4")
         private Integer cnt;
     }
