@@ -179,7 +179,7 @@ public class ItemConverter {
 
         return ItemResponseDto.TalkBoxOpenedListDto.builder()
                 .cnt(itemList.size())
-                .isNone(flag)
+                .isItemExist(flag)
                 .talkBoxOpenedDtoList(itemDtoList)
                 .build();
     }

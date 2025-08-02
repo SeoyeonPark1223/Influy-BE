@@ -266,7 +266,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto.TalkBoxOpenedListDto getTalkBoxOpened(CustomUserDetails userDetails) {
         SellerProfile seller = memberService.checkSeller(userDetails);
         List<Item> itemList = itemRepository.findAllBySellerIdAndTalkBoxOpenStatus(seller.getId());
-        boolean flag = false;
+        boolean flag = true;
         TalkBoxInfoPair talkBoxInfoPair = null;
         Map<Long, Integer> uncheckedCntMap = new HashMap<>();
 
@@ -280,8 +280,7 @@ public class ItemServiceImpl implements ItemService {
                             Item::getId,
                             item -> questionRepository.countQuestionsByItemIdAndIsChecked(item.getId(), false)
                     ));
-        } else flag = true;
-
+        } else flag = itemRepository.existsBySellerId(seller.getId());
 
         return ItemConverter.toTalkBoxOpenedListDto(itemList, flag, talkBoxInfoPair != null ? talkBoxInfoPair.waitingCntMap() : null, talkBoxInfoPair != null ? talkBoxInfoPair.completedCntMap() : null, uncheckedCntMap);
     }
