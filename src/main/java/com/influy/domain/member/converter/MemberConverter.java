@@ -16,7 +16,7 @@ public class MemberConverter {
         //각 롤에 따라 프로필 생성로직
         return Member.builder()
                 .kakaoId(requestDTO.getKakaoId())
-                .nickname(username) //초기값이 username과 동일
+                .nickname(username.substring(0,8)) //초기값이 username과 동일, 8자보다 길면 8자에서 끊김
                 .role(role)
                 .username(username)
                 .kakaoNickname(kakaoNickname)
