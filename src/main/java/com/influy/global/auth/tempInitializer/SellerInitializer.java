@@ -31,7 +31,7 @@ public class SellerInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        /*if (memberRepository.findByKakaoId(4339098764L).isEmpty()) {
+        if (memberRepository.findByKakaoId(4339098764L).isEmpty()) {
             ClassPathResource resource = new ClassPathResource("tempUser/FrontUser.json");
             if (!resource.exists()) {
                 throw new IOException("파일이 존재하지 않습니다.");
@@ -44,7 +44,7 @@ public class SellerInitializer implements CommandLineRunner {
 
             Member member = MemberConverter.toMember(dto.getUserInfo(), MemberRole.SELLER, "최서연");
             sellerProfileService.createSellerProfile(memberRepository.save(member),dto);
-        }*/
+        }
     }
 
 }

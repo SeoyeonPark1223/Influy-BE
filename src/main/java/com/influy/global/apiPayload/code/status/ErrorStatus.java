@@ -93,7 +93,16 @@ public enum ErrorStatus implements BaseCode {
     //API 요청 관련 에러 응답
     NEED_TO_SIGN_UP(HttpStatus.OK,"NEED_TO_SIGN_UP" ,"회원이 아닙니다." ),
     GET_KAKAO_TOKEN_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO TOKEN FAILED" ,"카카오 로그인 토큰을 요청하는 과정에서 문제가 일어났습니다." ),
-    GET_KAKAO_USER_PROFILE_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO USER PROFILE FAILED" ,"카카오 유저 정보를 조회하는 과정에서 문제가 일어났습니다." );
+    GET_KAKAO_USER_PROFILE_FAILED(HttpStatus.BAD_REQUEST,"GET KAKAO USER PROFILE FAILED" ,"카카오 유저 정보를 조회하는 과정에서 문제가 일어났습니다." ),
+
+    //어드민 관련 응답
+    ADMIN_REQUIRED(HttpStatus.FORBIDDEN,"ADMIN REQUIRED" ,"어드민만 사용할 수 있는 기능입니다." ),
+
+    //매니저 관련 응답
+    MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND,"MANAGER NOT FOUND" , "매니저를 찾을 수 없습니다"),
+
+    //이미지 관련 응답
+    INVALID_IMAGE_URL(HttpStatus.BAD_REQUEST,"INVALID IMAGE URL" ,"정상적인 이미지 URL이 아닙니다." );
 
 
 

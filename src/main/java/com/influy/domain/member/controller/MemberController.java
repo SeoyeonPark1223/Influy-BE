@@ -1,6 +1,7 @@
 package com.influy.domain.member.controller;
 
 
+import com.influy.domain.admin.service.AdminService;
 import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
@@ -38,6 +39,7 @@ public class MemberController {
     private final MemberService memberService;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AdminService adminService;
 
     //일반 유저 가입
     @PostMapping("/register/user")
@@ -64,6 +66,17 @@ public class MemberController {
         AuthResponseDTO.SellerIdAndToken body = AuthConverter.toSellerIdAndToken(member.getId(), sellerProfile.getId(), tokenPair.accessToken());
 
         CookieUtil.refreshTokenInCookie(response, tokenPair.refreshToken());
+
+        return ApiResponse.onSuccess(body);
+    }
+    @PostMapping("/register/admin")
+    @Operation(summary = "어드민 회원 가입")
+    public ApiResponse<AuthResponseDTO.SellerIdAndToken> signUpAdmin(@RequestBody MemberRequestDTO.SellerJoin request, HttpServletResponse response) {
+
+        Member member = adminService.joinAdmin(request);
+        TokenPair token = authService.issueToken(member);
+        AuthResponseDTO.SellerIdAndToken body = AuthConverter.toSellerIdAndToken(member.getId(),member.getSellerProfile().getId(), token.accessToken());
+        CookieUtil.refreshTokenInCookie(response,token.refreshToken());
 
         return ApiResponse.onSuccess(body);
     }
