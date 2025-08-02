@@ -83,7 +83,10 @@ public class SellerProfile extends BaseEntity {
             this.backgroundImg = requestBody.getBackgroundImg();
         }
         if(requestBody.getInstagram()!=null){
-            this.instagram = requestBody.getInstagram();
+            String instagramLink = requestBody.getInstagram().replaceAll("https://www.instagram.com/","").replaceAll("https://instagram.com/","");
+            int targetIndex = instagramLink.contains("?") ? instagramLink.indexOf("?") : instagramLink.length();
+
+            this.instagram = instagramLink.substring(0, targetIndex);
         }
         if(requestBody.getTiktok()!=null){
             this.tiktok = requestBody.getTiktok();
