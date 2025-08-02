@@ -93,6 +93,9 @@ public class HomeServiceImpl implements HomeService {
         List<CategoryJPQLResult.TopNCategories> topNCategories;
         Map<Long,List<String>> topNCategoryMap = new HashMap<>();
 
+        //톡박스 오픈 여부에 상관 없이 가지고 있는 아이템이 있는지
+        Boolean hasAnyItem = true;
+
         if(!itemIds.isEmpty()){
             topNCategories = questionCategoryRepository.getTopNCategoriesByNewQuestion(itemIds,3);
 
@@ -100,9 +103,13 @@ public class HomeServiceImpl implements HomeService {
                 topNCategoryMap.computeIfAbsent(category.getItemId(),k->new ArrayList<>()).add(category.getCategoryName());
             }
 
+        }else{
+            //톡박스 열린 item 이 0개->조회 필요.
+            //기본 true 지만 없을 시 false 로 재대입
+            hasAnyItem = itemRepository.existsBySellerId(seller.getId());
         }
 
-        return HomeConverter.toSellerHomeItemPageDTO(items, topNCategoryMap);
+        return HomeConverter.toSellerHomeItemPageDTO(items, topNCategoryMap, hasAnyItem );
     }
 
     @Override

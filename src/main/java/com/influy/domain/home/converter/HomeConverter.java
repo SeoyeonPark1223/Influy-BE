@@ -66,12 +66,15 @@ public class HomeConverter {
                 .build();
     }
 
-    public static HomeResponseDto.SellerHomeItemPageDTO toSellerHomeItemPageDTO(Page<ItemJPQLResponse.ItemWithQuestionStatus> itmePage, Map<Long, List<String>> topNCategoryMap) {
+    public static HomeResponseDto.SellerHomeItemPageDTO toSellerHomeItemPageDTO(Page<ItemJPQLResponse.ItemWithQuestionStatus> itmePage,
+                                                                                Map<Long, List<String>> topNCategoryMap,
+                                                                                Boolean hasAnyItem) {
         List<HomeResponseDto.SellerHomeItemDTO> itemsList = itmePage.stream().map(item->toSellerHomeItemDTO(item, topNCategoryMap.get(item.getItem().getId()))).toList();
         return HomeResponseDto.SellerHomeItemPageDTO.builder()
                 .itemList(itemsList)
                 .totalPage(itmePage.getTotalPages())
                 .totalElements(itmePage.getTotalElements())
+                .hasAnyItem(hasAnyItem)
                 .isFirst(itmePage.isFirst())
                 .isLast(itmePage.isLast())
                 .listSize(itemsList.size())

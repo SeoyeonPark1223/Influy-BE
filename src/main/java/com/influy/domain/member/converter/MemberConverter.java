@@ -12,11 +12,15 @@ public class MemberConverter {
     public static Member toMember(MemberRequestDTO.UserJoin requestDTO, MemberRole role, String kakaoNickname) {
 
         String username = requestDTO.getUsername();
+        String nickname = requestDTO.getUsername();//초기값이 username과 동일, 8자보다 길면 8자에서 끊김
+        if(nickname.length()>8){
+            nickname = nickname.substring(0,8);
+        }
 
         //각 롤에 따라 프로필 생성로직
         return Member.builder()
                 .kakaoId(requestDTO.getKakaoId())
-                .nickname(username.substring(0,8)) //초기값이 username과 동일, 8자보다 길면 8자에서 끊김
+                .nickname(nickname)
                 .role(role)
                 .username(username)
                 .kakaoNickname(kakaoNickname)
