@@ -14,6 +14,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -68,7 +69,7 @@ public class Member extends BaseEntity {
         if(request.getNickname()!=null){
             this.nickname = request.getNickname();
         }
-        if(request.getProfileUrl()!=null){
+        if(!Objects.equals(request.getProfileUrl(),this.profileImg)){
             this.profileImg = request.getProfileUrl();
         }
 

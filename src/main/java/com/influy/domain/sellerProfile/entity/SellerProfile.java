@@ -14,6 +14,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -79,7 +80,7 @@ public class SellerProfile extends BaseEntity {
 
     public SellerProfile setProfile(SellerProfileRequestDTO.UpdateProfile requestBody){
         //1차 mvp 이후 QueryDSL 고려
-        if(requestBody.getBackgroundImg()!=null){
+        if(!Objects.equals(requestBody.getBackgroundImg(),this.backgroundImg)){
             this.backgroundImg = requestBody.getBackgroundImg();
         }
         if(requestBody.getInstagram()!=null){
