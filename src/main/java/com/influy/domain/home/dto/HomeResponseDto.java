@@ -132,6 +132,8 @@ public class HomeResponseDto {
     public static class SellerHomeItemPageDTO {
         @Schema(description = "아이템 preview 리스트")
         private List<SellerHomeItemDTO> itemList;
+        @Schema(description = "톡박스 여부와 상관없이 아이템을 등록했는지", example = "true")
+        private Boolean hasAnyItem;
 
         private Integer listSize;
         private Integer totalPage;
