@@ -4,6 +4,7 @@ import com.influy.domain.answer.converter.AnswerConverter;
 import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import com.influy.domain.answer.entity.Answer;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.question.dto.QuestionResponseDTO;
@@ -11,6 +12,7 @@ import com.influy.domain.question.dto.jpql.QuestionJPQLResult;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.dto.jpql.CategoryJPQLResult;
 import com.influy.domain.questionTag.entity.QuestionTag;
+import com.influy.domain.sellerProfile.entity.SellerProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
@@ -156,6 +158,45 @@ public class QuestionConverter {
     public static QuestionResponseDTO.DeleteResultDto toDeleteResultDto(List<Long> questionList) {
         return QuestionResponseDTO.DeleteResultDto.builder()
                 .questionIdList(questionList)
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserTalkBoxItemDTO toUserTalkBoxItemDTO(ItemJPQLResponse.ItemWithSellerInfo itemSeller,
+                                                                              String lastChatContent,
+                                                                              LocalDateTime lastChatTime,
+                                                                              Integer uncheckedCnt){
+
+        return QuestionResponseDTO.UserTalkBoxItemDTO.builder()
+                .itemId(itemSeller.getItemId())
+                .itemTitle(itemSeller.getItemTitle())
+                .itemMainPic(itemSeller.getItemMainImg())
+                .sellerNickname(itemSeller.getSellerNickname())
+                .sellerProfilePic(itemSeller.getSellerProfileImg())
+                .lastChatContent(lastChatContent)
+                .lastChatTime(lastChatTime)
+                .uncheckedCnt(uncheckedCnt)
+                .build();
+    }
+
+    public static QuestionResponseDTO.UserTalkBoxItemPageDTO toUserTalkBoxItemPageDTO(Page<QuestionJPQLResult.ItemWithRecentChat> recentChatPage,
+                                                                                      Map<Long,Integer> uncheckedCounts,
+                                                                                      Map<Long, ItemJPQLResponse.ItemWithSellerInfo> itemSellerInfos) {
+
+        List<QuestionResponseDTO.UserTalkBoxItemDTO> list = recentChatPage.getContent().stream()
+                .map(recentChat -> {
+                    Long itemId = recentChat.getItemId();
+                    ItemJPQLResponse.ItemWithSellerInfo itemSeller = itemSellerInfos.get(itemId);
+                    Integer uncheckedCnt = uncheckedCounts.get(itemId);
+
+                    return toUserTalkBoxItemDTO(itemSeller,recentChat.getContent(),recentChat.getCreatedAt(),uncheckedCnt);
+                }).toList();
+        return QuestionResponseDTO.UserTalkBoxItemPageDTO.builder()
+                .talkboxList(list)
+                .isFirst(recentChatPage.isFirst())
+                .isLast(recentChatPage.isLast())
+                .listSize(list.size())
+                .totalPage(recentChatPage.getTotalPages())
+                .totalElements(recentChatPage.getTotalElements())
                 .build();
     }
 }

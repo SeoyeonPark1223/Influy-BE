@@ -13,4 +13,9 @@ public class AnswerJPQLResult {
         String getContent();
         LocalDateTime getCreatedAt();
     }
+
+    public interface UncheckedAnswer {
+        Long getItemId();
+        Integer getUncheckedCount();
+    }
 }

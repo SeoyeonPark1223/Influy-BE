@@ -33,4 +33,6 @@ public interface QuestionService {
     QuestionResponseDTO.DeleteResultDto delete(CustomUserDetails userDetails, Long itemId, Long questionCategoryId, QuestionRequestDTO.DeleteDto request);
 
     QuestionResponseDTO.SellerViewPage getSellerViewQuestionPage(Long questionTagId, Long questionCategoryId, SellerProfile seller, Boolean isAnswered, PageRequestDto pageable);
+
+    QuestionResponseDTO.UserTalkBoxItemPageDTO getUserTalkBoxItems(Member member, PageRequestDto pageRequestDto);
 }

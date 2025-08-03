@@ -112,7 +112,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     FROM question q
     LEFT JOIN question_tag qt ON q.question_tag_id = qt.id
     LEFT JOIN question_category qc ON qt.question_category_id = qc.id
-    WHERE q.member_id = :memberId
+    WHERE q.member_id = :memberId AND q.item_id = :itemId
     
     UNION ALL
     
@@ -163,4 +163,27 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         GROUP BY q.item.id, q.isAnswered
     """)
     List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(@Param("itemIdList")List<Long> itemIdList);
+
+    @Query(value = """
+    SELECT item_id AS itemId, content AS content, created_at AS createdAt
+    FROM (
+        SELECT
+            item_id, content, created_at,
+            ROW_NUMBER() OVER (PARTITION BY item_id ORDER BY created_at DESC) AS rn
+        FROM (
+            SELECT q.item_id, q.content, q.created_at
+            FROM question q
+            WHERE q.member_id = :memberId
+    
+            UNION ALL
+    
+            SELECT a.item_id, a.content, a.created_at
+            FROM answer a
+            JOIN question q ON q.id = a.question_id
+            WHERE q.member_id = :memberId
+        ) AS combined
+    ) AS ranked
+    WHERE rn = 1 ORDER BY createdAt DESC
+    """, nativeQuery = true)
+    Page<QuestionJPQLResult.ItemWithRecentChat> getRecentChatOfMemberGroupByItem(@Param("memberId") Long memberId, Pageable pageable);
 }

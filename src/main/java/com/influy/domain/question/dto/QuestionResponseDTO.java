@@ -2,10 +2,8 @@ package com.influy.domain.question.dto;
 
 import com.influy.domain.answer.dto.AnswerResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -176,5 +174,46 @@ public class QuestionResponseDTO {
     public static class DeleteResultDto {
         @Schema(description = "삭제된 질문 id 리스트")
         private List<Long> questionIdList;
+    }
+
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserTalkBoxItemDTO {
+        @Schema(description = "해당 톡박스 아이템 id", example="1")
+        private Long itemId;
+        @Schema(description = "해당 톡박스 아이템 이름", example="뿌링뿌링클")
+        private String itemTitle;
+        @Schema(description = "해당 톡박스 아이템 대표 사진", example="http:/amazon.s3~")
+        private String itemMainPic;
+        @Schema(description = "아이템 셀러 닉네임", example="소현소현")
+        private String sellerNickname;
+        @Schema(description = "셀러 프로필 사진", example="http://amazon.s3~")
+        private String sellerProfilePic;
+        @Schema(description = "가장 최근 대화 내역(답변/질문 구분 X)", example="환불 도와드리겠습니다")
+        private String lastChatContent;
+        @Schema(description = "가장 최근 채팅 시간", example="2025-02-04Z23:11:11")
+        private LocalDateTime lastChatTime;
+        @Schema(description = "확인하지 않은 대화 개수", example="2")
+        private Integer uncheckedCnt;
+    }
+
+    @Getter @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access=AccessLevel.PROTECTED)
+    public static class UserTalkBoxItemPageDTO{
+        private List<UserTalkBoxItemDTO> talkboxList;
+        @Schema(description = "리스트 사이즈", example = "10")
+        private Integer listSize;
+        @Schema(description = "총 페이지", example = "2")
+        private Integer totalPage;
+        @Schema(description = "전체 톡박스 개수", example = "30")
+        private Long totalElements;
+        @Schema(description = "지금 첫 페이지인지", example = "false")
+        private Boolean isFirst;
+        @Schema(description = "마지막 페이지인지", example = "false")
+        private Boolean isLast;
     }
 }

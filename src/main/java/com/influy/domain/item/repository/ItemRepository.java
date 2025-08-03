@@ -83,4 +83,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findTop3BySellerId(Long sellerId);
 
     Boolean existsBySellerId(Long id);
+
+    @Query("""
+    SELECT i.id AS itemId, i.name AS itemTitle, i.mainImg AS itemMainImg, m.nickname AS sellerNickname, m.profileImg AS sellerProfileImg
+    FROM Item i
+    JOIN SellerProfile s ON i.seller = s
+    JOIN Member m ON s.member = m
+    WHERE i.id IN (:itemIds)
+    """)
+    List<ItemJPQLResponse.ItemWithSellerInfo> findAllWithSellerInfoById(@Param("itemIds") List<Long> itemIds);
 }
