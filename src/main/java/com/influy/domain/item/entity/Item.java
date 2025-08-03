@@ -39,11 +39,13 @@ public class Item extends BaseEntity {
 
     private String tagline;
 
-    @NotNull
     private LocalDateTime startDate;
 
-    @NotNull
     private LocalDateTime endDate;
+
+    @NotNull
+    @Builder.Default
+    private boolean isDateUndefined = true;
 
     @Builder.Default
     @Setter
