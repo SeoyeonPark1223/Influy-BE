@@ -266,17 +266,23 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto.TalkBoxOpenedListDto getTalkBoxOpened(CustomUserDetails userDetails) {
         SellerProfile seller = memberService.checkSeller(userDetails);
         List<Item> itemList = itemRepository.findAllBySellerIdAndTalkBoxOpenStatus(seller.getId());
+        boolean flag = true;
+        TalkBoxInfoPair talkBoxInfoPair = null;
+        Map<Long, Integer> uncheckedCntMap = new HashMap<>();
 
-        TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemList);
 
-        // 아이템 기준 미확인 질문 개수
-        Map<Long, Integer> uncheckedCntMap = itemList.stream()
-                .collect(Collectors.toMap(
-                        Item::getId,
-                        item -> questionRepository.countQuestionsByItemIdAndIsChecked(item.getId(), false)
-                ));
+        if (!itemList.isEmpty()) {
+            talkBoxInfoPair = getTalkBoxInfoPair(itemList);
 
-        return ItemConverter.toTalkBoxOpenedListDto(itemList, talkBoxInfoPair.waitingCntMap(), talkBoxInfoPair.completedCntMap(), uncheckedCntMap);
+            // 아이템 기준 미확인 질문 개수
+            uncheckedCntMap = itemList.stream()
+                    .collect(Collectors.toMap(
+                            Item::getId,
+                            item -> questionRepository.countQuestionsByItemIdAndIsChecked(item.getId(), false)
+                    ));
+        } else flag = itemRepository.existsBySellerId(seller.getId());
+
+        return ItemConverter.toTalkBoxOpenedListDto(itemList, flag, talkBoxInfoPair != null ? talkBoxInfoPair.waitingCntMap() : null, talkBoxInfoPair != null ? talkBoxInfoPair.completedCntMap() : null, uncheckedCntMap);
     }
 
     @Override

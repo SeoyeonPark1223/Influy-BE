@@ -50,6 +50,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
         FROM Like l
         WHERE l.member = :member
           AND l.targetType = 'SELLER'
+          AND l.likeStatus = 'LIKE'
     """)
     List<Long> findLikedSellerIdsByMember(@Param("member") Member member);
 
@@ -58,6 +59,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
         FROM Like l
         WHERE l.member = :member
           AND l.targetType = 'ITEM'
+          AND l.likeStatus = 'LIKE'
     """)
     List<Long> findLikedItemIdsByMember(@Param("member")Member member);
 }
