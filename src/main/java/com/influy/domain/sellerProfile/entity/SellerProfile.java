@@ -14,6 +14,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -79,11 +80,14 @@ public class SellerProfile extends BaseEntity {
 
     public SellerProfile setProfile(SellerProfileRequestDTO.UpdateProfile requestBody){
         //1차 mvp 이후 QueryDSL 고려
-        if(requestBody.getBackgroundImg()!=null){
+        if(!Objects.equals(requestBody.getBackgroundImg(),this.backgroundImg)){
             this.backgroundImg = requestBody.getBackgroundImg();
         }
         if(requestBody.getInstagram()!=null){
-            this.instagram = requestBody.getInstagram();
+            String instagramLink = requestBody.getInstagram().replaceAll("https://www.instagram.com/","").replaceAll("https://instagram.com/","");
+            int targetIndex = instagramLink.contains("?") ? instagramLink.indexOf("?") : instagramLink.length();
+
+            this.instagram = instagramLink.substring(0, targetIndex);
         }
         if(requestBody.getTiktok()!=null){
             this.tiktok = requestBody.getTiktok();
