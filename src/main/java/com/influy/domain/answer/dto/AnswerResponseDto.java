@@ -18,6 +18,9 @@ public class AnswerResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnswerTagListDto {
+
+        @Schema(description = "카테고리 이름", example = "색상")
+        private String category;
         @Schema(description = "태그 이름", example = "네이비")
         private String tag;
 

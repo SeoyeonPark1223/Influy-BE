@@ -115,6 +115,8 @@ public class QuestionResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class IsAnsweredCntDTO {
+        @Schema(description = "카테고리 이름", example="색상")
+        private String categoryName;
         @Schema(description = "답변 대기 개수", example = "14")
         private Long waitingCnt;
         @Schema(description = "답변 완료 개수", example = "30")

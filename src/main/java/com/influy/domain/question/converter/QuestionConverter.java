@@ -125,6 +125,7 @@ public class QuestionConverter {
             }
         }
         return QuestionResponseDTO.IsAnsweredCntDTO.builder()
+                .categoryName(isAnsweredCntList.getFirst().getCategoryName())
                 .waitingCnt(waitingCnt)
                 .completedCnt(completedCnt)
                 .build();
