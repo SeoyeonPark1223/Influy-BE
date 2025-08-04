@@ -50,9 +50,6 @@ public class Item extends BaseEntity {
 
     @NotNull
     @Builder.Default
-    private boolean isDateUndefined = false;
-
-    @Builder.Default
     private Boolean isDateUndefined = false;
 
     @Builder.Default
@@ -95,10 +92,6 @@ public class Item extends BaseEntity {
     @Builder.Default
     @Setter
     private String mainImg = "";
-
-    @NotNull
-    @Builder.Default
-    private Boolean isDateUndefined = false;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
