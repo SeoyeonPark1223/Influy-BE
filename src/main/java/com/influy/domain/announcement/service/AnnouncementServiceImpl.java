@@ -32,7 +32,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         Pageable pageable = page.toPageable(sort);
 
         SellerProfile seller = sellerService.getSellerProfile(sellerId);
-        return announcementRepository.findAllBySeller(seller,pageable);
+        return announcementRepository.findAllBySellerWithPrimaryFirst(seller,pageable);
     }
 
     //공지 추가
@@ -43,6 +43,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             throw new GeneralException(ErrorStatus.BAD_REQUEST);
         }
         Announcement announcement = AnnouncementConverter.toEntity(requestDTO,seller);
+        seller.getAnnouncementList().add(announcement);
 
         return announcementRepository.save(announcement);
 
