@@ -33,16 +33,17 @@ public class Item extends BaseEntity {
     @NotBlank
     private String name;
 
-    private Long regularPrice;
+    @Builder.Default
+    private Long regularPrice = 0L;
 
-    private Long salePrice;
+    @Builder.Default
+    private Long salePrice = 0L;
 
-    private String tagline;
+    @Builder.Default
+    private String tagline = "";
 
-    @NotNull
     private LocalDateTime startDate;
 
-    @NotNull
     private LocalDateTime endDate;
 
     @Builder.Default
@@ -61,10 +62,11 @@ public class Item extends BaseEntity {
     @Setter
     private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
-    @NotBlank
-    private String marketLink;
+    @Builder.Default
+    private String marketLink = "";
 
-    private String comment;
+    @Builder.Default
+    private String comment = "";
 
     @Builder.Default
     @Setter
@@ -84,6 +86,10 @@ public class Item extends BaseEntity {
     @Builder.Default
     @Setter
     private String mainImg = "";
+
+    @NotNull
+    @Builder.Default
+    private Boolean isDateUndefined = false;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -114,10 +120,9 @@ public class Item extends BaseEntity {
     private List<Like> likeList = new ArrayList<>();
 
     public void updateItem (String name, LocalDateTime startDate, LocalDateTime endDate, String tagline,
-                            Long regularPrice, Long salePrice, String marketLink, Integer itemPeriod, String comment, Boolean isArchived) {
+                            Long regularPrice, Long salePrice, String marketLink, Integer itemPeriod, String comment, Boolean isArchived,
+                            ItemStatus itemStatus, Boolean isDateUndefined) {
         this.name = name != null ? name : this.name;
-        this.startDate = startDate != null ? startDate : this.startDate;
-        this.endDate = endDate != null ? endDate : this.endDate;
         this.tagline = tagline != null ? tagline : this.tagline;
         this.regularPrice = regularPrice != null ? regularPrice : this.regularPrice;
         this.salePrice = salePrice != null ? salePrice : this.salePrice;
@@ -125,5 +130,17 @@ public class Item extends BaseEntity {
         this.itemPeriod = itemPeriod != null ? itemPeriod : this.itemPeriod;
         this.comment = comment != null ? comment : this.comment;
         this.isArchived = isArchived != null ? isArchived : this.isArchived;
+        this.itemStatus = itemStatus != null ? itemStatus : this.itemStatus;
+        this.isDateUndefined = isDateUndefined != null ? isDateUndefined : this.isDateUndefined;
+
+        if (this.isDateUndefined) {
+            // 기간 설정을 했다가 지웠거나 아예 안 한경우 -> startDate, endDate을 null로 저장
+            this.startDate = null;
+            this.endDate = null;
+        } else {
+            // 기간 설정 되어있는 것을 수정하거나 새로 정하거나 아예 수정하지 않은 경우 -> startDate, endDate 값 있으면 넣고 아니면 null로 저장
+            this.startDate = startDate != null ? startDate : this.startDate;
+            this.endDate = endDate != null ? endDate : this.endDate;
+        }
     }
 }

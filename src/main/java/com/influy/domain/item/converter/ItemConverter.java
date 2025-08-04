@@ -30,6 +30,8 @@ public class ItemConverter {
                 .marketLink(request.getMarketLink())
                 .comment(request.getComment())
                 .isArchived(request.getIsArchived())
+                .itemStatus(request.getStatus())
+                .isDateUndefined(request.getIsDateUndefined())
                 .build();
     }
 
@@ -59,6 +61,7 @@ public class ItemConverter {
                 .currentStatus(item.getItemStatus())
                 .liked(liked)
                 .talkBoxInfo(memberRole==MemberRole.SELLER ? toTalkBoxInfoDto(item, waitingCnt, completedCnt):null)
+                .isDateUndefined(item.getIsDateUndefined())
                 .build();
     }
 
@@ -99,8 +102,8 @@ public class ItemConverter {
     public static ItemResponseDto.DetailViewDto toDetailViewDto(Item item) {
         List<String> itemImgLinkList = item.getImageList();
 
-        List<String> itemCategoryList = item.getItemCategoryList().stream()
-                .map(ic -> ic.getCategory().getCategory())
+        List<Long> itemCategoryList = item.getItemCategoryList().stream()
+                .map(ic -> ic.getCategory().getId())
                 .toList();
 
         return ItemResponseDto.DetailViewDto.builder()
@@ -117,6 +120,7 @@ public class ItemConverter {
                 .salePrice(item.getSalePrice())
                 .itemImgList(itemImgLinkList)
                 .itemCategoryList(itemCategoryList)
+                .isDateUndefined(item.getIsDateUndefined())
                 .build();
     }
 

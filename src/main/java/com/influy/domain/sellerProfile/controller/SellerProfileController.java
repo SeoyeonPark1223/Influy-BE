@@ -1,5 +1,6 @@
 package com.influy.domain.sellerProfile.controller;
 
+import com.influy.domain.home.dto.HomeResponseDto;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.item.service.ItemService;
 import com.influy.domain.member.entity.Member;
@@ -114,6 +115,12 @@ public class SellerProfileController {
         SellerProfileResponseDTO.IsPublic body = SellerProfileConverter.toIsPublicDTO(sellerService.updateIsPublic(seller,status));
 
         return ApiResponse.onSuccess(body);
+    }
+
+    @GetMapping("seller/{sellerId}/overview")
+    @Operation(summary = "셀러 오버뷰 정보")
+    public ApiResponse<HomeResponseDto.SellerThumbnailDto> getOverview(@RequestParam("sellerId") Long sellerId) {
+        return ApiResponse.onSuccess(sellerService.getOverview(sellerId));
     }
 
 }

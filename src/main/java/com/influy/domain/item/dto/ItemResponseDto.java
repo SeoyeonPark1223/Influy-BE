@@ -64,6 +64,9 @@ public class ItemResponseDto {
 
         @Schema(description = "셀러일 경우 톡박스 관련 정보")
         private TalkBoxInfoDto talkBoxInfo;
+
+        @Schema(description = "기간 기입 여부", example = "false")
+        private Boolean isDateUndefined;
     }
 
     @Getter
@@ -142,8 +145,11 @@ public class ItemResponseDto {
         @Schema(description = "아이템 사진 리스트, 대표사진은 리스트 맨 처음 순서로", example = "[xxx.png, xxxxx.png, xxxxxx.png]")
         private List<String> itemImgList;
 
-        @Schema(description = "아이템 카테고리, 1~3개", example = "[뷰티, 패션, 소품]")
-        private List<String> itemCategoryList;
+        @Schema(description = "아이템 카테고리, 1~3개", example = "[1, 2, 3]")
+        private List<Long> itemCategoryList;
+
+        @Schema(description = "기간 기입 여부", example = "false")
+        private Boolean isDateUndefined;
     }
 
     @Getter

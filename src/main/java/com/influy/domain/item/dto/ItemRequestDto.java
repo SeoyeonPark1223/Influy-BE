@@ -3,10 +3,7 @@ package com.influy.domain.item.dto;
 import com.influy.domain.item.entity.ItemStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +18,7 @@ public class ItemRequestDto {
         @Schema(description = "아이템 제목", example = "제작 원피스")
         private String name;
 
-        @Schema(description = "아이템 카테고리, 1~3개", example = "[\"1\", \"2\"]")
+        @Schema(description = "아이템 카테고리, 1~3개", example = "[1, 2]")
         @Size(max = 3, message = "카테고리는 최대 3개까지만 업로드할 수 있습니다.")
         private List<Long> itemCategoryIdList;
 
@@ -51,6 +48,12 @@ public class ItemRequestDto {
 
         @Schema(description = "보관 여부 (보관: true, 게시: false)", example = "false")
         private Boolean isArchived;
+
+        @Schema(description = "아이템 표기 상태", example = "SOLD_OUT")
+        private ItemStatus status;
+
+        @Schema(description = "기간 기입 여부", example = "false")
+        private Boolean isDateUndefined;
     }
 
     @Getter

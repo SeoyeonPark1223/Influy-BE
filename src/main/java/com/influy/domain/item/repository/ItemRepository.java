@@ -18,7 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Integer countBySellerIdAndIsArchivedTrue(Long sellerId);
     Integer countBySellerIdAndIsArchivedFalse(Long sellerId);
     Page<Item> findBySellerIdAndIsArchivedTrue(Long sellerId, Pageable pageable);
-    Page<Item> findBySellerIdAndIsArchivedFalse(Long sellerId, Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.isArchived = false AND i.endDate > :now")
     Page<Item> findOngoingItems(@Param("sellerId")Long sellerId, @Param("now")LocalDateTime now, Pageable pageable);
@@ -83,4 +82,30 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findTop3BySellerId(Long sellerId);
 
     Boolean existsBySellerId(Long id);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = false
+    ORDER BY
+      CASE
+        WHEN i.endDate IS NULL THEN 2
+        WHEN i.endDate <= :now THEN 3
+        ELSE 1
+      END,
+      i.endDate ASC
+    """)
+    Page<Item> findAllSortedByEndDate(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, Pageable pageable);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = false
+    ORDER BY
+      CASE
+        WHEN i.endDate IS NULL THEN 2
+        WHEN i.endDate <= :now THEN 3
+        ELSE 1
+      END,
+      i.createdAt DESC
+    """)
+    Page<Item> findAllSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, Pageable pageable);
 }

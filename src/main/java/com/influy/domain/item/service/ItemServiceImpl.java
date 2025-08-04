@@ -58,11 +58,18 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public Item create(CustomUserDetails userDetails, ItemRequestDto.DetailDto request) {
         SellerProfile seller = memberService.checkSeller(userDetails);
+        if (!request.getIsArchived() && (request.getItemImgList() == null || request.getIsDateUndefined() || request.getItemCategoryIdList() == null)) {
+            // 아이템 게시할때 필수 필드: 사진, 제목(게시, 보관 공통), 기간 (undefined=false여야함), 아이템 카테고리
+                throw new GeneralException(ErrorStatus.ITEM_INFO_REQUIRED);
+        }
+
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
-        createItemImgList(request, item);
-        createItemCategoryList(request, item);
+        if (!request.getIsArchived()) {
+            createItemImgList(request, item);
+            createItemCategoryList(request, item);
+        }
 
         seller.getItemList().add(item);
 
@@ -100,7 +107,10 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         item.updateItem(request.getName(), request.getStartDate(), request.getEndDate(), request.getTagline(),
-                request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived());
+                request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived(),
+                request.getStatus(), request.getIsDateUndefined());
+
+        if (!request.getIsArchived() && request.getIsDateUndefined()) throw new GeneralException(ErrorStatus.ITEM_INFO_REQUIRED);
 
         if (request.getItemImgList() != null) {
             item.getImageList().clear();
@@ -158,7 +168,6 @@ public class ItemServiceImpl implements ItemService {
         MemberRole memberRole = MemberRole.SELLER;
         List<Long> likeItems = new ArrayList<>();
 
-
         if (userDetails != null) {
             Member member = memberRepository.findById(userDetails.getId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -188,12 +197,17 @@ public class ItemServiceImpl implements ItemService {
             itemPage = itemRepository.findOngoingItems(sellerId, LocalDateTime.now(), pageable);
         } else if (!isArchived & !isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 미적용
-            itemPage = itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
-        } else if (isArchived) {
+            if (sortType == ItemSortType.END_DATE) {
+                // 마감일 빠른 순 -> endDate = null -> endDate < now
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), pageable);
+            } else {
+                // sortType == ItemSortType.CREATE_DATE
+                // 최신 생성 순 -> endDate = null -> endDate < now
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), pageable);
+            }
+        } else {
             // 보관 상품
             itemPage = itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
-        } else {
-            throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         }
 
         TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemPage.getContent());
