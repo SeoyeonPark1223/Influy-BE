@@ -110,8 +110,6 @@ public class ItemServiceImpl implements ItemService {
                 request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived(),
                 request.getStatus(), request.getIsDateUndefined());
 
-        if (!request.getIsArchived() && request.getIsDateUndefined()) throw new GeneralException(ErrorStatus.ITEM_INFO_REQUIRED);
-
         if (request.getItemImgList() != null) {
             item.getImageList().clear();
             createItemImgList(request, item);

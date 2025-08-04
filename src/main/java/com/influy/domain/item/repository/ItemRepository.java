@@ -31,7 +31,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         SELECT i
         FROM Item i
         LEFT JOIN i.questionList q
-        WHERE i.endDate > :now
+        WHERE i.endDate IS NULL OR i.endDate > :now
         AND i.itemStatus != 'SOLD_OUT'
         AND i.seller.isPublic = true
         GROUP BY i
@@ -42,14 +42,15 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("""
         SELECT ic.item FROM ItemCategory ic
         WHERE ic.category.id = :categoryId
-          AND ic.item.endDate > :now
+          AND ic.item.endDate IS NULL OR ic.item.endDate > :now
           AND ic.item.itemStatus != 'SOLD_OUT'
           AND ic.item.seller.isPublic = true
+          AND ic.item.isArchived = false
           ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable, @Param("now") LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true")
+    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true AND i.isArchived = false ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
     Page<Item> findAllNow(Pageable pageable, @Param("now") LocalDateTime now);
 
     Boolean existsByNameContaining(String query);

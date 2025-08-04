@@ -7,6 +7,8 @@ import com.influy.domain.like.entity.Like;
 import com.influy.domain.question.entity.Question;
 import com.influy.domain.questionCategory.entity.QuestionCategory;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -134,9 +136,11 @@ public class Item extends BaseEntity {
         this.isDateUndefined = isDateUndefined != null ? isDateUndefined : this.isDateUndefined;
 
         if (this.isDateUndefined) {
+            if (!this.isArchived) throw new GeneralException(ErrorStatus.ITEM_INFO_REQUIRED);
             // 기간 설정을 했다가 지웠거나 아예 안 한경우 -> startDate, endDate을 null로 저장
             this.startDate = null;
             this.endDate = null;
+
         } else {
             // 기간 설정 되어있는 것을 수정하거나 새로 정하거나 아예 수정하지 않은 경우 -> startDate, endDate 값 있으면 넣고 아니면 null로 저장
             this.startDate = startDate != null ? startDate : this.startDate;
