@@ -142,6 +142,9 @@ public class ItemResponseDto {
         @Schema(description = "할인가", example = "80000")
         private Long salePrice;
 
+        @Schema(description = "코멘트", example = "뚜루루뚜루루")
+        private String comment;
+
         @Schema(description = "아이템 사진 리스트, 대표사진은 리스트 맨 처음 순서로", example = "[xxx.png, xxxxx.png, xxxxxx.png]")
         private List<String> itemImgList;
       

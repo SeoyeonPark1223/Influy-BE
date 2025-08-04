@@ -114,6 +114,7 @@ public class ItemConverter {
                 .startDate(item.getStartDate())
                 .endDate(item.getEndDate())
                 .tagline(item.getTagline())
+                .comment(item.getComment())
                 .currentStatus(item.getItemStatus())
                 .marketLink(item.getMarketLink())
                 .isArchived(item.getIsArchived())
