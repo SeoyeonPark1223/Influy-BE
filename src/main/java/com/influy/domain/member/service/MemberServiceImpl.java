@@ -134,7 +134,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = userDetails.getMember();
 
-        if (member.getRole() == MemberRole.SELLER || member.getRole() == MemberRole.MANAGER) {
+        if (member.getRole() == MemberRole.SELLER || member.getRole() == MemberRole.MANAGER||member.getRole()==MemberRole.ADMIN) {
             return sellerProfileRepository.findByMemberId(member.getId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
         } else {

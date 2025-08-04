@@ -15,7 +15,7 @@ public interface QuestionCategoryService {
     List<String> generateCategory(CustomUserDetails userDetails, Long itemId);
     QuestionCategory findByCategoryIdAndItemId(Long questionCategoryId, Long itemId);
 
-    List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId, Long itemId);
+    List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId);
 
     QuestionCategoryResponseDto.ViewListDto getListUser(CustomUserDetails userDetails, Long itemId);
 }

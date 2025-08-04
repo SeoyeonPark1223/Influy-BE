@@ -64,7 +64,10 @@ public class AnswerServiceImpl implements AnswerService {
         for (Answer answer : commonList) uniqueAnswers.putIfAbsent(answer.getContent(), answer);
         List<Answer> commonAnswerList = new ArrayList<>(uniqueAnswers.values());
         answerList.addAll(commonAnswerList);
-        return AnswerConverter.toAnswerTagListDto(questionTag, answerList);
+
+        //태그가 속한 카테고리 이름
+        String questionCategoryName = questionTag.getQuestionCategory().getName();
+        return AnswerConverter.toAnswerTagListDto(questionCategoryName, questionTag, answerList);
     }
 
     @Override

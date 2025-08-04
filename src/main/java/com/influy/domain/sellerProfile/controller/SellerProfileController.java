@@ -30,19 +30,6 @@ public class SellerProfileController {
     private final MemberService memberService;
     private final ItemService itemService;
 
-
-    //프로필 조회
-    @GetMapping("seller/profile")
-    @Operation(summary = "셀러 프로필 수정 시 기본값 조회 API", description = "셀러 본인만 가능")
-    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-
-
-        SellerProfile seller = memberService.checkSeller(userDetails);
-        SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(seller);
-
-        return ApiResponse.onSuccess(body);
-    }
-
     //일반 유저의 프로필 조회
     @GetMapping("user/{sellerId}/market")
     @Operation(summary = "셀러 마켓 조회 API", description = "일반 사용자가 셀러 마켓 들어갔을 때")
@@ -61,6 +48,18 @@ public class SellerProfileController {
         SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked, publicItems, reviews);
 
 
+
+        return ApiResponse.onSuccess(body);
+    }
+
+    //프로필 조회
+    @GetMapping("seller/profile")
+    @Operation(summary = "셀러 프로필 수정 시 기본값 조회 API", description = "셀러 본인만 가능")
+    public ApiResponse<SellerProfileResponseDTO.SellerProfile> getSellerProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        SellerProfileResponseDTO.SellerProfile body = SellerProfileConverter.toSellerProfileDTO(seller);
 
         return ApiResponse.onSuccess(body);
     }

@@ -70,7 +70,7 @@ public class QuestionCategoryController {
         SellerProfile seller = memberService.checkSeller(userDetails);
         sellerService.checkQuestionOwner(null, categoryId, seller.getId());
 
-        List<CategoryJPQLResult.IsAnswered> isAnsweredCntList = questionCategoryService.getIsAnsweredMap(categoryId,null);
+        List<CategoryJPQLResult.IsAnswered> isAnsweredCntList = questionCategoryService.getIsAnsweredMap(categoryId);
         QuestionResponseDTO.IsAnsweredCntDTO body = QuestionConverter.toIsAnsweredCntDTO(isAnsweredCntList);
 
 

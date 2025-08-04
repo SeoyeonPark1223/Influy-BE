@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface ImageService {
     ImageResponseDto.UploadResultDto uploadImg(CustomUserDetails userDetails, ImageRequestDto.UploadDto request);
+
+    String duplicateImg(String sourceURL,Long memberId);
 }

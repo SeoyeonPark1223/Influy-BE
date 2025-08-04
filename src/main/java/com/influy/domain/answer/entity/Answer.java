@@ -32,4 +32,7 @@ public class Answer extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @Builder.Default
+    private Boolean isChecked = false;
 }

@@ -96,6 +96,7 @@ public class QuestionController {
 
         QuestionResponseDTO.UserViewQNAPage body = questionService.getQNAsOf(member.getId(),itemId,pageable);
 
+
         return ApiResponse.onSuccess(body);
     }
 
@@ -145,6 +146,18 @@ public class QuestionController {
                                                                  @PathVariable("questionCategoryId") Long questionCategoryId,
                                                                  @RequestBody @Valid QuestionRequestDTO.DeleteDto request) {
         return ApiResponse.onSuccess(questionService.delete(userDetails, itemId, questionCategoryId, request));
+    }
+
+    @GetMapping("/user/items/talkbox")
+    @Operation(summary = "유저가 아이템 별 톡박스 목록 조회", description = "아이템 별 톡박스")
+    public ApiResponse<QuestionResponseDTO.UserTalkBoxItemPageDTO> getUserTalkBoxItems(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                       @Valid @ParameterObject PageRequestDto pageDTO){
+
+        Member member = memberService.findById(userDetails.getId());
+
+        QuestionResponseDTO.UserTalkBoxItemPageDTO body = questionService.getUserTalkBoxItems(member,pageDTO);
+
+        return ApiResponse.onSuccess(body);
     }
 
 }

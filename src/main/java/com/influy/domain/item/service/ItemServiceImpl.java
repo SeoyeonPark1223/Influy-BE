@@ -75,6 +75,7 @@ public class ItemServiceImpl implements ItemService {
         seller.getItemList().add(item);
 
         return item;
+
     }
 
     @Override
@@ -240,7 +241,10 @@ public class ItemServiceImpl implements ItemService {
 
     private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
         item.getImageList().addAll(request.getItemImgList());
-        item.setMainImg(item.getImageList().getFirst());
+        if(!item.getImageList().isEmpty()){
+            item.setMainImg(item.getImageList().getFirst());
+        }
+
     }
 
     @Override

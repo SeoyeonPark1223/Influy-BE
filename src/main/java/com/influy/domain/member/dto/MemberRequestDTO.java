@@ -11,7 +11,7 @@ import java.util.List;
 public class MemberRequestDTO {
     @Getter
     public static class UserJoin {
-        @Schema(description = "멤버 고유 아이디", example = "@rapper_mj")
+        @Schema(description = "멤버 고유 아이디", example = "rapper_mj")
         private String username;
 
         @Schema(description = "멤버의 카카오 회원 번호", example = "1234567890")
@@ -37,7 +37,7 @@ public class MemberRequestDTO {
     }
     @Getter
     public static class UsernameDuplicateCheck{
-        @Schema(description = "유저네임", example = "@rapper_mj")
+        @Schema(description = "유저네임", example = "rapper_mj")
         private String username;
     }
 

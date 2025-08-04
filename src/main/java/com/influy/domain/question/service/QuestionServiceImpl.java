@@ -3,7 +3,10 @@ package com.influy.domain.question.service;
 import com.influy.domain.ai.service.AiService;
 import com.influy.domain.answer.dto.jpql.AnswerJPQLResult;
 import com.influy.domain.answer.entity.Answer;
+import com.influy.domain.answer.repository.AnswerRepository;
+import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.service.MemberService;
 import com.influy.domain.question.converter.QuestionConverter;
@@ -25,8 +28,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +42,8 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final AiService aiService;
     private final MemberService memberService;
+    private final ItemRepository itemRepository;
+    private final AnswerRepository answerRepository;
 
 
     @Override
@@ -67,13 +75,30 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
+    @Transactional
     public QuestionResponseDTO.UserViewQNAPage getQNAsOf(Long memberId, Long itemId, PageRequestDto pageableDto) {
 
         Pageable pageable = pageableDto.toPageable();
         //유저에게는 question 의 Hidden 상태와 무관하게 모두 보여줌
         Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList= questionRepository.findAllByMemberIdAndItemId(memberId, itemId, pageable);
 
-        return QuestionConverter.toUserViewQNAPage(userQNAList);
+        List<Long> answerIds = new ArrayList<>();
+        for(AnswerJPQLResult.UserViewQNAInfo qna : userQNAList.getContent()){
+            if(qna.getType().equals("A")){
+                answerIds.add(qna.getId());
+            }
+        }
+
+        //확인 처리
+        answerRepository.setAnswersAsChecked(answerIds);
+        String greeting = null;
+
+        if(userQNAList.isLast()){
+            Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+            greeting = item.getTalkBoxComment();
+        }
+
+        return QuestionConverter.toUserViewQNAPage(userQNAList, greeting);
     }
 
     @Override
@@ -145,6 +170,36 @@ public class QuestionServiceImpl implements QuestionService {
 
         //응답 dto
         return QuestionConverter.toSellerViewPageDTO(questions, nthQuestions, newQuestions);
+    }
+
+    @Override
+    public QuestionResponseDTO.UserTalkBoxItemPageDTO getUserTalkBoxItems(Member member, PageRequestDto pageRequestDto) {
+
+        Pageable pageable = pageRequestDto.toPageable();
+        //아이템 별 최신 채팅 내용, 시간
+        Page<QuestionJPQLResult.ItemWithRecentChat> itemWithRecentChats = questionRepository.getRecentChatOfMemberGroupByItem(member.getId(), pageable);
+        List<Long> itemIds = itemWithRecentChats.getContent().stream().map(QuestionJPQLResult.ItemWithRecentChat::getItemId).toList();
+
+
+        //아이템별 해당 멤버가 확인 안한 답변 개수
+        List<AnswerJPQLResult.UncheckedAnswer> uncheckedList =answerRepository.findAllUnCheckedOfMemberQuestion(member.getId());
+        Map<Long, Integer> uncheckedMap = uncheckedList.stream()
+                .collect(Collectors.toMap(
+                        AnswerJPQLResult.UncheckedAnswer::getItemId,
+                        AnswerJPQLResult.UncheckedAnswer::getUncheckedCount
+                ));
+
+
+        //아이템 정보 + 셀러 정보
+        List<ItemJPQLResponse.ItemWithSellerInfo> itemAndSellerList = itemRepository.findAllWithSellerInfoById(itemIds);
+        Map<Long, ItemJPQLResponse.ItemWithSellerInfo> itemSellerMap =
+                itemAndSellerList.stream().collect(Collectors.toMap(
+                        ItemJPQLResponse.ItemWithSellerInfo::getItemId,
+                        Function.identity()
+                ));
+
+        return QuestionConverter.toUserTalkBoxItemPageDTO(itemWithRecentChats,uncheckedMap,itemSellerMap);
+
     }
 
 }

@@ -32,10 +32,11 @@ public class AnswerConverter {
                 .build();
     }
 
-    public static AnswerResponseDto.AnswerTagListDto toAnswerTagListDto(QuestionTag questionTag, List<Answer> answerList) {
+    public static AnswerResponseDto.AnswerTagListDto toAnswerTagListDto(String categoryName, QuestionTag questionTag, List<Answer> answerList) {
         List<String> contentList = answerList.stream().map(Answer::getContent).toList();
 
         return AnswerResponseDto.AnswerTagListDto.builder()
+                .category(categoryName)
                 .tag(questionTag.getName())
                 .answerList(contentList)
                 .build();
@@ -76,6 +77,12 @@ public class AnswerConverter {
                 .questionContent(answer.getQuestionContent())
                 .content(answer.getContent())
                 .createdAt(answer.getCreatedAt())
+                .build();
+    }
+    public static AnswerResponseDto.UserViewGreeting toUserViewGreetingDTO(String greeting) {
+        return AnswerResponseDto.UserViewGreeting.builder()
+                .type("Default Message")
+                .content(greeting)
                 .build();
     }
 }
