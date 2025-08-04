@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -84,15 +82,21 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteImg(List<String> imgList) {
         String keyPrefix = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
-        for (String img: imgList) {
-            String imageKey = img.replace(keyPrefix, "");
 
-            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(imageKey)
-                    .build();
+        List<ObjectIdentifier> objectIdentifiers = imgList.stream()
+                .map(img -> {
+                    String key = img.replace(keyPrefix, "");
+                    return ObjectIdentifier.builder().key(key).build();
+                })
+                .toList();
 
-            s3Client.deleteObject(deleteRequest);
-        }
+        if (objectIdentifiers.isEmpty()) return;
+
+        DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                .bucket(bucket)
+                .delete(Delete.builder().objects(objectIdentifiers).build())
+                .build();
+
+        s3Client.deleteObjects(deleteRequest);
     }
 }
