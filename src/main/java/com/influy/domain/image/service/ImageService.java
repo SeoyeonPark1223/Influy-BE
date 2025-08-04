@@ -10,5 +10,4 @@ import java.util.List;
 
 public interface ImageService {
     ImageResponseDto.UploadResultDto uploadImg(CustomUserDetails userDetails, ImageRequestDto.UploadDto request);
-//    void deleteItemImg(Item item);
 }

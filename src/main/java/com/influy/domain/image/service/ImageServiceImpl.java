@@ -46,22 +46,4 @@ public class ImageServiceImpl implements ImageService {
 
         return ImageConverter.toUploadResultDto(presignedRequest.url(), imageUrl);
     }
-
-//    @Override
-//    @Transactional
-//    public void deleteItemImg(Item item) {
-//        String keyPrefix = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
-//        List<String> imageList = item.getImageList();
-//        for (String img: imageList) {
-//            String imageKey = img.replace(keyPrefix, "");
-//
-//            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-//                    .bucket(bucket)
-//                    .key(imageKey)
-//                    .build();
-//
-//            s3Client.deleteObject(deleteRequest);
-//        }
-//
-//    }
 }

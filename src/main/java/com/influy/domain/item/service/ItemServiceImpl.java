@@ -112,7 +112,6 @@ public class ItemServiceImpl implements ItemService {
                 request.getStatus(), request.getIsDateUndefined());
 
         if (request.getItemImgList() != null) {
-//            imageService.deleteItemImg(item);
             item.getImageList().clear();
             createItemImgList(request, item);
         }
