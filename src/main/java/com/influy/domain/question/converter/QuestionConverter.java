@@ -18,9 +18,11 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class QuestionConverter {
 
@@ -90,18 +92,24 @@ public class QuestionConverter {
                 .build();
     }
 
-    public static QuestionResponseDTO.UserViewQNAPage toUserViewQNAPage(Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList) {
-        List<QuestionResponseDTO.UserViewQNA> content = userQNAList != null ?
+    public static QuestionResponseDTO.UserViewQNAPage toUserViewQNAPage(Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList,
+                                                                        String greeting) {
+        List<QuestionResponseDTO.UserViewQNA> content = new ArrayList<>(userQNAList != null ?
                 userQNAList.getContent().stream().map(
-                qna->{
-                    if(qna.getType().equals("Q")){
-                        return toUserViewDTO(qna);
-                    } else{
-                        return AnswerConverter.toUserViewDTO(qna);
-                    }
-                }
-        ).toList()
-                : Collections.emptyList();
+                        qna -> {
+                            if (qna.getType().equals("Q")) {
+                                return toUserViewDTO(qna);
+                            } else {
+                                return AnswerConverter.toUserViewDTO(qna);
+                            }
+                        }
+                ).toList()
+                : Collections.emptyList());
+
+        if(greeting!=null){
+            AnswerResponseDto.UserViewGreeting message = AnswerConverter.toUserViewGreetingDTO(greeting);
+            content.add(message);
+        }
 
         return QuestionResponseDTO.UserViewQNAPage.builder()
                 .chatList(content)

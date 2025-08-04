@@ -91,8 +91,14 @@ public class QuestionServiceImpl implements QuestionService {
 
         //확인 처리
         answerRepository.setAnswersAsChecked(answerIds);
+        String greeting = null;
 
-        return QuestionConverter.toUserViewQNAPage(userQNAList);
+        if(userQNAList.isLast()){
+            Item item = itemRepository.findById(itemId).orElseThrow(()->new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+            greeting = item.getTalkBoxComment();
+        }
+
+        return QuestionConverter.toUserViewQNAPage(userQNAList, greeting);
     }
 
     @Override

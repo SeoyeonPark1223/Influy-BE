@@ -122,6 +122,18 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     WHERE q.member_id = :memberId AND q.item_id = :itemId
     
     ORDER BY createdAt DESC
+    """, countQuery = """
+        SELECT COUNT(*)
+        FROM (
+            SELECT q.id
+            FROM question q
+            WHERE q.member_id = :memberId and q.item_id = :itemId
+            UNION ALL
+            SELECT a.id
+            FROM answer a
+            JOIN question q ON a.question_id = q.id
+            WHERE q.member_id = :memberId AND q.item_id = :itemId
+        ) AS total
     """, nativeQuery = true)
     Page<AnswerJPQLResult.UserViewQNAInfo> findAllByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId, Pageable pageable);
 

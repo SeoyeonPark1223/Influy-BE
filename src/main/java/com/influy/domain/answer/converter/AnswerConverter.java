@@ -79,4 +79,10 @@ public class AnswerConverter {
                 .createdAt(answer.getCreatedAt())
                 .build();
     }
+    public static AnswerResponseDto.UserViewGreeting toUserViewGreetingDTO(String greeting) {
+        return AnswerResponseDto.UserViewGreeting.builder()
+                .type("Default Message")
+                .content(greeting)
+                .build();
+    }
 }
