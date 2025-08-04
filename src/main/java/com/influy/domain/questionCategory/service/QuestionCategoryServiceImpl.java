@@ -88,14 +88,10 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService{
     }
 
     @Override
-    public List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId, Long itemId) {
+    public List<CategoryJPQLResult.IsAnswered> getIsAnsweredMap(Long categoryId) {
 
-        if(categoryId!=null){
-            return questionRepository.countIsAnsweredByCategoryId(categoryId);
-        }else if(itemId!=null){
-            return questionRepository.countIsAnsweredByItemId(itemId);
-        }
-        return null;
+        return questionRepository.countIsAnsweredByCategoryId(categoryId);
+
     }
 
     @Override

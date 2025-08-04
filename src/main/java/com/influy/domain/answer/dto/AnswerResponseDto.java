@@ -18,6 +18,9 @@ public class AnswerResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnswerTagListDto {
+
+        @Schema(description = "카테고리 이름", example = "색상")
+        private String category;
         @Schema(description = "태그 이름", example = "네이비")
         private String tag;
 
@@ -44,6 +47,17 @@ public class AnswerResponseDto {
         private String content;
         @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
         private LocalDateTime createdAt;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserViewGreeting implements QuestionResponseDTO.UserViewQNA{
+        @Schema(description = "타입", example = "Default Message")
+        private String type;
+        @Schema(description = "기본 멘트 내용", example = "빠른 확인이 불가할 수 있습니다.")
+        private String content;
     }
 
     @Getter

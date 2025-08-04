@@ -10,6 +10,7 @@ public class CategoryJPQLResult {
     }
 
     public interface IsAnswered{
+        String getCategoryName();
         Boolean getIsAnswered();
         Long getTotalQuestions();
     }

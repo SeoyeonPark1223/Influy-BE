@@ -20,7 +20,7 @@ public interface QuestionTagRepository extends JpaRepository<QuestionTag, Long> 
           AND qt.questionCategory.id = :questionCategoryId
           AND qt.questionCategory.item.id = :itemId
     """)
-    Optional<QuestionTag> findValidQuestionTag(Long itemId, Long questionCategoryId, Long questionTagId);
+    Optional<QuestionTag> findValidQuestionTag(@Param("itemId") Long itemId, @Param(("questionCategoryId")) Long questionCategoryId, @Param("questionTagId") Long questionTagId);
 
     //태그 id, 이름, 태그에 속한 isAnswered 상태 질문 개수, 새 질문 개수
     @Query(value = """

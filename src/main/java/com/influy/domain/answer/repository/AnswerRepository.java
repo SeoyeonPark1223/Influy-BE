@@ -5,6 +5,7 @@ import com.influy.domain.answer.entity.Answer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -25,4 +26,18 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     """)
     List<Answer> findCommonAnswersByQuestionTagId(@Param("questionTagId") Long questionTagId);
 
+
+    @Query("""
+    SELECT q.item.id AS itemId,
+           SUM(CASE WHEN a.isChecked = false THEN 1 ELSE 0 END) AS uncheckedCount
+    FROM Question q
+    LEFT JOIN Answer a ON a.question = q
+    WHERE q.member.id = :memberId
+    GROUP BY q.item.id
+    """)
+    List<AnswerJPQLResult.UncheckedAnswer> findAllUnCheckedOfMemberQuestion(@Param("memberId") Long memberId);
+
+    @Modifying
+    @Query("UPDATE Answer a SET a.isChecked = true WHERE a.id IN :answerIds AND a.isChecked = false")
+    void setAnswersAsChecked(@Param("answerIds") List<Long> answerIds);
 }

@@ -86,7 +86,8 @@ public class HomeServiceImpl implements HomeService {
         Pageable pageable = pageRequestDto.toPageable();
 
         //아이템 조회(1순위 isChecked=false 많은 순, 2순위 pendingQuestions 많은 순)
-        Page<ItemJPQLResponse.ItemWithQuestionStatus> items = itemRepository.getItemsWithQuestionStatus(seller.getId(), pageable);
+        LocalDateTime now = LocalDateTime.now();
+        Page<ItemJPQLResponse.ItemWithQuestionStatus> items = itemRepository.getItemsWithQuestionStatus(seller.getId(), now, pageable);
         List<Long> itemIds = items.getContent().stream().map(item->item.getItem().getId()).toList();
 
         //현재 top3

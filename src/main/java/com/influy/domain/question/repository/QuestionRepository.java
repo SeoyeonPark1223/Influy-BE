@@ -112,7 +112,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     FROM question q
     LEFT JOIN question_tag qt ON q.question_tag_id = qt.id
     LEFT JOIN question_category qc ON qt.question_category_id = qc.id
-    WHERE q.member_id = :memberId
+    WHERE q.member_id = :memberId AND q.item_id = :itemId
     
     UNION ALL
     
@@ -122,27 +122,29 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     WHERE q.member_id = :memberId AND q.item_id = :itemId
     
     ORDER BY createdAt DESC
+    """, countQuery = """
+        SELECT COUNT(*)
+        FROM (
+            SELECT q.id
+            FROM question q
+            WHERE q.member_id = :memberId and q.item_id = :itemId
+            UNION ALL
+            SELECT a.id
+            FROM answer a
+            JOIN question q ON a.question_id = q.id
+            WHERE q.member_id = :memberId AND q.item_id = :itemId
+        ) AS total
     """, nativeQuery = true)
     Page<AnswerJPQLResult.UserViewQNAInfo> findAllByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId, Pageable pageable);
 
     @Query("""
-        SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
+        SELECT qc.name AS categoryName, q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
         FROM Question q
         JOIN q.questionTag.questionCategory qc
         WHERE qc.id = :categoryId AND q.isHidden = false
         GROUP BY q.isAnswered
     """)
     List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);
-
-
-    //답변 완료/답변 대기 개수를 isAnswered 별로 구분하여 조회
-    @Query("""
-        SELECT q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
-        FROM Question q
-        WHERE q.item.id = :itemId
-        GROUP BY q.isAnswered
-    """)
-    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByItemId(@Param("itemId") Long itemId);
 
 
     @Query("""
@@ -163,4 +165,27 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         GROUP BY q.item.id, q.isAnswered
     """)
     List<TalkBoxInfoPairDto> countByItemIdAndIsAnswered(@Param("itemIdList")List<Long> itemIdList);
+
+    @Query(value = """
+    SELECT item_id AS itemId, content AS content, created_at AS createdAt
+    FROM (
+        SELECT
+            item_id, content, created_at,
+            ROW_NUMBER() OVER (PARTITION BY item_id ORDER BY created_at DESC) AS rn
+        FROM (
+            SELECT q.item_id, q.content, q.created_at
+            FROM question q
+            WHERE q.member_id = :memberId
+    
+            UNION ALL
+    
+            SELECT a.item_id, a.content, a.created_at
+            FROM answer a
+            JOIN question q ON q.id = a.question_id
+            WHERE q.member_id = :memberId
+        ) AS combined
+    ) AS ranked
+    WHERE rn = 1 ORDER BY createdAt DESC
+    """, nativeQuery = true)
+    Page<QuestionJPQLResult.ItemWithRecentChat> getRecentChatOfMemberGroupByItem(@Param("memberId") Long memberId, Pageable pageable);
 }

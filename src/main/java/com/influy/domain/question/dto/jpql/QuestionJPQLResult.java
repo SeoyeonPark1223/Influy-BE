@@ -1,5 +1,6 @@
 package com.influy.domain.question.dto.jpql;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class QuestionJPQLResult {
@@ -19,5 +20,11 @@ public class QuestionJPQLResult {
         String getTagName();
         Long getTagId();
         Date getCreatedAt();
+    }
+
+    public interface ItemWithRecentChat {
+        Long getItemId();
+        String getContent();
+        LocalDateTime getCreatedAt();
     }
 }
