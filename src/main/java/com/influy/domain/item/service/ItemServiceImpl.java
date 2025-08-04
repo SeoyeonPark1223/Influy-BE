@@ -206,25 +206,18 @@ public class ItemServiceImpl implements ItemService {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 미적용
             if (sortType == ItemSortType.END_DATE) {
                 // 마감일 빠른 순 -> endDate = null -> endDate < now
-                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), false, pageable);
             } else {
                 // sortType == ItemSortType.CREATE_DATE
                 // 최신 생성 순 -> endDate = null -> endDate < now
-                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
-            }
-        } else if (isOnGoing) {
-            // isArchived && isOnGoing 보관 상품인 것 중에서 진행 중 상품 필터 적용
-            if (sortType == ItemSortType.END_DATE) {
-                itemPage= itemRepository.findOngoingItemsSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
-            } else {
-                itemPage = itemRepository.findOngoingItemsSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), false, pageable);
             }
         } else {
-            // isArchived && !isOnGoing 보관 상품인 것 중에서 진행 중 상품 필터 미적용
+            // 보관 상품 (진행 중 상품 필터 없음)
             if (sortType == ItemSortType.END_DATE) {
-                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), true, pageable);
             } else {
-                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), true, pageable);
             }
         }
 
