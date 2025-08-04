@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,12 +16,6 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     Integer countBySellerIdAndIsArchivedTrue(Long sellerId);
     Integer countBySellerIdAndIsArchivedFalse(Long sellerId);
-    Page<Item> findBySellerIdAndIsArchivedTrue(Long sellerId, Pageable pageable);
-    Page<Item> findBySellerIdAndIsArchivedFalse(Long sellerId, Pageable pageable);
-
-    @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.isArchived = false AND i.endDate > :now")
-    Page<Item> findOngoingItems(@Param("sellerId")Long sellerId, @Param("now")LocalDateTime now, Pageable pageable);
-
     @Query("SELECT p.isArchived AS isArchived, COUNT(p) AS count FROM Item p WHERE p.seller.id = :sellerId GROUP BY p.isArchived")
     List<ItemJPQLResponse.IsArchivedItemCount> countBySellerIdGroupByIsArchived(@Param("sellerId") Long sellerId);
 
@@ -37,7 +30,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         SELECT i
         FROM Item i
         LEFT JOIN i.questionList q
-        WHERE i.endDate > :now
+        WHERE i.endDate IS NULL OR i.endDate > :now
         AND i.itemStatus != 'SOLD_OUT'
         AND i.seller.isPublic = true
         GROUP BY i
@@ -48,14 +41,15 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("""
         SELECT ic.item FROM ItemCategory ic
         WHERE ic.category.id = :categoryId
-          AND ic.item.endDate > :now
+          AND ic.item.endDate IS NULL OR ic.item.endDate > :now
           AND ic.item.itemStatus != 'SOLD_OUT'
           AND ic.item.seller.isPublic = true
+          AND ic.item.isArchived = false
           ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable, @Param("now") LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true")
+    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true AND i.isArchived = false ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
     Page<Item> findAllNow(Pageable pageable, @Param("now") LocalDateTime now);
 
     Boolean existsByNameContaining(String query);
@@ -85,6 +79,50 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Boolean existsBySellerId(Long id);
 
     @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived
+    ORDER BY
+      CASE
+        WHEN i.endDate IS NULL THEN 2
+        WHEN i.endDate <= :now THEN 3
+        ELSE 1
+      END,
+      i.endDate ASC
+    """)
+    Page<Item> findAllSortedByEndDate(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived
+    ORDER BY
+      CASE
+        WHEN i.endDate IS NULL THEN 2
+        WHEN i.endDate <= :now THEN 3
+        ELSE 1
+      END,
+      i.createdAt DESC
+    """)
+    Page<Item> findAllSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived AND (i.endDate IS NULL OR i.endDate > :now)
+    ORDER BY
+      CASE
+        WHEN i.endDate IS NULL THEN 2
+        ELSE 1
+      END,
+      i.endDate ASC
+    """)
+    Page<Item> findOngoingItemsSortedByEndDate(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived AND (i.endDate IS NULL OR i.endDate > :now)
+    """)
+    Page<Item> findOngoingItemsSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
+    
+    @Query("""
     SELECT i.id AS itemId, i.name AS itemTitle, i.mainImg AS itemMainImg, m.nickname AS sellerNickname, m.profileImg AS sellerProfileImg
     FROM Item i
     JOIN SellerProfile s ON i.seller = s
@@ -92,4 +130,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     WHERE i.id IN (:itemIds)
     """)
     List<ItemJPQLResponse.ItemWithSellerInfo> findAllWithSellerInfoById(@Param("itemIds") List<Long> itemIds);
+
 }

@@ -1,5 +1,6 @@
 package com.influy.domain.sellerProfile.service;
 
+import com.influy.domain.home.dto.HomeResponseDto;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
@@ -26,4 +27,6 @@ public interface SellerProfileService {
     List<IsArchivedItemCount> getMarketItems(Long sellerId);
 
     Boolean checkQuestionOwner(Long tagId, Long categoryId, Long sellerId);
+
+    HomeResponseDto.SellerThumbnailDto getOverview(Long sellerId);
 }

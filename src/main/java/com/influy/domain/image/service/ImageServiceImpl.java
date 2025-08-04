@@ -3,6 +3,7 @@ package com.influy.domain.image.service;
 import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.dto.ImageRequestDto;
 import com.influy.domain.image.dto.ImageResponseDto;
+import com.influy.domain.item.entity.Item;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
@@ -17,6 +18,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service

@@ -1,5 +1,7 @@
 package com.influy.domain.sellerProfile.service;
 
+import com.influy.domain.home.converter.HomeConverter;
+import com.influy.domain.home.dto.HomeResponseDto;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.entity.LikeStatus;
@@ -91,5 +93,12 @@ public class SellerProfileServiceImpl implements SellerProfileService {
         }else return false;
 
         return true;
+    }
+
+    @Override
+    public HomeResponseDto.SellerThumbnailDto getOverview(Long sellerId) {
+        SellerProfile seller = sellerProfileRepository.findById(sellerId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
+        return HomeConverter.toSellerThumbnailDto(seller);
     }
 }

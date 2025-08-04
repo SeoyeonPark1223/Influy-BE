@@ -1,24 +1,15 @@
 package com.influy.domain.item.service;
 
-import com.influy.domain.answer.dto.AnswerResponseDto;
-import com.influy.domain.faqCard.dto.FaqCardResponseDto;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxInfoPair;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
-import com.influy.domain.member.entity.Member;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
-import com.influy.global.apiPayload.code.status.SuccessStatus;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ItemService {
     Item create(CustomUserDetails userDetails, ItemRequestDto.DetailDto request);

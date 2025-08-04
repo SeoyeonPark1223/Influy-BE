@@ -2,6 +2,7 @@ package com.influy.domain.item.service;
 
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
+import com.influy.domain.image.service.ImageService;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
@@ -53,16 +54,23 @@ public class ItemServiceImpl implements ItemService {
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
     private final LikeRepository likeRepository;
+    private final ImageService imageService;
 
     @Override
     @Transactional
     public Item create(CustomUserDetails userDetails, ItemRequestDto.DetailDto request) {
         SellerProfile seller = memberService.checkSeller(userDetails);
+        if (!request.getIsArchived() && (request.getItemImgList() == null || request.getIsDateUndefined() || request.getItemCategoryIdList() == null)) {
+            // 아이템 게시할때 필수 필드: 사진, 제목(게시, 보관 공통), 기간 (undefined=false여야함), 아이템 카테고리
+                throw new GeneralException(ErrorStatus.ITEM_INFO_REQUIRED);
+        }
+
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
-        createItemImgList(request, item);
-        createItemCategoryList(request, item);
+
+        if (!request.getItemImgList().isEmpty()) createItemImgList(request, item);
+        if (!request.getItemCategoryIdList().isEmpty())    createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
 
@@ -101,7 +109,8 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
         item.updateItem(request.getName(), request.getStartDate(), request.getEndDate(), request.getTagline(),
-                request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived());
+                request.getRegularPrice(), request.getSalePrice(), request.getMarketLink() , request.getItemPeriod(), request.getComment(), request.getIsArchived(),
+                request.getStatus(), request.getIsDateUndefined());
 
         if (request.getItemImgList() != null) {
             item.getImageList().clear();
@@ -159,13 +168,15 @@ public class ItemServiceImpl implements ItemService {
         MemberRole memberRole = MemberRole.SELLER;
         List<Long> likeItems = new ArrayList<>();
 
-
         if (userDetails != null) {
             Member member = memberRepository.findById(userDetails.getId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
             if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
             likeItems = likeRepository.findLikedItemIdsByMember(member);
+
         }
+
+        if (isArchived && (memberRole == MemberRole.USER || userDetails == null)) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
         SellerProfile seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
@@ -186,15 +197,30 @@ public class ItemServiceImpl implements ItemService {
 
         if (!isArchived & isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 적용
-            itemPage = itemRepository.findOngoingItems(sellerId, LocalDateTime.now(), pageable);
+            if (sortType == ItemSortType.END_DATE) {
+                // 마감일 빠른 순 -> endDate = null
+                itemPage= itemRepository.findOngoingItemsSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
+            } else {
+                // 최신 생성 순
+                itemPage = itemRepository.findOngoingItemsSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
+            }
         } else if (!isArchived & !isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 미적용
-            itemPage = itemRepository.findBySellerIdAndIsArchivedFalse(sellerId, pageable);
-        } else if (isArchived) {
-            // 보관 상품
-            itemPage = itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
+            if (sortType == ItemSortType.END_DATE) {
+                // 마감일 빠른 순 -> endDate = null -> endDate < now
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), false, pageable);
+            } else {
+                // sortType == ItemSortType.CREATE_DATE
+                // 최신 생성 순 -> endDate = null -> endDate < now
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), false, pageable);
+            }
         } else {
-            throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
+            // 보관 상품 (진행 중 상품 필터 없음)
+            if (sortType == ItemSortType.END_DATE) {
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), true, pageable);
+            } else {
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), true, pageable);
+            }
         }
 
         TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemPage.getContent());

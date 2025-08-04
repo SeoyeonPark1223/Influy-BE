@@ -3,10 +3,7 @@ package com.influy.domain.item.dto;
 import com.influy.domain.item.entity.ItemStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +48,12 @@ public class ItemRequestDto {
 
         @Schema(description = "보관 여부 (보관: true, 게시: false)", example = "false")
         private Boolean isArchived;
+
+        @Schema(description = "아이템 표기 상태", example = "SOLD_OUT")
+        private ItemStatus status;
+
+        @Schema(description = "기간 기입 여부", example = "false")
+        private Boolean isDateUndefined;
     }
 
     @Getter

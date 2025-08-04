@@ -6,9 +6,7 @@ import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
-import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
-import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
 import com.influy.global.jwt.CustomUserDetails;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ItemRestController {
     private final ItemService itemService;
-    private final MemberService memberService;
 
     @PostMapping("/seller/items")
     @Operation(summary = "셀러 상품 상세정보 작성 후 생성")
@@ -100,7 +97,7 @@ public class ItemRestController {
     }
 
     @GetMapping("/seller/{sellerId}/items/{itemId}/item-overview")
-    @Operation(summary = "아이템 간략 정보 조회 [대표사진, 이름, 태그라인")
+    @Operation(summary = "아이템 간략 정보 조회 [ 대표사진, 이름, 태그라인 ]")
     public ApiResponse<ItemResponseDto.ItemOverviewDto> getItemInfo(@PathVariable("sellerId") Long sellerId,
                                                                    @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(itemService.getItemOverview(sellerId, itemId));
