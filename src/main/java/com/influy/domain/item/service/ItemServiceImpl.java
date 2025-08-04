@@ -36,6 +36,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -66,16 +67,14 @@ public class ItemServiceImpl implements ItemService {
         }
 
         Item item = ItemConverter.toItem(seller, request);
+
+        if (!CollectionUtils.isEmpty(request.getItemImgList())) createItemImgList(request, item);
+        if (!CollectionUtils.isEmpty(request.getItemCategoryIdList())) createItemCategoryList(request, item);
+
         item = itemRepository.save(item);
-
-
-        if (!request.getItemImgList().isEmpty()) createItemImgList(request, item);
-        if (!request.getItemCategoryIdList().isEmpty())    createItemCategoryList(request, item);
-
         seller.getItemList().add(item);
 
         return item;
-
     }
 
     @Override
@@ -96,6 +95,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findByIdAndSeller(itemId, seller)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
 
+        imageService.deleteImg(item.getImageList());
+
         seller.getItemList().remove(item);
         itemRepository.delete(item);
     }
@@ -113,7 +114,17 @@ public class ItemServiceImpl implements ItemService {
                 request.getStatus(), request.getIsDateUndefined());
 
         if (request.getItemImgList() != null) {
+            List<String> curImgList = new ArrayList<>(item.getImageList());
+            List<String> newImgList = request.getItemImgList();
+
+            List<String> delImgList = curImgList.stream()
+                    .filter(oldImg -> !newImgList.contains(oldImg))
+                    .toList();
+
+            imageService.deleteImg(delImgList);
+
             item.getImageList().clear();
+            item.setMainImg("");
             createItemImgList(request, item);
         }
 
@@ -241,10 +252,9 @@ public class ItemServiceImpl implements ItemService {
 
     private void createItemImgList(ItemRequestDto.DetailDto request, Item item) {
         item.getImageList().addAll(request.getItemImgList());
-        if(!item.getImageList().isEmpty()){
+        if(!CollectionUtils.isEmpty(request.getItemImgList())){
             item.setMainImg(item.getImageList().getFirst());
         }
-
     }
 
     @Override
