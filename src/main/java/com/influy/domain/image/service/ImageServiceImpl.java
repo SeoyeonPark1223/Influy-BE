@@ -3,16 +3,19 @@ package com.influy.domain.image.service;
 import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.dto.ImageRequestDto;
 import com.influy.domain.image.dto.ImageResponseDto;
+import com.influy.domain.item.entity.Item;
 import com.influy.global.jwt.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,7 +36,7 @@ public class ImageServiceImpl implements ImageService {
         String baseName = original.substring(0, original.lastIndexOf('.')); // influy
         String extension = original.substring(original.lastIndexOf('.') + 1); // png
 
-        String fullPath = "image-src/" + UUID.randomUUID() + "-" + baseName + "." + extension; // image-src/123e4567-influy.png
+        String fullPath = "image-src/user-" + userDetails.getId() + "/" + UUID.randomUUID() + "-" + baseName + "." + extension; // image-src/user-1/123e4567-influy.png
 
         PutObjectRequest objectRequest = ImageConverter.toPutObjectRequest(bucket, fullPath, extension);
         PutObjectPresignRequest presignRequest = ImageConverter.toPutObjectPresignRequest(objectRequest);
@@ -43,4 +46,22 @@ public class ImageServiceImpl implements ImageService {
 
         return ImageConverter.toUploadResultDto(presignedRequest.url(), imageUrl);
     }
+
+//    @Override
+//    @Transactional
+//    public void deleteItemImg(Item item) {
+//        String keyPrefix = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+//        List<String> imageList = item.getImageList();
+//        for (String img: imageList) {
+//            String imageKey = img.replace(keyPrefix, "");
+//
+//            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+//                    .bucket(bucket)
+//                    .key(imageKey)
+//                    .build();
+//
+//            s3Client.deleteObject(deleteRequest);
+//        }
+//
+//    }
 }

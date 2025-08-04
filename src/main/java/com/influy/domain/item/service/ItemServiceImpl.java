@@ -2,6 +2,7 @@ package com.influy.domain.item.service;
 
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
+import com.influy.domain.image.service.ImageService;
 import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
@@ -53,6 +54,7 @@ public class ItemServiceImpl implements ItemService {
     private final MemberService memberService;
     private final QuestionRepository questionRepository;
     private final LikeRepository likeRepository;
+    private final ImageService imageService;
 
     @Override
     @Transactional
@@ -66,10 +68,9 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemConverter.toItem(seller, request);
         item = itemRepository.save(item);
 
-        if (!request.getIsArchived()) {
-            createItemImgList(request, item);
-            createItemCategoryList(request, item);
-        }
+
+        if (!request.getItemImgList().isEmpty()) createItemImgList(request, item);
+        if (!request.getItemCategoryIdList().isEmpty())    createItemCategoryList(request, item);
 
         seller.getItemList().add(item);
 
@@ -111,6 +112,7 @@ public class ItemServiceImpl implements ItemService {
                 request.getStatus(), request.getIsDateUndefined());
 
         if (request.getItemImgList() != null) {
+//            imageService.deleteItemImg(item);
             item.getImageList().clear();
             createItemImgList(request, item);
         }
