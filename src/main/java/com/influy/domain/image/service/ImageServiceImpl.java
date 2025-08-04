@@ -38,7 +38,7 @@ public class ImageServiceImpl implements ImageService {
         String baseName = original.substring(0, original.lastIndexOf('.')); // influy
         String extension = original.substring(original.lastIndexOf('.') + 1); // png
 
-        String fullPath = "image-src/" + UUID.randomUUID() + "-" + baseName + "." + extension; // image-src/123e4567-influy.png
+        String fullPath = "image-src/user-" + userDetails.getId() + "/" + UUID.randomUUID() + "-" + baseName + "." + extension; // image-src/user-1/123e4567-influy.png
 
         PutObjectRequest objectRequest = ImageConverter.toPutObjectRequest(bucket, fullPath, extension);
         PutObjectPresignRequest presignRequest = ImageConverter.toPutObjectPresignRequest(objectRequest);
@@ -51,7 +51,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional  //이미지 경로 리팩 제안
-    public String duplicateImg(String sourceURL) {
+    public String duplicateImg(String sourceURL, Long memberId) {
 
 
         String keyPrefix = "https://" + bucket + ".s3."+region+".amazonaws.com/"; // URL 패턴
@@ -65,7 +65,7 @@ public class ImageServiceImpl implements ImageService {
         String baseName = original.substring(0, original.lastIndexOf('.')); // influy
         String extension = original.substring(original.lastIndexOf('.') + 1); // png
 
-        String destinationKey = "image-src/" + UUID.randomUUID() + "-" + baseName + "." + extension; // image-src/123e4567-influy.png
+        String destinationKey = "image-src/user-" + memberId + "/" + UUID.randomUUID() + "-" + baseName + "." + extension; // image-src/user-1/123e4567-influy.png
         String imageUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + destinationKey;
 
         CopyObjectRequest copyReq = CopyObjectRequest.builder()

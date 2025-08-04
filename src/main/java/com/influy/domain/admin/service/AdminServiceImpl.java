@@ -79,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
 
             //이미지 복제해서 저장
             for(String imageURL : item.getImageList()){
-                String newImageURL = imageService.duplicateImg(imageURL);
+                String newImageURL = imageService.duplicateImg(imageURL,seller.getMember().getId());
                 newItem.getImageList().add(newImageURL);
             }
             newItem.setMainImg(newItem.getImageList().getFirst());

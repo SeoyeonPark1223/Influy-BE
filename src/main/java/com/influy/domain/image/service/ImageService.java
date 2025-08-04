@@ -9,5 +9,5 @@ import java.net.URL;
 public interface ImageService {
     ImageResponseDto.UploadResultDto uploadImg(CustomUserDetails userDetails, ImageRequestDto.UploadDto request);
 
-    String duplicateImg(String sourceURL);
+    String duplicateImg(String sourceURL,Long memberId);
 }
