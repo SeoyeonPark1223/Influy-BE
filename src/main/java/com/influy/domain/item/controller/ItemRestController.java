@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ItemRestController {
     private final ItemService itemService;
-    private final MemberService memberService;
 
     @PostMapping("/seller/items")
     @Operation(summary = "셀러 상품 상세정보 작성 후 생성")
