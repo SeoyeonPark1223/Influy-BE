@@ -2,6 +2,8 @@ package com.influy.domain.member.service;
 
 import com.influy.domain.category.entity.Category;
 import com.influy.domain.category.repository.CategoryRepository;
+import com.influy.domain.image.service.ImageService;
+import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.entity.Member;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,8 @@ public class MemberServiceImpl implements MemberService {
     private final SellerProfileRepository sellerProfileRepository;
     private final AuthService authService;
     private final CategoryRepository categoryRepository;
+    private final ImageService imageService;
+    private final ItemRepository itemRepository;
 
     @Override
     public Member findByKakaoId(Long kakaoId) {
@@ -108,12 +113,38 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void deleteMember(Member member) {
+
+        List<String> images = new ArrayList<>();
+        if(member.getProfileImg()!=null){
+            images.add(member.getProfileImg());
+        }
+
+
+        if(member.getSellerProfile()!=null){
+            SellerProfile seller = member.getSellerProfile();
+            if(seller.getBackgroundImg()!=null) images.add(seller.getBackgroundImg());
+            images.addAll(itemRepository.findAllItemImagesBySellerId(seller.getId()));
+        }
+
+        //관련 이미지 먼저 삭제
+        if(!images.isEmpty()){
+            imageService.deleteImg(images);
+        }
+
+
+
         memberRepository.delete(member);
     }
 
     @Override
     @Transactional
     public Member updateMemeber(Member member, MemberRequestDTO.UpdateProfile request) {
+
+        //변경이 생기면 기존 이미지 삭제
+        if(!Objects.equals(request.getProfileUrl(),member.getProfileImg())){
+            String img = member.getProfileImg();
+            if(img!=null) imageService.deleteImg(new ArrayList<>(List.of(member.getProfileImg())));
+        }
 
         return member.updateProfile(request);
     }
