@@ -198,6 +198,8 @@ public class ItemConverter {
                 .marketLink(item.getMarketLink())
                 .comment(item.getComment())
                 .isArchived(item.getIsArchived())
+                .itemStatus(item.getItemStatus())
+                .isDateUndefined(item.getIsDateUndefined())
                 .build();
 
     }
