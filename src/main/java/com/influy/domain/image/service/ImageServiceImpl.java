@@ -54,7 +54,7 @@ public class ImageServiceImpl implements ImageService {
     public String duplicateImg(String sourceURL) {
 
 
-        String keyPrefix = "https://" + bucket + ".s3.region.amazonaws.com/"; // URL 패턴
+        String keyPrefix = "https://" + bucket + ".s3."+region+".amazonaws.com/"; // URL 패턴
 
         if(!sourceURL.startsWith(keyPrefix)) {
             throw new GeneralException(ErrorStatus.INVALID_IMAGE_URL);

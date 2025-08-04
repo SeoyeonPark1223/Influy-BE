@@ -93,7 +93,7 @@ public class MemberController {
 
         if(member.getRole()==MemberRole.USER){
             body = AuthConverter.toUserIdAndTokenDto(memberId, tokenPair.accessToken());
-        }else if(member.getRole()==MemberRole.SELLER){
+        }else if(member.getRole()==MemberRole.SELLER||member.getRole()==MemberRole.ADMIN){
             body = AuthConverter.toSellerIdAndToken(memberId,member.getSellerProfile().getId(),tokenPair.accessToken());
         }
 

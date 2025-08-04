@@ -46,6 +46,9 @@ public class Item extends BaseEntity {
     private LocalDateTime endDate;
 
     @Builder.Default
+    private Boolean isDateUndefined = false;
+
+    @Builder.Default
     @Setter
     private Boolean archiveRecommended = true;
 
