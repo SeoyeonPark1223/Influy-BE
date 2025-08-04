@@ -173,7 +173,10 @@ public class ItemServiceImpl implements ItemService {
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
             if (member.getRole() == MemberRole.USER) memberRole = MemberRole.USER;
             likeItems = likeRepository.findLikedItemIdsByMember(member);
+
         }
+
+        if (isArchived && (memberRole == MemberRole.USER || userDetails == null)) throw new GeneralException(ErrorStatus.NOT_OWNER);
 
         SellerProfile seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
@@ -194,20 +197,37 @@ public class ItemServiceImpl implements ItemService {
 
         if (!isArchived & isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 적용
-            itemPage = itemRepository.findOngoingItems(sellerId, LocalDateTime.now(), pageable);
+            if (sortType == ItemSortType.END_DATE) {
+                // 마감일 빠른 순 -> endDate = null
+                itemPage= itemRepository.findOngoingItemsSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
+            } else {
+                // 최신 생성 순
+                itemPage = itemRepository.findOngoingItemsSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
+            }
         } else if (!isArchived & !isOnGoing) {
             // 보관 상품 아닌 것 중에서 진행 중 상품 필터 미적용
             if (sortType == ItemSortType.END_DATE) {
                 // 마감일 빠른 순 -> endDate = null -> endDate < now
-                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), pageable);
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
             } else {
                 // sortType == ItemSortType.CREATE_DATE
                 // 최신 생성 순 -> endDate = null -> endDate < now
-                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), pageable);
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
+            }
+        } else if (isOnGoing) {
+            // isArchived && isOnGoing 보관 상품인 것 중에서 진행 중 상품 필터 적용
+            if (sortType == ItemSortType.END_DATE) {
+                itemPage= itemRepository.findOngoingItemsSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
+            } else {
+                itemPage = itemRepository.findOngoingItemsSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
             }
         } else {
-            // 보관 상품
-            itemPage = itemRepository.findBySellerIdAndIsArchivedTrue(sellerId, pageable);
+            // isArchived && !isOnGoing 보관 상품인 것 중에서 진행 중 상품 필터 미적용
+            if (sortType == ItemSortType.END_DATE) {
+                itemPage = itemRepository.findAllSortedByEndDate(sellerId, LocalDateTime.now(), isArchived, pageable);
+            } else {
+                itemPage = itemRepository.findAllSortedByCreatedAt(sellerId, LocalDateTime.now(), isArchived, pageable);
+            }
         }
 
         TalkBoxInfoPair talkBoxInfoPair = getTalkBoxInfoPair(itemPage.getContent());

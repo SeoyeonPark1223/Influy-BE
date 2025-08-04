@@ -17,11 +17,6 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     Integer countBySellerIdAndIsArchivedTrue(Long sellerId);
     Integer countBySellerIdAndIsArchivedFalse(Long sellerId);
-    Page<Item> findBySellerIdAndIsArchivedTrue(Long sellerId, Pageable pageable);
-
-    @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.isArchived = false AND i.endDate > :now")
-    Page<Item> findOngoingItems(@Param("sellerId")Long sellerId, @Param("now")LocalDateTime now, Pageable pageable);
-
     @Query("SELECT p.isArchived AS isArchived, COUNT(p) AS count FROM Item p WHERE p.seller.id = :sellerId GROUP BY p.isArchived")
     List<ItemJPQLResponse.IsArchivedItemCount> countBySellerIdGroupByIsArchived(@Param("sellerId") Long sellerId);
 
@@ -85,7 +80,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("""
     SELECT i FROM Item i
-    WHERE i.seller.id = :sellerId AND i.isArchived = false
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived
     ORDER BY
       CASE
         WHEN i.endDate IS NULL THEN 2
@@ -94,11 +89,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
       END,
       i.endDate ASC
     """)
-    Page<Item> findAllSortedByEndDate(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, Pageable pageable);
+    Page<Item> findAllSortedByEndDate(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
 
     @Query("""
     SELECT i FROM Item i
-    WHERE i.seller.id = :sellerId AND i.isArchived = false
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived
     ORDER BY
       CASE
         WHEN i.endDate IS NULL THEN 2
@@ -107,5 +102,23 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
       END,
       i.createdAt DESC
     """)
-    Page<Item> findAllSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, Pageable pageable);
+    Page<Item> findAllSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived AND (i.endDate IS NULL OR i.endDate > :now)
+    ORDER BY
+      CASE
+        WHEN i.endDate IS NULL THEN 2
+        ELSE 1
+      END,
+      i.endDate ASC
+    """)
+    Page<Item> findOngoingItemsSortedByEndDate(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.seller.id = :sellerId AND i.isArchived = :isArchived AND (i.endDate IS NULL OR i.endDate > :now)
+    """)
+    Page<Item> findOngoingItemsSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
 }
