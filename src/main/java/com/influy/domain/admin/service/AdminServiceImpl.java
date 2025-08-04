@@ -82,6 +82,7 @@ public class AdminServiceImpl implements AdminService {
                 String newImageURL = imageService.duplicateImg(imageURL);
                 newItem.getImageList().add(newImageURL);
             }
+            newItem.setMainImg(newItem.getImageList().getFirst());
 
             //카테고리 관계 설정
             List<Category> categoryList = categoryRepository.findAllByItemId(item.getId());
