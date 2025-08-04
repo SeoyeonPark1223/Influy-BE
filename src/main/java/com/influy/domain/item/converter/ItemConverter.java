@@ -12,6 +12,7 @@ import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -182,5 +183,25 @@ public class ItemConverter {
                 .isItemExist(flag)
                 .talkBoxOpenedDtoList(itemDtoList)
                 .build();
+    }
+
+    public static Item duplicateItem(SellerProfile seller, Item item) {
+
+        return Item.builder()
+                .seller(seller)
+                .name(item.getName())
+                .regularPrice(item.getRegularPrice())
+                .salePrice(item.getSalePrice())
+                .tagline(item.getTagline())
+                .startDate(item.getStartDate())
+                .endDate(item.getEndDate())
+                .itemPeriod(item.getItemPeriod())
+                .marketLink(item.getMarketLink())
+                .comment(item.getComment())
+                .isArchived(item.getIsArchived())
+                .itemStatus(item.getItemStatus())
+                .isDateUndefined(item.getIsDateUndefined())
+                .build();
+
     }
 }
