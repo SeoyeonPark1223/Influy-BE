@@ -2,6 +2,7 @@ package com.influy.domain.sellerProfile.service;
 
 import com.influy.domain.home.converter.HomeConverter;
 import com.influy.domain.home.dto.HomeResponseDto;
+import com.influy.domain.image.service.ImageService;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse.IsArchivedItemCount;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.entity.LikeStatus;
@@ -19,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,6 +32,7 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     private final ItemRepository itemRepository;
     private final SellerProfileRepository sellerProfileRepository;
     private final LikeRepository likeRepository;
+    private final ImageService imageService;
 
     public SellerProfile getSellerProfile(Long sellerId){
         return sellerProfileRepository.findById(sellerId).orElseThrow(()->new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
@@ -37,10 +41,29 @@ public class SellerProfileServiceImpl implements SellerProfileService {
     @Override
     @Transactional
     public SellerProfile updateSeller(SellerProfile sellerProfile, SellerProfileRequestDTO.UpdateProfile request) {
+
+        List<String> images = new ArrayList<>();
+
         if(request.getProfile()!=null){
             Member member = sellerProfile.getMember();
+            //프사 변경 검사
+            if(!Objects.equals(request.getProfile().getProfileUrl(),member.getProfileImg())){
+                String img = member.getProfileImg();
+                if(img!=null) images.add(img);
+            }
             member.updateProfile(request.getProfile());
         }
+
+        //배경사진 변경 검사
+        if(!Objects.equals(request.getBackgroundImg(),sellerProfile.getBackgroundImg())){
+            String bgImg = sellerProfile.getBackgroundImg();
+            if(bgImg!=null) images.add(bgImg);
+        }
+
+        if(!images.isEmpty()){
+            imageService.deleteImg(images);
+        }
+
         return sellerProfile.setProfile(request);
     }
 

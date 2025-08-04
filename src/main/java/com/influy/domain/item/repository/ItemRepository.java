@@ -131,4 +131,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     """)
     List<ItemJPQLResponse.ItemWithSellerInfo> findAllWithSellerInfoById(@Param("itemIds") List<Long> itemIds);
 
+    @Query(value = """
+    SELECT ii.image_url
+    FROM item i
+    JOIN item_image ii on ii.item_id = i.id
+    WHERE i.seller_id = :sellerId
+    """, nativeQuery = true)
+    List<String> findAllItemImagesBySellerId(@Param("sellerId") Long sellerId);
 }
