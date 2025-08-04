@@ -118,8 +118,7 @@ public class SellerProfileController {
 
     @GetMapping("seller/{sellerId}/overview")
     @Operation(summary = "셀러 오버뷰 정보")
-    public ApiResponse<HomeResponseDto.SellerThumbnailDto> getOverview(@RequestParam("sellerId") Long sellerId) {
+    public ApiResponse<HomeResponseDto.SellerThumbnailDto> getOverview(@PathVariable("sellerId") Long sellerId) {
         return ApiResponse.onSuccess(sellerService.getOverview(sellerId));
     }
-
 }
