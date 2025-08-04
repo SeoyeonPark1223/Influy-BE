@@ -100,8 +100,8 @@ public class ItemConverter {
     public static ItemResponseDto.DetailViewDto toDetailViewDto(Item item) {
         List<String> itemImgLinkList = item.getImageList();
 
-        List<String> itemCategoryList = item.getItemCategoryList().stream()
-                .map(ic -> ic.getCategory().getCategory())
+        List<Long> itemCategoryList = item.getItemCategoryList().stream()
+                .map(ic -> ic.getCategory().getId())
                 .toList();
 
         return ItemResponseDto.DetailViewDto.builder()
