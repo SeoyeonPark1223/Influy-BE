@@ -3,7 +3,6 @@ package com.influy.domain.image.service;
 import com.influy.domain.image.converter.ImageConverter;
 import com.influy.domain.image.dto.ImageRequestDto;
 import com.influy.domain.image.dto.ImageResponseDto;
-import com.influy.domain.item.entity.Item;
 import com.influy.global.apiPayload.code.status.ErrorStatus;
 import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.jwt.CustomUserDetails;
@@ -12,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -52,10 +50,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    @Transactional  //이미지 경로 리팩 제안
+    @Transactional
     public String duplicateImg(String sourceURL, Long memberId) {
-
-
         String keyPrefix = "https://" + bucket + ".s3."+region+".amazonaws.com/"; // URL 패턴
 
         if(!sourceURL.startsWith(keyPrefix)) {
@@ -80,6 +76,27 @@ public class ImageServiceImpl implements ImageService {
         s3Client.copyObject(copyReq);
 
         return imageUrl;
+    }
 
+    @Transactional
+    @Override
+    public void deleteImg(List<String> imgList) {
+        String keyPrefix = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+
+        List<ObjectIdentifier> objectIdentifiers = imgList.stream()
+                .map(img -> {
+                    String key = img.replace(keyPrefix, "");
+                    return ObjectIdentifier.builder().key(key).build();
+                })
+                .toList();
+
+        if (objectIdentifiers.isEmpty()) return;
+
+        DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                .bucket(bucket)
+                .delete(Delete.builder().objects(objectIdentifiers).build())
+                .build();
+
+        s3Client.deleteObjects(deleteRequest);
     }
 }
