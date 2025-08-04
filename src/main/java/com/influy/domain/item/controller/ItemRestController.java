@@ -6,7 +6,6 @@ import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.service.ItemService;
-import com.influy.domain.member.service.MemberService;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.common.PageRequestDto;
