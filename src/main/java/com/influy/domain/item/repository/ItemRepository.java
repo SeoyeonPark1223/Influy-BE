@@ -28,8 +28,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         FROM Item i
         WHERE (i.endDate > :now AND i.endDate <= :threshold)
           AND i.itemStatus != 'SOLD_OUT'
-          AND i.seller.isPublic = true
-          AND i.isArchived = false
+          AND i.seller.isPublic IS TRUE
+          AND i.isArchived IS FALSE
     """)
     Page<Item> findAllByEndDateAndItemStatus(@Param("now") LocalDateTime now, @Param("threshold") LocalDateTime threshold, Pageable pageable);
 
