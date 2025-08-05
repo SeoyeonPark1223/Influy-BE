@@ -23,7 +23,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE i.seller.id = :sellerId AND i.talkBoxOpenStatus = 'OPENED'")
     List<Item> findAllBySellerIdAndTalkBoxOpenStatus(@Param("sellerId")Long sellerId);
 
-    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true")
+    @Query("SELECT i FROM Item i WHERE i.endDate > :now AND i.endDate <= :threshold AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE")
     Page<Item> findAllByEndDateAndItemStatus(@Param("now") LocalDateTime now, @Param("threshold") LocalDateTime threshold, Pageable pageable);
 
     @Query("""
@@ -32,7 +32,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         LEFT JOIN i.questionList q
         WHERE i.endDate IS NULL OR i.endDate > :now
         AND i.itemStatus != 'SOLD_OUT'
-        AND i.seller.isPublic = true
+        AND i.seller.isPublic IS TRUE
+        AND i.isArchived IS FALSE
         GROUP BY i
         ORDER BY COUNT(q) DESC
     """)
@@ -43,13 +44,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         WHERE ic.category.id = :categoryId
           AND ic.item.endDate IS NULL OR ic.item.endDate > :now
           AND ic.item.itemStatus != 'SOLD_OUT'
-          AND ic.item.seller.isPublic = true
-          AND ic.item.isArchived = false
+          AND ic.item.seller.isPublic IS TRUE
+          AND ic.item.isArchived IS FALSE
           ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable, @Param("now") LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic = true AND i.isArchived = false ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
+    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE AND i.isArchived IS FALSE ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
     Page<Item> findAllNow(Pageable pageable, @Param("now") LocalDateTime now);
 
     Boolean existsByNameContaining(String query);
