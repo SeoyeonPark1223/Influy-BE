@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ItemService {
     Item create(CustomUserDetails userDetails, ItemRequestDto.DetailDto request);
-    Item getDetail(Long sellerId, Long itemId);
+    ItemResponseDto.DetailViewDto getDetail(CustomUserDetails userDetails, Long sellerId, Long itemId);
     void delete(CustomUserDetails userDetails, Long itemId);
     Item update(CustomUserDetails userDetails, Long itemId, ItemRequestDto.DetailDto request);
     Item setAccess(CustomUserDetails userDetails, Long itemId, ItemRequestDto.AccessDto request);

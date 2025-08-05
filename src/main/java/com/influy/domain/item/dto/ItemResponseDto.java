@@ -2,6 +2,7 @@ package com.influy.domain.item.dto;
 
 import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
+import com.influy.domain.like.entity.LikeStatus;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -156,6 +157,9 @@ public class ItemResponseDto {
 
         @Schema(description = "톡박스 오픈 상태", example = "INITIAL")
         private TalkBoxOpenStatus talkBoxOpenStatus;
+
+        @Schema(description = "멤버 좋아요 여부", example = "true")
+        private boolean isLiked;
     }
 
     @Getter

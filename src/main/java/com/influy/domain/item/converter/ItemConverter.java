@@ -4,6 +4,7 @@ import com.influy.domain.item.dto.ItemRequestDto;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
@@ -22,17 +23,17 @@ public class ItemConverter {
         return Item.builder()
                 .seller(seller)
                 .name(request.getName())
-                .regularPrice(request.getRegularPrice())
-                .salePrice(request.getSalePrice())
-                .tagline(request.getTagline())
+                .regularPrice(request.getRegularPrice() != null ? request.getRegularPrice() : 0L)
+                .salePrice(request.getSalePrice() != null ? request.getSalePrice() : 0L)
+                .tagline(request.getTagline() != null ? request.getTagline() : "")
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .itemPeriod(request.getItemPeriod())
-                .marketLink(request.getMarketLink())
-                .comment(request.getComment())
-                .isArchived(request.getIsArchived())
-                .itemStatus(request.getStatus())
-                .isDateUndefined(request.getIsDateUndefined())
+                .itemPeriod(request.getItemPeriod() != null ? request.getItemPeriod() : 1)
+                .marketLink(request.getMarketLink() != null ? request.getMarketLink() : "")
+                .comment(request.getComment() != null ? request.getComment() : "")
+                .isArchived(request.getIsArchived() != null ? request.getIsArchived() : false)
+                .itemStatus(request.getStatus() != null ? request.getStatus() : ItemStatus.DEFAULT)
+                .isDateUndefined(request.getIsDateUndefined() != null ? request.getIsDateUndefined() : false)
                 .build();
     }
 
@@ -100,7 +101,7 @@ public class ItemConverter {
                 .build();
     }
 
-    public static ItemResponseDto.DetailViewDto toDetailViewDto(Item item) {
+    public static ItemResponseDto.DetailViewDto toDetailViewDto(Item item, Boolean isLiked) {
         List<String> itemImgLinkList = item.getImageList();
 
         List<Long> itemCategoryList = item.getItemCategoryList().stream()
@@ -124,6 +125,7 @@ public class ItemConverter {
                 .itemCategoryList(itemCategoryList)
                 .isDateUndefined(item.getIsDateUndefined())
                 .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .isLiked(isLiked != null ? isLiked : false)
                 .build();
     }
 
@@ -209,5 +211,32 @@ public class ItemConverter {
                 .isDateUndefined(item.getIsDateUndefined())
                 .build();
 
+    }
+
+    public static ItemResponseDto.DetailViewDto toDetailView2Dto(Item item) {
+        List<String> itemImgLinkList = item.getImageList();
+
+        List<Long> itemCategoryList = item.getItemCategoryList().stream()
+                .map(ic -> ic.getCategory().getId())
+                .toList();
+
+        return ItemResponseDto.DetailViewDto.builder()
+                .itemId(item.getId())
+                .itemPeriod(item.getItemPeriod())
+                .itemName(item.getName())
+                .startDate(item.getStartDate())
+                .endDate(item.getEndDate())
+                .tagline(item.getTagline())
+                .comment(item.getComment())
+                .currentStatus(item.getItemStatus())
+                .marketLink(item.getMarketLink())
+                .isArchived(item.getIsArchived())
+                .regularPrice(item.getRegularPrice())
+                .salePrice(item.getSalePrice())
+                .itemImgList(itemImgLinkList)
+                .itemCategoryList(itemCategoryList)
+                .isDateUndefined(item.getIsDateUndefined())
+                .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
+                .build();
     }
 }
