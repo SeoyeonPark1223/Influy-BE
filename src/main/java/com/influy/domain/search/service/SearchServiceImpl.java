@@ -49,8 +49,8 @@ public class SearchServiceImpl implements SearchService {
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<SellerProfile> sellerPage = null;
 
-        if (sellerRepository.existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query)) {
-            sellerPage = sellerRepository.findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query, pageable);
+        if (sellerRepository.existsByIsPublicTrueAndKeywordMatch(query)) {
+            sellerPage = sellerRepository.findByIsPublicTrueAndKeywordMatch(query, pageable);
         }
 
         return SearchConverter.toSellerPageResultDto(sellerPage, likeSellers);
@@ -69,9 +69,9 @@ public class SearchServiceImpl implements SearchService {
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Item> itemPage = null;
 
-        if (sellerRepository.existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(query, query, query)
-                || itemRepository.existsByNameContaining(query)) {
-            itemPage = itemRepository.findAllByNameContainingOrSeller_Member_UsernameContainingOrSeller_Member_NicknameContainingOrSeller_InstagramContaining(query, query, query, query, pageable);
+        if (sellerRepository.existsByIsPublicTrueAndKeywordMatch(query)
+                || itemRepository.existsByIsArchivedFalseAndNameContainingAndSeller_IsPublicTrue(query)) {
+            itemPage = itemRepository.findByIsArchivedFalseAndSeller_IsPublicTrueAndKeywordMatch(query, pageable);
         }
 
         return HomeConverter.toHomeItemViewPageDto(itemPage, likeItems);

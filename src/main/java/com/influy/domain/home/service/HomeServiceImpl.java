@@ -125,7 +125,7 @@ public class HomeServiceImpl implements HomeService {
     public HomeResponseDto.SellerPick3Dto getPicked(Long sellerId) {
         SellerProfile seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-        List<Item> itemList = itemRepository.findTop3BySellerId(sellerId);
+        List<Item> itemList = itemRepository.findTop3BySellerIdAndIsArchivedFalseAndSeller_IsPublicTrue(sellerId);
         return HomeConverter.toSellerPick3Dto(seller, itemList);
     }
 
