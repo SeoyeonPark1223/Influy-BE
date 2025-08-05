@@ -158,6 +158,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     Integer countQuestionsByItemIdAndIsChecked(Long id, Boolean b);
 
+    boolean existsByItemIdAndIsCheckedFalse(Long itemId);
+
     @Query("""
         SELECT new com.influy.domain.item.dto.jpql.TalkBoxInfoPairDto(q.item.id, q.isAnswered, COUNT(q))
         FROM Question q
