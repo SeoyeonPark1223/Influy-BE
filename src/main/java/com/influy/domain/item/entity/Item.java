@@ -79,6 +79,7 @@ public class Item extends BaseEntity {
     private String talkBoxComment = "";
 
     @Builder.Default
+    @Setter
     private Boolean isArchived = false; //보관 여부
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)

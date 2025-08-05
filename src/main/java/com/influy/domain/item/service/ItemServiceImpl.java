@@ -328,6 +328,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
+    public ItemResponseDto.ResultDto updateArchive(CustomUserDetails userDetails, Long itemId, Boolean isArchived) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+        item.setIsArchived(isArchived);
+        return ItemConverter.toResultDto(itemId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList) {
         List<Long> itemIdList = itemList.stream().map(Item::getId).toList();
