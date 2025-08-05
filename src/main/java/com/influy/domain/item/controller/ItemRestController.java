@@ -63,11 +63,11 @@ public class ItemRestController {
 
     @PutMapping("/seller/items/{itemId}")
     @Operation(summary = "개별 상품 상세정보 수정")
-    public ApiResponse<ItemResponseDto.DetailViewDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ApiResponse<ItemResponseDto.ResultDto> update(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                  @PathVariable("itemId") Long itemId,
                                                                  @RequestBody @Valid ItemRequestDto.DetailDto request) {
         Item item = itemService.update(userDetails, itemId, request);
-        return ApiResponse.onSuccess(ItemConverter.toDetailView2Dto(item));
+        return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
     @PatchMapping("/seller/items/{itemId}/access")

@@ -82,7 +82,11 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+
         boolean isLiked = false;
+        boolean isUnchecked = false;
 
         if (userDetails != null) {
             Member member = memberRepository.findById(userDetails.getId())
@@ -91,12 +95,13 @@ public class ItemServiceImpl implements ItemService {
             isLiked = likeRepository.findByMemberIdAndItemIdAndTargetType(
                     member.getId(), itemId, TargetType.ITEM
             ).filter(like -> like.getLikeStatus() == LikeStatus.LIKE).isPresent();
+
+            if (member.getRole() == MemberRole.SELLER) {
+                isUnchecked = questionRepository.existsByItemIdAndIsCheckedFalse(itemId);
+            }
         }
 
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
-
-        return ItemConverter.toDetailViewDto(item, isLiked);
+        return ItemConverter.toDetailViewDto(item, isLiked, isUnchecked);
     }
 
     @Override

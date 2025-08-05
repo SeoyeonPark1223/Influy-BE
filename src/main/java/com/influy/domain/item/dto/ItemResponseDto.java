@@ -160,6 +160,9 @@ public class ItemResponseDto {
 
         @Schema(description = "멤버 좋아요 여부", example = "true")
         private boolean isLiked;
+
+        @Schema(description = "unchecked 메세지가 있는지 여부", example = "true")
+        private boolean isUnchecked;
     }
 
     @Getter
