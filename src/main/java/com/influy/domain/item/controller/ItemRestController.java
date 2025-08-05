@@ -132,4 +132,12 @@ public class ItemRestController {
     public ApiResponse<ItemResponseDto.TalkBoxOpenedListDto> getTalkBoxOpened (@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ApiResponse.onSuccess(itemService.getTalkBoxOpened(userDetails));
     }
+
+    @PatchMapping("/seller/items/{itemId}/archive")
+    @Operation(summary = "보관 여부 수정")
+    public ApiResponse<ItemResponseDto.ResultDto> updateArchive (@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                 @PathVariable("itemId") Long itemId,
+                                                                 @RequestParam("isArchived") Boolean isArchived) {
+        return ApiResponse.onSuccess(itemService.updateArchive(userDetails, itemId, isArchived));
+    }
 }
