@@ -13,6 +13,8 @@ import com.influy.domain.item.entity.TalkBoxOpenStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.itemCategory.converter.ItemCategoryConverter;
 import com.influy.domain.itemCategory.entity.ItemCategory;
+import com.influy.domain.like.entity.LikeStatus;
+import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
@@ -75,13 +77,26 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Item getDetail(Long sellerId, Long itemId) {
+    public ItemResponseDto.DetailViewDto getDetail(CustomUserDetails userDetails, Long sellerId, Long itemId) {
         if (!sellerRepository.existsById(sellerId)) {
             throw new GeneralException(ErrorStatus.SELLER_NOT_FOUND);
         }
 
-        return itemRepository.findById(itemId)
+        boolean isLiked = false;
+
+        if (userDetails != null) {
+            Member member = memberRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+            isLiked = likeRepository.findByMemberIdAndItemIdAndTargetType(
+                    member.getId(), itemId, TargetType.ITEM
+            ).filter(like -> like.getLikeStatus() == LikeStatus.LIKE).isPresent();
+        }
+
+        Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+
+        return ItemConverter.toDetailViewDto(item, isLiked);
     }
 
     @Override

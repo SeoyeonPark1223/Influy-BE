@@ -9,7 +9,6 @@ public class StaticValues {
     };
     public static final String[] DEFAULT_QUESTION_CATEGORIES = {"진행일정", "결제", "배송", "기타"};
     public static final String[] SHOULD_NOT_FILTER_GET_LIST = {
-            "/seller/*/items/*",
             "/seller/*/items/*/faq/*",
             "/seller/*/items/*/faq/faq-cards",
             "/seller/*/items/*/faq-categories",

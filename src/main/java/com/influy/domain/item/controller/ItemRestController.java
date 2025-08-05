@@ -47,10 +47,10 @@ public class ItemRestController {
 
     @GetMapping("/seller/{sellerId}/items/{itemId}")
     @Operation(summary = "개별 상품 상세정보 조회")
-    public ApiResponse<ItemResponseDto.DetailViewDto> getDetail(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<ItemResponseDto.DetailViewDto> getDetail(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                @PathVariable("sellerId") Long sellerId,
                                                                 @PathVariable("itemId") Long itemId) {
-        Item item = itemService.getDetail(sellerId, itemId);
-        return ApiResponse.onSuccess(ItemConverter.toDetailViewDto(item));
+        return ApiResponse.onSuccess(itemService.getDetail(userDetails, sellerId, itemId));
     }
 
     @DeleteMapping("/seller/items/{itemId}")
@@ -67,7 +67,7 @@ public class ItemRestController {
                                                                  @PathVariable("itemId") Long itemId,
                                                                  @RequestBody @Valid ItemRequestDto.DetailDto request) {
         Item item = itemService.update(userDetails, itemId, request);
-        return ApiResponse.onSuccess(ItemConverter.toDetailViewDto(item));
+        return ApiResponse.onSuccess(ItemConverter.toDetailView2Dto(item));
     }
 
     @PatchMapping("/seller/items/{itemId}/access")
