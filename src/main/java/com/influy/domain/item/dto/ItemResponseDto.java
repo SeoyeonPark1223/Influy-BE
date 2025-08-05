@@ -153,6 +153,9 @@ public class ItemResponseDto {
 
         @Schema(description = "기간 기입 여부", example = "false")
         private Boolean isDateUndefined;
+
+        @Schema(description = "톡박스 오픈 상태", example = "INITIAL")
+        private TalkBoxOpenStatus talkBoxOpenStatus;
     }
 
     @Getter

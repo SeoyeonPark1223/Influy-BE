@@ -123,6 +123,7 @@ public class ItemConverter {
                 .itemImgList(itemImgLinkList)
                 .itemCategoryList(itemCategoryList)
                 .isDateUndefined(item.getIsDateUndefined())
+                .talkBoxOpenStatus(item.getTalkBoxOpenStatus())
                 .build();
     }
 
