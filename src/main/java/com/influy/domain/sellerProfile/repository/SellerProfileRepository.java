@@ -20,9 +20,6 @@ public interface SellerProfileRepository extends JpaRepository<SellerProfile, Lo
 
     boolean existsByInstagram(String instagram);
 
-    Boolean existsByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(String username, String nickname, String instagram);
-
-    Page<SellerProfile> findAllByMemberUsernameContainingOrMemberNicknameContainingOrInstagramContaining(String username, String nickname, String instagram, Pageable pageable);
     @Query("SELECT EXISTS (SELECT 1 FROM QuestionTag t WHERE t.id = :tagId AND t.questionCategory.item.seller.id = :sellerId)")
     Boolean existsByIdAndTagId(@Param("sellerId") Long sellerId,@Param("tagId") Long tagId);
 
@@ -31,4 +28,27 @@ public interface SellerProfileRepository extends JpaRepository<SellerProfile, Lo
 
 
     List<SellerProfile> findTop10ByIsPublicTrue();
+
+    @Query("""
+        SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
+        FROM SellerProfile s
+        WHERE s.isPublic IS TRUE
+          AND (
+            s.member.username LIKE %:keyword%
+            OR s.member.nickname LIKE %:keyword%
+            OR s.instagram LIKE %:keyword%
+          )
+    """)
+    Boolean existsByIsPublicTrueAndKeywordMatch(@Param("keyword") String keyword);
+
+    @Query("""
+        SELECT s FROM SellerProfile s
+        WHERE s.isPublic IS TRUE AND (
+            s.member.username LIKE %:keyword%
+            OR s.member.nickname LIKE %:keyword%
+            OR s.instagram LIKE %:keyword%
+        )
+    """)
+    Page<SellerProfile> findByIsPublicTrueAndKeywordMatch(@Param("keyword") String keyword, Pageable pageable);
+
 }

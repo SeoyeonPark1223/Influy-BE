@@ -53,10 +53,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE AND i.isArchived IS FALSE ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
     Page<Item> findAllNow(Pageable pageable, @Param("now") LocalDateTime now);
 
-    Boolean existsByNameContaining(String query);
-
-    Page<Item> findAllByNameContainingOrSeller_Member_UsernameContainingOrSeller_Member_NicknameContainingOrSeller_InstagramContaining(String query, String query1, String query2, String query3, Pageable pageable);
-
     Optional<Item> findByIdAndSeller(Long itemId, SellerProfile seller);
 
     @Query(value ="""
@@ -75,7 +71,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         """)
     Page<ItemJPQLResponse.ItemWithQuestionStatus> getItemsWithQuestionStatus(@Param("sellerId") Long sellerId, @Param("now")LocalDateTime now, Pageable pageable);
 
-    List<Item> findTop3BySellerId(Long sellerId);
+    List<Item> findTop3BySellerIdAndIsArchivedFalseAndSeller_IsPublicTrue(Long sellerId);
 
     Boolean existsBySellerId(Long id);
 
@@ -139,4 +135,19 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     WHERE i.seller_id = :sellerId
     """, nativeQuery = true)
     List<String> findAllItemImagesBySellerId(@Param("sellerId") Long sellerId);
+
+    boolean existsByIsArchivedFalseAndNameContainingAndSeller_IsPublicTrue(String query);
+
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.isArchived IS FALSE
+      AND i.seller.isPublic IS TRUE
+      AND (
+            i.name LIKE %:keyword%
+         OR i.seller.member.username LIKE %:keyword%
+         OR i.seller.member.nickname LIKE %:keyword%
+         OR i.seller.instagram LIKE %:keyword%
+      )
+""")
+    Page<Item> findByIsArchivedFalseAndSeller_IsPublicTrueAndKeywordMatch(@Param("keyword") String keyword, Pageable pageable);
 }
