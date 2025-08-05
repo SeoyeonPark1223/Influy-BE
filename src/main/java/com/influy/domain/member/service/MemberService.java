@@ -1,6 +1,7 @@
 package com.influy.domain.member.service;
 
 import com.influy.domain.member.dto.MemberRequestDTO;
+import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.questionCategory.entity.QuestionCategory;

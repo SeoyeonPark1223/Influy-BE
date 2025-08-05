@@ -8,6 +8,7 @@ import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.service.MemberService;
+import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import com.influy.global.apiPayload.ApiResponse;
 import com.influy.global.apiPayload.code.BaseCode;
@@ -166,6 +167,18 @@ public class MemberController {
             return ApiResponse.onSuccess(ErrorStatus.USERNAME_ALREADY_EXISTS);
         }
         return ApiResponse.onSuccess(SuccessStatus.NO_DUPLICATE_ROW);
+
+    }
+
+    @GetMapping("/setting")
+    @Operation(summary = "계정 설정 시 기본 정보", description = "마켓을 가진 사용자의 경우에는 셀러 프로필 공개 여부도 함께 제공")
+    public ApiResponse<MemberResponseDTO.Setting> getSettingProfile(@AuthenticationPrincipal CustomUserDetails userDetails){
+
+
+        Member member = memberService.findById(userDetails.getId());
+        MemberResponseDTO.Setting body = MemberConverter.toSettingDTO(member);
+
+        return ApiResponse.onSuccess(body);
 
     }
 

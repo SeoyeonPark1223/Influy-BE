@@ -6,6 +6,7 @@ import com.influy.domain.image.service.ImageService;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.member.converter.MemberConverter;
 import com.influy.domain.member.dto.MemberRequestDTO;
+import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
 import com.influy.domain.member.repository.MemberRepository;
@@ -172,5 +173,7 @@ public class MemberServiceImpl implements MemberService {
             throw new GeneralException(ErrorStatus.SELLER_REQUIRED);
         }
     }
+
+
 
 }
