@@ -5,8 +5,12 @@ import com.influy.domain.member.dto.MemberRequestDTO;
 import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.entity.MemberRole;
+import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
+import com.influy.global.apiPayload.code.status.ErrorStatus;
+import com.influy.global.apiPayload.exception.GeneralException;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MemberConverter {
     public static Member toMember(MemberRequestDTO.UserJoin requestDTO, MemberRole role, String kakaoNickname) {
@@ -38,4 +42,16 @@ public class MemberConverter {
                 .build();
     }
 
+    public static MemberResponseDTO.Setting toSettingDTO(Member member) {
+        if(member.getRole()==MemberRole.SELLER||member.getRole()==MemberRole.ADMIN){
+            return SellerProfileResponseDTO.SellerSetting.builder()
+                    .username(member.getUsername())
+                    .isPublic(Objects.requireNonNull(member.getSellerProfile(), "셀러 프로필이 없습니다.").getIsPublic())
+                    .build();
+        }else{
+            return MemberResponseDTO.MemberSetting.builder()
+                    .username(member.getUsername())
+                    .build();
+        }
+    }
 }

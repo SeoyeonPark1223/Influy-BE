@@ -1,5 +1,6 @@
 package com.influy.domain.member.dto;
 
+import com.influy.domain.sellerProfile.dto.SellerProfileResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -27,4 +28,14 @@ public class MemberResponseDTO {
         private LocalDateTime createdAt;
     }
 
+    public interface Setting{};
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class MemberSetting implements Setting{
+        @Schema(description = "유저 아이디", example = "crazy_dog")
+        private String username;
+    }
 }

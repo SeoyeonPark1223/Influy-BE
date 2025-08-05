@@ -1,5 +1,6 @@
 package com.influy.domain.sellerProfile.dto;
 
+import com.influy.domain.member.dto.MemberResponseDTO;
 import com.influy.domain.sellerProfile.entity.ItemSortType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -67,5 +68,16 @@ public class SellerProfileResponseDTO {
         private Long sellerId;
         @Schema(description = "공개 여부", example = "false")
         private Boolean isPublic;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SellerSetting implements MemberResponseDTO.Setting{
+        @Schema(description = "유저 아이디", example = "crazy_dog")
+        private String username;
+        @Schema(description = "셀러 마켓 공개 여부", example = "true")
+        private boolean isPublic;
     }
 }
