@@ -72,6 +72,7 @@ public class Item extends BaseEntity {
     private String marketLink = "";
 
     @Builder.Default
+    @Lob
     private String comment = "";
 
     @Builder.Default
