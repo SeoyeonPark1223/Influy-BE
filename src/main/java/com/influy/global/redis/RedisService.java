@@ -36,4 +36,6 @@ public class RedisService {
     public boolean checkAccessTokenExits(String key) {
         return redisTemplate.hasKey(key);
     }
+
+    public boolean checkRefreshTokenExits(String key) {return redisTemplate.hasKey(key);}
 }

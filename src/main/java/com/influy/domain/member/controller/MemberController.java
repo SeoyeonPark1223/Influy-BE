@@ -86,7 +86,9 @@ public class MemberController {
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰(쿠키)만 있으면 됨")
     public ApiResponse<AuthResponseDTO.LoginResponse> reissueToken(HttpServletRequest request, HttpServletResponse response){
 
-        TokenPair tokenPair = authService.reissueToken(request, response);
+
+        String refreshToken = CookieUtil.extractRefreshTokenFromCookie(request);
+        TokenPair tokenPair = authService.reissueToken(refreshToken);
         Long memberId = jwtTokenProvider.getId(tokenPair.refreshToken());
         Member member = memberService.findById(memberId);
 

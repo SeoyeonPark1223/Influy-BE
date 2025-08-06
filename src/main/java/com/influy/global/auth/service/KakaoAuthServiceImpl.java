@@ -70,8 +70,14 @@ public class KakaoAuthServiceImpl implements AuthService {
         try {
             Member member = memberRepository.findByKakaoId(kakaoId).orElseThrow(()->new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-            //토큰 발급
-            TokenPair tokenPair = issueToken(member);
+            TokenPair tokenPair = null;
+            if(redisService.checkRefreshTokenExits(member.getUsername())){
+                tokenPair = reissueToken(redisService.getValue(member.getUsername()));
+            }else{
+                //리프레시 토큰까지 발급
+                tokenPair = issueToken(member);
+            }
+
 
             //쿠키에 담기
             CookieUtil.refreshTokenInCookie(response,tokenPair.refreshToken());
@@ -125,10 +131,9 @@ public class KakaoAuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenPair reissueToken(HttpServletRequest request, HttpServletResponse response) {
+    public TokenPair reissueToken(String refreshToken) {
 
-        // 1. 쿠키에서 토큰 가져오기
-        String refreshToken = CookieUtil.extractRefreshTokenFromCookie(request);
+        // 1. 쿠키에서 가져온 토큰 검증하기
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
@@ -143,7 +148,11 @@ public class KakaoAuthServiceImpl implements AuthService {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
-        return issueToken(member);
+        //return issueToken(member);
+        //데모데이 용 임시 중복 로그인 허용 로직
+        String accessToken = jwtTokenProvider.generateAccessToken(memberId,member.getRole());
+
+        return new TokenPair(accessToken,refreshToken);
     }
 
     @Override
