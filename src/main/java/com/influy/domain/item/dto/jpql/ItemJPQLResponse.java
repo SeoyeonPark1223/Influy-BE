@@ -25,6 +25,7 @@ public class ItemJPQLResponse {
         Long getItemId();
         String getItemTitle();
         String getItemMainImg();
+        Long getSellerId();
         String getSellerNickname();
         String getSellerProfileImg();
 

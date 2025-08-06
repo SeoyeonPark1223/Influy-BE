@@ -180,6 +180,7 @@ public class QuestionConverter {
                 .itemId(itemSeller.getItemId())
                 .itemTitle(itemSeller.getItemTitle())
                 .itemMainPic(itemSeller.getItemMainImg())
+                .sellerId(itemSeller.getSellerId())
                 .sellerNickname(itemSeller.getSellerNickname())
                 .sellerProfilePic(itemSeller.getSellerProfileImg())
                 .lastChatContent(lastChatContent)
