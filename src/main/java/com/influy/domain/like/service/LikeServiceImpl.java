@@ -114,29 +114,40 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional(readOnly = true)
-    public LikeResponseDto.LikeCountDto toCountSellerLikes(Long sellerId) {
+    public LikeResponseDto.LikeCountSellerDto toCountSellerLikes(CustomUserDetails userDetails, Long sellerId) {
         // like repository에서 sellerId, likeStatus like 개수를 count해서 가져와야함
+        boolean liked = false;
+
+        if (userDetails != null) {
+            Member member = memberRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+            liked = likeRepository.findByMemberIdAndSellerIdAndTargetType(
+                    member.getId(), sellerId, TargetType.SELLER
+            ).filter(like -> like.getLikeStatus() == LikeStatus.LIKE).isPresent();
+        }
+
         Integer likeCnt = likeRepository.countBySellerIdAndTargetTypeAndLikeStatus(sellerId, TargetType.SELLER, LikeStatus.LIKE);
-        return LikeConverter.toLikeCountDto(TargetType.SELLER, sellerId, likeCnt);
+        return LikeConverter.toLikeCountSellerDto(sellerId, likeCnt, liked);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LikeResponseDto.LikeCountDto toCountItemLikes(Long sellerId, Long itemId) {
+    public LikeResponseDto.LikeCountItemDto toCountItemLikes(Long sellerId, Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
         if (!item.getSeller().getId().equals(sellerId)) throw new GeneralException(ErrorStatus.UNMATCHED_SELLER_ITEM);
 
         // like repository에서 itemId, likeStatus like 개수를 count해서 가져와야함
         Integer likeCnt = likeRepository.countByItemIdAndTargetTypeAndLikeStatus(itemId, TargetType.ITEM, LikeStatus.LIKE);
-        return LikeConverter.toLikeCountDto(TargetType.ITEM, itemId, likeCnt);
+        return LikeConverter.toLikeCountItemDto(itemId, likeCnt);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LikeResponseDto.SellerLikePageDto toGetSellerLikePage(Long memberId, PageRequestDto pageRequest) {
+    public LikeResponseDto.SellerLikePageDto toGetSellerLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest) {
         // 정렬: 최근 상품 올린 셀러가 위로 가도록 (seller -> 가장 최근 updatedAt 아이템 기준 정렬)
-        Page<SellerLikeWithCntDto> likePage = likeRepository.findSellerLikesOrderByRecentItem(memberId, pageRequest.toPageable());
+        Page<SellerLikeWithCntDto> likePage = likeRepository.findSellerLikesOrderByRecentItem(userDetails.getId(), pageRequest.toPageable());
         return LikeConverter.toSellerLikePageDto(likePage);
     }
 

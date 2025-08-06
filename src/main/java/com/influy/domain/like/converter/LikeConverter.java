@@ -48,15 +48,22 @@ public class LikeConverter {
                 .build();
     }
 
-    public static LikeResponseDto.LikeCountDto toLikeCountDto(TargetType targetType, Long targetId, Integer cnt) {
-        return LikeResponseDto.LikeCountDto.builder()
+    public static LikeResponseDto.LikeCountSellerDto toLikeCountSellerDto(Long targetId, Integer cnt, boolean liked) {
+        return LikeResponseDto.LikeCountSellerDto.builder()
                 .targetId(targetId)
-                .targetType(targetType)
+                .likeCnt(cnt)
+                .liked(liked)
+                .build();
+    }
+
+    public static LikeResponseDto.LikeCountItemDto toLikeCountItemDto(Long targetId, Integer cnt) {
+        return LikeResponseDto.LikeCountItemDto.builder()
+                .targetId(targetId)
                 .likeCnt(cnt)
                 .build();
     }
 
-    public static LikeResponseDto.ViewSellerLikeDto toViewSellerLikeDto(Like like, Long cnt) {
+    public static LikeResponseDto.ViewSellerLikeDto toViewSellerLikeDto(Like like, Long cnt, boolean liked) {
         SellerProfile seller = like.getSeller();
         Member member = seller.getMember();
 
@@ -66,6 +73,7 @@ public class LikeConverter {
                 .userName(member.getUsername())
                 .profileImgLink(member.getProfileImg())
                 .likeCnt(cnt)
+                .liked(liked)
                 .build();
     }
 
@@ -92,7 +100,7 @@ public class LikeConverter {
     public static LikeResponseDto.SellerLikePageDto toSellerLikePageDto(Page<SellerLikeWithCntDto> likePage) {
         List<LikeResponseDto.ViewSellerLikeDto> viewLikeList = likePage != null ?
                 likePage.stream()
-                .map(like -> toViewSellerLikeDto(like.getLike(), like.getCnt())).toList()
+                .map(like -> toViewSellerLikeDto(like.getLike(), like.getCnt(), true)).toList()
                 : Collections.emptyList();
 
         return LikeResponseDto.SellerLikePageDto.builder()
