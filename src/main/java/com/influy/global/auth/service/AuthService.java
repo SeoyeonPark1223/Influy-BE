@@ -15,7 +15,7 @@ public interface AuthService {
 
     TokenPair issueToken(Member member);
 
-    TokenPair reissueToken(HttpServletRequest request, HttpServletResponse response);
+    TokenPair reissueToken(String refreshToken);
 
     void signOut(HttpServletRequest request, Member member);
 

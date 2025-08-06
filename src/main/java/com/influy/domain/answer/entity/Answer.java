@@ -20,6 +20,7 @@ public class Answer extends BaseEntity {
     private Long id;
 
     @NotBlank
+    @Lob
     private String content;
 
     @Enumerated(EnumType.STRING)

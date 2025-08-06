@@ -24,6 +24,7 @@ public class Announcement extends BaseEntity {
     private String title;
 
     @NotBlank
+    @Lob
     private String content;
 
     @Builder.Default
