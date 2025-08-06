@@ -63,11 +63,23 @@ public class LikeResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class LikeCountDto {
-        @Schema(description = "셀러/아이템 찜", example = "ITEM")
-        private TargetType targetType;
+    public static class LikeCountSellerDto {
+        @Schema(description = "셀러 id", example = "1")
+        private Long targetId;
 
-        @Schema(description = "셀러/아이템 id", example = "1")
+        @Schema(description = "찜 개수", example = "10")
+        private Integer likeCnt;
+
+        @Schema(description = "로그인한 멤버의 좋아요 여부", example = "true")
+        private boolean liked;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LikeCountItemDto {
+        @Schema(description = "아이템 id", example = "1")
         private Long targetId;
 
         @Schema(description = "찜 개수", example = "10")
@@ -93,6 +105,9 @@ public class LikeResponseDto {
 
         @Schema(description = "셀러 좋아요 개수", example = "23")
         private Long likeCnt;
+
+        @Schema(description = "로그인한 멤버의 좋아요 여부", example = "true")
+        private boolean liked;
     }
 
     @Getter

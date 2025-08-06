@@ -59,13 +59,14 @@ public class LikeRestController {
 
     @GetMapping("seller/{sellerId}/count-likes")
     @Operation(summary = "셀러 찜 개수 조회")
-    public ApiResponse<LikeResponseDto.LikeCountDto> countSellerLikes(@PathVariable("sellerId") Long sellerId) {
-        return ApiResponse.onSuccess(likeService.toCountSellerLikes(sellerId));
+    public ApiResponse<LikeResponseDto.LikeCountSellerDto> countSellerLikes(@PathVariable("sellerId") Long sellerId,
+                                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.onSuccess(likeService.toCountSellerLikes(userDetails, sellerId));
     }
 
     @GetMapping("seller/{sellerId}/items/{itemId}/count-likes")
     @Operation(summary = "아이템 찜 개수 조회")
-    public ApiResponse<LikeResponseDto.LikeCountDto> countItemLikes(@PathVariable("sellerId") Long sellerId,
+    public ApiResponse<LikeResponseDto.LikeCountItemDto> countItemLikes(@PathVariable("sellerId") Long sellerId,
                                                                     @PathVariable("itemId") Long itemId) {
         return ApiResponse.onSuccess(likeService.toCountItemLikes(sellerId, itemId));
     }
@@ -74,7 +75,7 @@ public class LikeRestController {
     @Operation(summary = "멤버의 셀러 찜 리스트 조회")
     public ApiResponse<LikeResponseDto.SellerLikePageDto> getSellerLikePage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                             @Valid @ParameterObject PageRequestDto pageRequest) {
-        return ApiResponse.onSuccess(likeService.toGetSellerLikePage(userDetails.getId(), pageRequest));
+        return ApiResponse.onSuccess(likeService.toGetSellerLikePage(userDetails, pageRequest));
     }
 
     @GetMapping("home/item-likes")

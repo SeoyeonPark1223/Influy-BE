@@ -14,8 +14,6 @@ public class SellerProfileResponseDTO {
         private SellerProfile sellerProfile;
         @Schema(description = "마켓 공개 여부", example = "true")
         private Boolean isPublic;
-        @Schema(description = "로그인한 사용자가 해당 셀러를 찜했는지", example = "true")
-        private Boolean isLiked;
         @Schema(description = "공개 상품 수", example = "24")
         private Long publicItemCnt;
         @Schema(description = "보관 상품 수", example = "9")

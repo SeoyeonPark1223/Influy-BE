@@ -11,8 +11,8 @@ public interface LikeService {
     Like toAddItemLike(Long sellerId, Long itemId, Long memberId);
     Like toCancelSellerLike(Long sellerId, Long memberId);
     Like toCancelItemLike(Long sellerId, Long itemId, Long memberId);
-    LikeResponseDto.LikeCountDto toCountSellerLikes(Long sellerId);
-    LikeResponseDto.LikeCountDto toCountItemLikes(Long sellerId, Long itemId);
-    LikeResponseDto.SellerLikePageDto toGetSellerLikePage(Long memberId, PageRequestDto pageRequest);
+    LikeResponseDto.LikeCountSellerDto toCountSellerLikes(CustomUserDetails userDetails, Long sellerId);
+    LikeResponseDto.LikeCountItemDto toCountItemLikes(Long sellerId, Long itemId);
+    LikeResponseDto.SellerLikePageDto toGetSellerLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest);
     LikeResponseDto.ItemLikePageDto toGetItemLikePage(CustomUserDetails userDetails, PageRequestDto pageRequest);
 }
