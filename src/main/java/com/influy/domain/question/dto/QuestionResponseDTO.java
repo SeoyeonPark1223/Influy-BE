@@ -45,6 +45,8 @@ public class QuestionResponseDTO {
         private String content;
         @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
         private LocalDateTime createdAt;
+        @Schema(description = "작성자 username", example = "crazy_dog")
+        private String username;
     }
 
     @Builder
@@ -190,7 +192,9 @@ public class QuestionResponseDTO {
         private String itemTitle;
         @Schema(description = "해당 톡박스 아이템 대표 사진", example="http:/amazon.s3~")
         private String itemMainPic;
-        @Schema(description = "아이템 셀러 닉네임", example="소현소현")
+        @Schema(description = "아이템 셀러 아이디", example = "1")
+        private Long sellerId;
+        @Schema(description = "셀러 닉네임", example="소현소현")
         private String sellerNickname;
         @Schema(description = "셀러 프로필 사진", example="http://amazon.s3~")
         private String sellerProfilePic;

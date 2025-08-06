@@ -127,7 +127,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> findOngoingItemsSortedByCreatedAt(@Param("sellerId") Long sellerId, @Param("now") LocalDateTime now, @Param("isArchived") Boolean isArchived, Pageable pageable);
     
     @Query("""
-    SELECT i.id AS itemId, i.name AS itemTitle, i.mainImg AS itemMainImg, m.nickname AS sellerNickname, m.profileImg AS sellerProfileImg
+    SELECT i.id AS itemId, i.name AS itemTitle, i.mainImg AS itemMainImg, s.id AS sellerId, m.nickname AS sellerNickname, m.profileImg AS sellerProfileImg
     FROM Item i
     JOIN SellerProfile s ON i.seller = s
     JOIN Member m ON s.member = m

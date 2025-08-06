@@ -82,23 +82,24 @@ public class QuestionConverter {
                 .build();
     }
 
-    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo question) {
+    public static QuestionResponseDTO.UserViewQNA toUserViewDTO(AnswerJPQLResult.UserViewQNAInfo question, String username) {
         return QuestionResponseDTO.UserViewQuestion.builder()
                 .type(question.getType())
                 .id(question.getId())
                 .categoryName(question.getCategoryName())
                 .content(question.getContent())
                 .createdAt(question.getCreatedAt())
+                .username(username)
                 .build();
     }
 
     public static QuestionResponseDTO.UserViewQNAPage toUserViewQNAPage(Page<AnswerJPQLResult.UserViewQNAInfo> userQNAList,
-                                                                        String greeting) {
+                                                                        String greeting, String username) {
         List<QuestionResponseDTO.UserViewQNA> content = new ArrayList<>(userQNAList != null ?
                 userQNAList.getContent().stream().map(
                         qna -> {
                             if (qna.getType().equals("Q")) {
-                                return toUserViewDTO(qna);
+                                return toUserViewDTO(qna, username);
                             } else {
                                 return AnswerConverter.toUserViewDTO(qna);
                             }
@@ -179,6 +180,7 @@ public class QuestionConverter {
                 .itemId(itemSeller.getItemId())
                 .itemTitle(itemSeller.getItemTitle())
                 .itemMainPic(itemSeller.getItemMainImg())
+                .sellerId(itemSeller.getSellerId())
                 .sellerNickname(itemSeller.getSellerNickname())
                 .sellerProfilePic(itemSeller.getSellerProfileImg())
                 .lastChatContent(lastChatContent)
