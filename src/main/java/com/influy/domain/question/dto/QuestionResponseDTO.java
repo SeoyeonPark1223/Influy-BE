@@ -45,6 +45,8 @@ public class QuestionResponseDTO {
         private String content;
         @Schema(description = "생성 일자", example = "2025-01-03Z13:13:13")
         private LocalDateTime createdAt;
+        @Schema(description = "작성자 username", example = "crazy_dog")
+        private String username;
     }
 
     @Builder

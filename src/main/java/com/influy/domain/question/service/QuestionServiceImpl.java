@@ -98,7 +98,8 @@ public class QuestionServiceImpl implements QuestionService {
             greeting = item.getTalkBoxComment();
         }
 
-        return QuestionConverter.toUserViewQNAPage(userQNAList, greeting);
+        String username = memberService.findById(memberId).getUsername();
+        return QuestionConverter.toUserViewQNAPage(userQNAList, greeting, username);
     }
 
     @Override
