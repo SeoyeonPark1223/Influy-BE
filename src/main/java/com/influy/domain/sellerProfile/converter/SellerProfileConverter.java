@@ -49,7 +49,7 @@ public class SellerProfileConverter {
                 .build();
     }
 
-    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, List<IsArchivedItemCount> itemCountList, Long reviews) {
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, List<IsArchivedItemCount> itemCountList, Long reviews) {
         SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
 
         Long publicItems = 0L;
@@ -63,7 +63,6 @@ public class SellerProfileConverter {
         }
         return SellerProfileResponseDTO.MarketProfile.builder()
                 .sellerProfile(sellerProfileDTO)
-                .isLiked(isLiked)
                 .isPublic(seller.getIsPublic())
                 .privateItemCnt(privateItems)
                 .publicItemCnt(publicItems)
@@ -73,13 +72,12 @@ public class SellerProfileConverter {
     }
 
 
-    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, boolean isLiked, Long publicItems, Long reviews) {
+    public static SellerProfileResponseDTO.MarketProfile toMarketProfileDTO(SellerProfile seller, Long publicItems, Long reviews) {
 
         SellerProfileResponseDTO.SellerProfile sellerProfileDTO= toSellerProfileDTO(seller);
 
         return SellerProfileResponseDTO.MarketProfile.builder()
                 .sellerProfile(sellerProfileDTO)
-                .isLiked(isLiked)
                 .isPublic(seller.getIsPublic())
                 .privateItemCnt(null)
                 .publicItemCnt(publicItems)

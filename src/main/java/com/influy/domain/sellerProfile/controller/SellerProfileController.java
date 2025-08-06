@@ -33,21 +33,13 @@ public class SellerProfileController {
     //일반 유저의 프로필 조회
     @GetMapping("user/{sellerId}/market")
     @Operation(summary = "셀러 마켓 조회 API", description = "일반 사용자가 셀러 마켓 들어갔을 때")
-    public ApiResponse<SellerProfileResponseDTO.MarketProfile> getSellerMarket(@PathVariable("sellerId") Long sellerId,
-                                                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ApiResponse<SellerProfileResponseDTO.MarketProfile> getSellerMarket(@PathVariable("sellerId") Long sellerId) {
 
         SellerProfile seller = sellerService.getSellerProfile(sellerId);
-        boolean isLiked = false;
-        if(userDetails!=null){//회원일 경우에만 like 표시
-            Member member = userDetails.getMember();
-            isLiked = sellerService.getIsLikedByMember(seller,member);
-        }
         Long publicItems = Long.valueOf(itemService.getCount(seller.getId(),false));
         Long reviews = 0L;
 
-        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked, publicItems, reviews);
-
-
+        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller, publicItems, reviews);
 
         return ApiResponse.onSuccess(body);
     }
@@ -70,12 +62,11 @@ public class SellerProfileController {
     public ApiResponse<SellerProfileResponseDTO.MarketProfile> getMyMarket(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         SellerProfile seller = memberService.checkSeller(userDetails);
-        boolean isLiked = sellerService.getIsLikedByMember(seller,seller.getMember());
 
         List<IsArchivedItemCount> itemCountList = sellerService.getMarketItems(seller.getId());
         Long reviews = 0L;
 
-        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller,isLiked,itemCountList, reviews);
+        SellerProfileResponseDTO.MarketProfile body = SellerProfileConverter.toMarketProfileDTO(seller, itemCountList, reviews);
 
         return ApiResponse.onSuccess(body);
     }
