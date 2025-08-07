@@ -60,20 +60,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
 
-    //멤버 id별 seller에 대한 질문 횟수 구하는 메서드
-    public Map<Long, Long> getNthQuestionMap(SellerProfile seller, List<QuestionJPQLResult.SellerViewQuestion> questions) {
-        List<Long> memberIds = questions.stream()
-                .map(QuestionJPQLResult.SellerViewQuestion::getMemberId)
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<QuestionJPQLResult.MemberQuestionCount> counts = questionRepository.countQuestionsBySellerAndMemberIds(seller, memberIds);
-
-        return counts.stream()
-                .collect(Collectors.toMap(QuestionJPQLResult.MemberQuestionCount::getMemberId, QuestionJPQLResult.MemberQuestionCount::getCnt));
-    }
-
-
     @Override
     @Transactional
     public QuestionResponseDTO.UserViewQNAPage getQNAsOf(Long memberId, Long itemId, PageRequestDto pageableDto) {
@@ -107,7 +93,7 @@ public class QuestionServiceImpl implements QuestionService {
         SellerProfile seller = memberService.checkSeller(userDetails);
         Question question = questionRepository.findValidQuestion(itemId, questionCategoryId, questionTagId, questionId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_INVALID_RELATION));
-        Long nth = questionRepository.countByMemberAndSeller(userDetails.getMember(), seller);
+        Long nth = questionRepository.countByMemberAndSeller(question.getMember().getId(), seller.getId());
         List<Answer> answerList = question.getAnswerList();
 
         return QuestionConverter.toQnAListDto(question, answerList, nth);
