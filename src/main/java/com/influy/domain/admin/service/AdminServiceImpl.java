@@ -132,7 +132,7 @@ public class AdminServiceImpl implements AdminService {
                 List<FaqCard> newCards = cards.stream()
                         .map(card -> {
                             String newBgImg = "";
-                            if (!Objects.equals(card.getBackgroundImageLink(), null)) {
+                            if (!Objects.equals(card.getBackgroundImageLink(), "")) {
                                 newBgImg = imageService.duplicateImg(card.getBackgroundImageLink(), seller.getMember().getId());
                             }
                             return FaqCardConverter.duplicate(card,newCategory, newItem.getSeller(), newBgImg);
