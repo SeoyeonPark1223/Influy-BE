@@ -11,8 +11,8 @@ public class CategoryJPQLResult {
 
     public interface IsAnswered{
         String getCategoryName();
-        Boolean getIsAnswered();
-        Long getTotalQuestions();
+        Long getWaitingCnt();
+        Long getCompletedCnt();
     }
 
     public interface TopNCategories {

@@ -70,8 +70,8 @@ public class QuestionCategoryController {
         SellerProfile seller = memberService.checkSeller(userDetails);
         sellerService.checkQuestionOwner(null, categoryId, seller.getId());
 
-        List<CategoryJPQLResult.IsAnswered> isAnsweredCntList = questionCategoryService.getIsAnsweredMap(categoryId);
-        QuestionResponseDTO.IsAnsweredCntDTO body = QuestionConverter.toIsAnsweredCntDTO(isAnsweredCntList);
+
+        QuestionResponseDTO.IsAnsweredCntDTO body = QuestionConverter.toIsAnsweredCntDTO(questionCategoryService.getIsAnsweredMap(categoryId));
 
 
         return ApiResponse.onSuccess(body);

@@ -122,21 +122,12 @@ public class QuestionConverter {
                 .build();
     }
 
-    public static QuestionResponseDTO.IsAnsweredCntDTO toIsAnsweredCntDTO(List<CategoryJPQLResult.IsAnswered> isAnsweredCntList) {
-        Long waitingCnt = 0L;
-        Long completedCnt = 0L;
+    public static QuestionResponseDTO.IsAnsweredCntDTO toIsAnsweredCntDTO(CategoryJPQLResult.IsAnswered isAnsweredCnt) {
 
-        for(CategoryJPQLResult.IsAnswered questionCnt : isAnsweredCntList){
-            if(questionCnt.getIsAnswered()){
-                completedCnt +=questionCnt.getTotalQuestions();
-            }else{
-                waitingCnt +=questionCnt.getTotalQuestions();
-            }
-        }
         return QuestionResponseDTO.IsAnsweredCntDTO.builder()
-                .categoryName(isAnsweredCntList.getFirst().getCategoryName())
-                .waitingCnt(waitingCnt)
-                .completedCnt(completedCnt)
+                .categoryName(isAnsweredCnt.getCategoryName())
+                .waitingCnt(isAnsweredCnt.getWaitingCnt())
+                .completedCnt(isAnsweredCnt.getCompletedCnt())
                 .build();
     }
 
