@@ -116,7 +116,7 @@ public class HomeServiceImpl implements HomeService {
     @Override
     @Transactional(readOnly = true)
     public HomeResponseDto.SellerThumbnailListDto getTrendingSeller() {
-        List<SellerProfile> sellerList = sellerRepository.findTop10ByIsPublicTrue();
+        List<SellerProfile> sellerList = sellerRepository.findTop15ByIsPublicTrue();
         return HomeConverter.toSellerThumbnailListDto(sellerList);
     }
 
