@@ -70,6 +70,7 @@ public class Item extends BaseEntity {
     private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
     @Builder.Default
+    @Lob
     private String marketLink = "";
 
     @Builder.Default
