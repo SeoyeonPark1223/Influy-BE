@@ -84,6 +84,7 @@ public class FaqCardServiceImpl implements FaqCardService {
         if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent());
         if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink());
         if (request.getPinned() != null) faqCard.setIsPinned(request.getPinned());
+        if (request.getAdjustImg() != null) faqCard.setAdjustImg(request.getAdjustImg());
         if (!Objects.equals(request.getFaqCategoryId(), faqCard.getFaqCategory().getId())) {
             FaqCategory newFaqCategory = faqCategoryRepository.findById(request.getFaqCategoryId())
                             .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));

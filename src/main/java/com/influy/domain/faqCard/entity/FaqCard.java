@@ -34,7 +34,8 @@ public class FaqCard extends BaseEntity {
     private String answerContent = "";
 
     @Column
-    private String backgroundImageLink;
+    @Builder.Default
+    private String backgroundImageLink = "";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faq_category_id")

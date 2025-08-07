@@ -47,5 +47,8 @@ public class FaqCardRequestDto {
 
         @Schema(description = "FAQ 카테고리 id", example = "1")
         private Long faqCategoryId;
+
+        @Schema(description = "사진 비율 (false: 꽉 채운거, true: 높이 비율로 조정)", example = "false")
+        private Boolean adjustImg;
     }
 }
