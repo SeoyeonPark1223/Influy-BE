@@ -11,6 +11,7 @@ import com.influy.domain.sellerProfile.dto.SellerProfileRequestDTO;
 import com.influy.global.common.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class SellerProfile extends BaseEntity {
 
     //@Embedded 고려
     @Column(unique = true)
+    @NotNull
     private String instagram;
 
     @Column(unique = true)
@@ -89,13 +91,13 @@ public class SellerProfile extends BaseEntity {
 
             this.instagram = instagramLink.substring(0, targetIndex);
         }
-        if(requestBody.getTiktok()!=null){
+        if(!Objects.equals(requestBody.getTiktok(), this.tiktok)){
             this.tiktok = requestBody.getTiktok();
         }
-        if(requestBody.getYoutube()!=null){
+        if(!Objects.equals(requestBody.getYoutube(), this.youtube)){
             this.youtube = requestBody.getYoutube();
         }
-        if(requestBody.getEmail()!=null){
+        if(!Objects.equals(requestBody.getEmail(),this.email)){
             this.email = requestBody.getEmail();
         }
 
