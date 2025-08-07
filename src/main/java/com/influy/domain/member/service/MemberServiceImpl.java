@@ -22,6 +22,7 @@ import com.influy.global.apiPayload.exception.GeneralException;
 import com.influy.global.auth.dto.AuthRequestDTO;
 import com.influy.global.auth.service.AuthService;
 import com.influy.global.jwt.CustomUserDetails;
+import com.influy.global.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;
     private final ItemRepository itemRepository;
+    private final RedisService redisService;
 
     @Override
     public Member findByKakaoId(Long kakaoId) {
@@ -153,7 +155,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member updateUsername(Member member, MemberRequestDTO.UpdateUsername request) {
-        return member.updateUsername(request.getUsername());
+
+        String oldName = member.getUsername();
+        Member updatedMember = member.updateUsername(request.getUsername());
+        redisService.updateMemberUsername(oldName,updatedMember.getUsername());
+
+        return updatedMember;
     }
 
     public Boolean checkUsername(String username) {

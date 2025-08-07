@@ -38,4 +38,13 @@ public class RedisService {
     }
 
     public boolean checkRefreshTokenExits(String key) {return redisTemplate.hasKey(key);}
+
+    public boolean updateMemberUsername(String oldName, String newName) {
+        Boolean renamed = redisTemplate.renameIfAbsent(oldName, newName);
+        if (Boolean.FALSE.equals(renamed)) {
+            throw new IllegalStateException("newKey already exists!");
+        }
+
+        return true;
+    }
 }
