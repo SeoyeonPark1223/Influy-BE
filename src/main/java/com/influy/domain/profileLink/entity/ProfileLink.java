@@ -26,6 +26,7 @@ public class ProfileLink extends BaseEntity {
     private String linkName;
 
     @NotBlank
+    @Lob
     private String link;
 
     public ProfileLink setLinkName(String name){

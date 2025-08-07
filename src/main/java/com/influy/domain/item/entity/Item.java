@@ -18,6 +18,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -69,6 +70,7 @@ public class Item extends BaseEntity {
     private ItemStatus itemStatus = ItemStatus.DEFAULT;  //표기 상태: [기본, 연장, 완판]
 
     @Builder.Default
+    @Lob
     private String marketLink = "";
 
     @Builder.Default
@@ -127,15 +129,15 @@ public class Item extends BaseEntity {
                             Long regularPrice, Long salePrice, String marketLink, Integer itemPeriod, String comment, Boolean isArchived,
                             ItemStatus itemStatus, Boolean isDateUndefined) {
         this.name = name != null ? name : this.name;
-        this.tagline = tagline != null ? tagline : this.tagline;
-        this.regularPrice = regularPrice != null ? regularPrice : this.regularPrice;
-        this.salePrice = salePrice != null ? salePrice : this.salePrice;
-        this.marketLink = marketLink != null ? marketLink : this.marketLink;
-        this.itemPeriod = itemPeriod != null ? itemPeriod : this.itemPeriod;
-        this.comment = comment != null ? comment : this.comment;
-        this.isArchived = isArchived != null ? isArchived : this.isArchived;
-        this.itemStatus = itemStatus != null ? itemStatus : this.itemStatus;
-        this.isDateUndefined = isDateUndefined != null ? isDateUndefined : this.isDateUndefined;
+        this.tagline = tagline != null ? tagline : "";
+        this.regularPrice = regularPrice != null ? regularPrice : 0L;
+        this.salePrice = salePrice != null ? salePrice : 0L;
+        this.marketLink = marketLink != null ? marketLink : "";
+        this.itemPeriod = itemPeriod != null ? itemPeriod : 1;
+        this.comment = comment != null ? comment : "";
+        this.isArchived = isArchived != null ? isArchived : false;
+        this.itemStatus = itemStatus != null ? itemStatus : ItemStatus.DEFAULT;
+        this.isDateUndefined = isDateUndefined != null ? isDateUndefined : false;
 
         if (this.isDateUndefined) {
             if (!this.isArchived) throw new GeneralException(ErrorStatus.ITEM_INFO_REQUIRED);
@@ -145,8 +147,8 @@ public class Item extends BaseEntity {
 
         } else {
             // 기간 설정 되어있는 것을 수정하거나 새로 정하거나 아예 수정하지 않은 경우 -> startDate, endDate 값 있으면 넣고 아니면 null로 저장
-            this.startDate = startDate != null ? startDate : this.startDate;
-            this.endDate = endDate != null ? endDate : this.endDate;
+            this.startDate = startDate;
+            this.endDate = endDate;
         }
     }
 }

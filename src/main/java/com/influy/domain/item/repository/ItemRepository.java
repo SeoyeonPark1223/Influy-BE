@@ -49,7 +49,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("""
         SELECT ic.item FROM ItemCategory ic
         WHERE ic.category.id = :categoryId
-          AND ic.item.endDate IS NULL OR ic.item.endDate > :now
+          AND (ic.item.endDate IS NULL OR ic.item.endDate > :now)
           AND ic.item.itemStatus != 'SOLD_OUT'
           AND ic.item.seller.isPublic IS TRUE
           AND ic.item.isArchived IS FALSE
