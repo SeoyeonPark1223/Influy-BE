@@ -56,4 +56,13 @@ public class FaqCategoryConverter {
                 .updatedList(updatedList)
                 .build();
     }
+
+    public static FaqCategory duplicate(FaqCategory oldCategory, Item newItem) {
+        return FaqCategory.builder()
+                .item(newItem)
+                .category(oldCategory.getCategory())
+                .categoryOrder(oldCategory.getCategoryOrder())
+                .build();
+
+    }
 }

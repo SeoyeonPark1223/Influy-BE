@@ -104,5 +104,17 @@ public class FaqCardConverter {
     private static String nonNull(String value) {
         return value != null ? value : "";
     }
+
+    public static FaqCard duplicate(FaqCard card, FaqCategory newCategory, SellerProfile sellerProfile,String newBgImg) {
+        return FaqCard.builder()
+                .faqCategory(newCategory)
+                .seller(sellerProfile)
+                .questionContent(card.getQuestionContent())
+                .answerContent(card.getAnswerContent())
+                .backgroundImageLink(newBgImg)
+                .isPinned(card.getIsPinned())
+                .adjustImg(card.getAdjustImg())
+                .build();
+    }
 }
 
