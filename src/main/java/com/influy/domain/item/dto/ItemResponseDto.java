@@ -269,4 +269,16 @@ public class ItemResponseDto {
         @Schema(description = "해당 상품에 새로 들어온 질문 총개수", example = "5")
         private Integer newCnt;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccessDto {
+        @Schema(description = "홈아카이브 추천 허용", example = "false")
+        private Boolean archiveRecommended;
+
+        @Schema(description = "서비스 내 검색 허용", example = "false")
+        private Boolean searchAvailable;
+    }
 }

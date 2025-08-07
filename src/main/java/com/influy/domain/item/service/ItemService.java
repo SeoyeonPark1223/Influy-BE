@@ -28,4 +28,5 @@ public interface ItemService {
     TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList);
     Item findById(Long itemId);
     ItemResponseDto.ResultDto updateArchive(CustomUserDetails userDetails, Long itemId, Boolean isArchived);
+    ItemResponseDto.AccessDto getAccess(CustomUserDetails userDetails, Long itemId);
 }
