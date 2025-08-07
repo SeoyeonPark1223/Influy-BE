@@ -30,7 +30,7 @@ public class FaqCard extends BaseEntity {
     private Boolean adjustImg = false;
 
     @Builder.Default
-    @Column(length = 300)
+    @Lob
     private String answerContent = "";
 
     @Column
