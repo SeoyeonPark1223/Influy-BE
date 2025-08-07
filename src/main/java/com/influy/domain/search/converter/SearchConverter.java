@@ -7,14 +7,15 @@ import org.springframework.data.domain.Page;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class SearchConverter {
-    public static SearchResponseDto.SellerPageResultDto toSellerPageResultDto(Page<SellerProfile> sellerPage, List<Long> likeSellers) {
+    public static SearchResponseDto.SellerPageResultDto toSellerPageResultDto(Page<SellerProfile> sellerPage, List<Long> likeSellers, Map<Long, Long> likeCntMap) {
         List<Long> safeLikeSellers = (likeSellers != null) ? likeSellers : Collections.emptyList();
 
         List<SearchResponseDto.SellerResultDto> sellerDtoList = sellerPage != null
                 ? sellerPage.stream()
-                .map(seller -> toSellerResultDto(seller, safeLikeSellers.contains(seller.getId())))
+                .map(seller -> toSellerResultDto(seller, safeLikeSellers.contains(seller.getId()), likeCntMap.getOrDefault(seller.getId(), 0L)))
                 .toList()
                 : Collections.emptyList();
 
@@ -28,7 +29,7 @@ public class SearchConverter {
                 .build();
     }
 
-    public static SearchResponseDto.SellerResultDto toSellerResultDto(SellerProfile seller, Boolean liked) {
+    public static SearchResponseDto.SellerResultDto toSellerResultDto(SellerProfile seller, Boolean liked, Long likeCnt) {
         Member member = seller.getMember();
 
         return SearchResponseDto.SellerResultDto.builder()
@@ -37,6 +38,7 @@ public class SearchConverter {
                 .sellerUsername(member.getUsername())
                 .sellerNickname(member.getNickname())
                 .liked(liked)
+                .likeCnt(likeCnt)
                 .build();
     }
 }
