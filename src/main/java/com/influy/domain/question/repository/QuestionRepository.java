@@ -135,13 +135,16 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Page<AnswerJPQLResult.UserViewQNAInfo> findAllByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId, Pageable pageable);
 
     @Query("""
-        SELECT qc.name AS categoryName, q.isAnswered AS isAnswered, COUNT(q) AS totalQuestions
-        FROM Question q
-        JOIN q.questionTag.questionCategory qc
-        WHERE qc.id = :categoryId AND q.isHidden = false
-        GROUP BY q.isAnswered
-    """)
-    List<CategoryJPQLResult.IsAnswered> countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);
+    SELECT qc.name AS categoryName,
+           SUM(CASE WHEN q.isAnswered = false THEN 1 ELSE 0 END) AS waitingCnt,
+           SUM(CASE WHEN q.isAnswered = true THEN 1 ELSE 0 END) AS completedCnt
+    FROM QuestionCategory qc
+    LEFT JOIN QuestionTag qt ON qt.questionCategory.id = qc.id
+    LEFT JOIN Question q ON q.questionTag.id = qt.id AND q.isHidden = false
+    WHERE qc.id = :categoryId
+    GROUP BY qc.name
+""")
+    CategoryJPQLResult.IsAnswered countIsAnsweredByCategoryId(@Param("categoryId") Long categoryId);
 
 
     @Query("""
