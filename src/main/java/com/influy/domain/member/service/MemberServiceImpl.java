@@ -61,10 +61,10 @@ public class MemberServiceImpl implements MemberService {
     public Member joinUser(MemberRequestDTO.UserJoin requestBody,MemberRole role) {
 
 
-        AuthRequestDTO.KakaoUserProfile profile = authService.getUserProfile(requestBody.getKakaoId());
+        //AuthRequestDTO.KakaoUserProfile profile = authService.getUserProfile(requestBody.getKakaoId());
 
 
-        String kakaoNickname = profile.getKakao_account().getProfile().getNickname();
+        String kakaoNickname = "실험";//profile.getKakao_account().getProfile().getNickname();
         Member newMember = MemberConverter.toMember(requestBody, role, kakaoNickname);
 
         List<Category> interestedItemCategories= new ArrayList<>();
@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member joinSeller(MemberRequestDTO.SellerJoin requestBody) {
 
-        if(sellerProfileRepository.existsByEmail(requestBody.getEmail())){
+        if(requestBody.getEmail()!=null&&sellerProfileRepository.existsByEmail(requestBody.getEmail())){
             throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
         }
         if(sellerProfileRepository.existsByInstagram(requestBody.getInstagram())){
