@@ -93,7 +93,7 @@ public class QuestionServiceImpl implements QuestionService {
         SellerProfile seller = memberService.checkSeller(userDetails);
         Question question = questionRepository.findValidQuestion(itemId, questionCategoryId, questionTagId, questionId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_INVALID_RELATION));
-        Long nth = questionRepository.countByMemberAndSeller(question.getMember().getId(), seller.getId());
+        Long nth = questionRepository.countByMemberIdAndSellerId(question.getMember().getId(), seller.getId());
         List<Answer> answerList = question.getAnswerList();
 
         return QuestionConverter.toQnAListDto(question, answerList, nth);
