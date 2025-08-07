@@ -36,15 +36,15 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("""
         SELECT i
         FROM Item i
-        LEFT JOIN i.questionList q
+        LEFT JOIN Like l ON l.item = i AND l.targetType = 'ITEM' AND l.likeStatus = 'LIKE'
         WHERE (i.endDate IS NULL OR i.endDate > :now)
-        AND i.itemStatus != 'SOLD_OUT'
-        AND i.seller.isPublic IS TRUE
-        AND i.isArchived IS FALSE
+          AND i.itemStatus != 'SOLD_OUT'
+          AND i.seller.isPublic IS TRUE
+          AND i.isArchived IS FALSE
         GROUP BY i
-        ORDER BY COUNT(q) DESC
+        ORDER BY COUNT(l) DESC
     """)
-    Page<Item> findTop3ByQuestionCnt(@Param("now") LocalDateTime now, Pageable pageable);
+    Page<Item> findTop3ByLikeCnt(@Param("now") LocalDateTime now, Pageable pageable);
 
     @Query("""
         SELECT ic.item FROM ItemCategory ic
