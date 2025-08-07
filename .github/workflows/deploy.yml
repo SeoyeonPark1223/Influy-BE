@@ -57,7 +57,7 @@ jobs:
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "
               sudo docker rm -f influy || true
               cd /home/ubuntu
-              sudo docker-compose pull influy
-              sudo docker-compose up -d influy
+              sudo docker-compose pull
+              sudo docker-compose up -d
           "
           rm -f private_key.pem
