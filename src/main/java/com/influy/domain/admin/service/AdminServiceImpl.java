@@ -35,10 +35,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,9 +131,11 @@ public class AdminServiceImpl implements AdminService {
                 // 카드 복제 및 카테고리 연관 설정
                 List<FaqCard> newCards = cards.stream()
                         .map(card -> {
-                            String newBgImg = imageService.duplicateImg(card.getBackgroundImageLink(),seller.getMember().getId());
-                            FaqCard newCard = FaqCardConverter.duplicate(card,newCategory, newItem.getSeller(), newBgImg);
-                            return newCard;
+                            String newBgImg = "";
+                            if (!Objects.equals(card.getBackgroundImageLink(), "")) {
+                                newBgImg = imageService.duplicateImg(card.getBackgroundImageLink(), seller.getMember().getId());
+                            }
+                            return FaqCardConverter.duplicate(card,newCategory, newItem.getSeller(), newBgImg);
                         })
                         .toList();
 

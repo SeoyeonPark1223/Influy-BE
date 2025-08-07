@@ -59,7 +59,7 @@ public class HomeServiceImpl implements HomeService {
 
         // 질문 개수 top 3 (SOLD_OUT & 마감일이 이미 지난 것 제외)
         Pageable pageable = pageRequest.toPageable();
-        Page<Item> itemPage = itemRepository.findTop3ByQuestionCnt(LocalDateTime.now(), pageable);
+        Page<Item> itemPage = itemRepository.findTop3ByLikeCnt(LocalDateTime.now(), pageable);
 
         return HomeConverter.toHomeItemViewPageDto(itemPage, likeItems);
     }
