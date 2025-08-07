@@ -44,15 +44,14 @@ public class SellerProfileServiceImpl implements SellerProfileService {
 
         List<String> images = new ArrayList<>();
 
-        if(request.getProfile()!=null){
-            Member member = sellerProfile.getMember();
-            //프사 변경 검사
-            if(!Objects.equals(request.getProfile().getProfileUrl(),member.getProfileImg())){
-                String img = member.getProfileImg();
-                if(img!=null) images.add(img);
-            }
+        Member member = sellerProfile.getMember();
+        //프사 변경 검사
+        if(!Objects.equals(request.getProfile().getProfileUrl(),member.getProfileImg())){
+            String img = member.getProfileImg();
+            if(img!=null) images.add(img);
             member.updateProfile(request.getProfile());
         }
+
 
         //배경사진 변경 검사
         if(!Objects.equals(request.getBackgroundImg(),sellerProfile.getBackgroundImg())){
