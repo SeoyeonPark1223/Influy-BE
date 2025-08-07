@@ -81,10 +81,10 @@ public class FaqCardServiceImpl implements FaqCardService {
         FaqCategory faqCategory = checkAll(seller.getId(), itemId, faqCard.getFaqCategory().getId());
 
         if (request.getQuestionContent() != null) faqCard.setQuestionContent(request.getQuestionContent());
-        if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent());
-        if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink());
-        if (request.getPinned() != null) faqCard.setIsPinned(request.getPinned());
-        if (request.getAdjustImg() != null) faqCard.setAdjustImg(request.getAdjustImg());
+        if (request.getAnswerContent() != null) faqCard.setAnswerContent(request.getAnswerContent()); else faqCard.setAnswerContent("");
+        if (request.getBackgroundImgLink() != null) faqCard.setBackgroundImageLink(request.getBackgroundImgLink()); else faqCard.setBackgroundImageLink("");
+        if (request.getPinned() != null) faqCard.setIsPinned(request.getPinned()); else faqCard.setIsPinned(false);
+        if (request.getAdjustImg() != null) faqCard.setAdjustImg(request.getAdjustImg()); else faqCard.setAdjustImg(false);
         if (!Objects.equals(request.getFaqCategoryId(), faqCard.getFaqCategory().getId())) {
             FaqCategory newFaqCategory = faqCategoryRepository.findById(request.getFaqCategoryId())
                             .orElseThrow(() -> new GeneralException(ErrorStatus.FAQ_CATEGORY_NOT_FOUND));
