@@ -26,8 +26,7 @@ public interface SellerProfileRepository extends JpaRepository<SellerProfile, Lo
     @Query("SELECT EXISTS (SELECT 1 FROM QuestionCategory c WHERE c.id = :categoryId AND c.item.seller.id = :sellerId)")
     Boolean existsByIdAndCategoryId(@Param("sellerId") Long sellerId, @Param("categoryId") Long categoryId);
 
-
-    List<SellerProfile> findTop10ByIsPublicTrue();
+    List<SellerProfile> findTop15ByIsPublicTrue();
 
     @Query("""
         SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
