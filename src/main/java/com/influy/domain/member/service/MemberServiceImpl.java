@@ -61,10 +61,10 @@ public class MemberServiceImpl implements MemberService {
     public Member joinUser(MemberRequestDTO.UserJoin requestBody,MemberRole role) {
 
 
-        //AuthRequestDTO.KakaoUserProfile profile = authService.getUserProfile(requestBody.getKakaoId());
+        AuthRequestDTO.KakaoUserProfile profile = authService.getUserProfile(requestBody.getKakaoId());
 
 
-        String kakaoNickname = "실험";//profile.getKakao_account().getProfile().getNickname();
+        String kakaoNickname = profile.getKakao_account().getProfile().getNickname();
         Member newMember = MemberConverter.toMember(requestBody, role, kakaoNickname);
 
         List<Category> interestedItemCategories= new ArrayList<>();
