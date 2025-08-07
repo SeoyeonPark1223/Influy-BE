@@ -6,6 +6,8 @@ import com.influy.domain.item.converter.ItemConverter;
 import com.influy.domain.item.dto.ItemResponseDto;
 import com.influy.domain.item.entity.Item;
 import com.influy.domain.item.repository.ItemRepository;
+import com.influy.domain.like.entity.LikeStatus;
+import com.influy.domain.like.entity.TargetType;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
 import com.influy.domain.member.repository.MemberRepository;
@@ -25,7 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,12 +53,25 @@ public class SearchServiceImpl implements SearchService {
 
         Pageable pageable = pageRequest.toPageable(Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<SellerProfile> sellerPage = null;
+        Map<Long, Long> likeCntMap = new HashMap<>();
 
         if (sellerRepository.existsByIsPublicTrueAndKeywordMatch(query)) {
             sellerPage = sellerRepository.findByIsPublicTrueAndKeywordMatch(query, pageable);
+
+            List<Long> sellerIds = sellerPage.getContent().stream()
+                    .map(SellerProfile::getId)
+                    .toList();
+
+            List<Object[]> counts = likeRepository.countLikesBySellerIds(sellerIds);
+
+            likeCntMap = counts.stream()
+                    .collect(Collectors.toMap(
+                            row -> (Long) row[0],  // sellerId
+                            row -> (Long) row[1]   // cnt
+                    ));
         }
 
-        return SearchConverter.toSellerPageResultDto(sellerPage, likeSellers);
+        return SearchConverter.toSellerPageResultDto(sellerPage, likeSellers, likeCntMap);
     }
 
     @Override

@@ -62,4 +62,12 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
           AND l.likeStatus = 'LIKE'
     """)
     List<Long> findLikedItemIdsByMember(@Param("member")Member member);
+
+    @Query("""
+        SELECT l.seller.id, COUNT(l)
+        FROM Like l
+        WHERE l.targetType = 'SELLER' AND l.likeStatus = 'LIKE' AND l.seller.id IN :sellerIds
+        GROUP BY l.seller.id
+    """)
+    List<Object[]> countLikesBySellerIds(@Param("sellerIds") List<Long> sellerIds);
 }

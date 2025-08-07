@@ -41,6 +41,9 @@ public class SearchResponseDto {
         @Schema(description = "셀러 닉네임", example = "소현소현")
         private String sellerNickname;
 
+        @Schema(description = "찜 개수", example = "10")
+        private Long likeCnt;
+
         @Schema(description = "셀러 찜 여부", example = "true")
         private Boolean liked;
     }
