@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member joinSeller(MemberRequestDTO.SellerJoin requestBody) {
 
-        if(sellerProfileRepository.existsByEmail(requestBody.getEmail())){
+        if(requestBody.getEmail()!=null&&sellerProfileRepository.existsByEmail(requestBody.getEmail())){
             throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
         }
         if(sellerProfileRepository.existsByInstagram(requestBody.getInstagram())){
