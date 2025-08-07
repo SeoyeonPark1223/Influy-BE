@@ -21,15 +21,12 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-
-
-
     @Query("SELECT COUNT(q) AS cnt " +
             "FROM Question q " +
             "LEFT JOIN q.item i " +
             "LEFT JOIN i.seller s " +
-            "WHERE s = :seller AND q.member = :member ")
-    Long countByMemberAndSeller(@Param("member") Member member, @Param("seller") SellerProfile seller);
+            "WHERE s.id = :sellerId AND q.member.id = :memberId ")
+    Long countByMemberIdAndSellerId(@Param("memberId") Long memberId, @Param("sellerId") Long sellerId);
 
     @Query("SELECT q.member.id AS memberId, COUNT(q) AS cnt " +
             "FROM Question q " +
