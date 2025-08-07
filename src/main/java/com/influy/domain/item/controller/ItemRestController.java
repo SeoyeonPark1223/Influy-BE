@@ -79,6 +79,13 @@ public class ItemRestController {
         return ApiResponse.onSuccess(ItemConverter.toResultDto(item));
     }
 
+    @GetMapping("/seller/items/{itemId}/access")
+    @Operation(summary = "개별 상품 공개 범위 설정 조회")
+    public ApiResponse<ItemResponseDto.AccessDto> getAccess(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                            @PathVariable("itemId") Long itemId) {
+        return ApiResponse.onSuccess(itemService.getAccess(userDetails, itemId));
+    }
+
     @PatchMapping("/seller/items/{itemId}/status")
     @Operation(summary = "개별 상품 표기 상태 설정 | DEFAULT, EXTEND, SOLD_OUT")
     public ApiResponse<ItemResponseDto.ResultDto> setStatus(@AuthenticationPrincipal CustomUserDetails userDetails,

@@ -211,4 +211,11 @@ public class ItemConverter {
                 .build();
 
     }
+
+    public static ItemResponseDto.AccessDto toAccessDto(Item item) {
+        return ItemResponseDto.AccessDto.builder()
+                .archiveRecommended(item.getArchiveRecommended())
+                .searchAvailable(item.getSearchAvailable())
+                .build();
+    }
 }

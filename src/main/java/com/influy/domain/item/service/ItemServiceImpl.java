@@ -359,6 +359,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
+    public ItemResponseDto.AccessDto getAccess(CustomUserDetails userDetails, Long itemId) {
+        SellerProfile seller = memberService.checkSeller(userDetails);
+        Item item = itemRepository.findByIdAndSeller(itemId, seller)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ITEM_NOT_FOUND));
+        return ItemConverter.toAccessDto(item);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public TalkBoxInfoPair getTalkBoxInfoPair(List<Item> itemList) {
         List<Long> itemIdList = itemList.stream().map(Item::getId).toList();
 
