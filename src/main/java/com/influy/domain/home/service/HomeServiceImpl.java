@@ -5,6 +5,7 @@ import com.influy.domain.home.converter.HomeConverter;
 import com.influy.domain.home.dto.HomeResponseDto;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.item.repository.ItemRepository;
 import com.influy.domain.like.repository.LikeRepository;
 import com.influy.domain.member.entity.Member;
@@ -125,7 +126,7 @@ public class HomeServiceImpl implements HomeService {
     public HomeResponseDto.SellerPick3Dto getPicked(Long sellerId) {
         SellerProfile seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SELLER_NOT_FOUND));
-        List<Item> itemList = itemRepository.findTop3BySellerIdAndIsArchivedFalseAndSeller_IsPublicTrue(sellerId);
+        List<Item> itemList = itemRepository.findTop3BySellerIdAndIsArchivedFalseAndSeller_IsPublicTrueAndArchiveRecommendedTrueAndItemStatusNot(sellerId, ItemStatus.SOLD_OUT);
         return HomeConverter.toSellerPick3Dto(seller, itemList);
     }
 

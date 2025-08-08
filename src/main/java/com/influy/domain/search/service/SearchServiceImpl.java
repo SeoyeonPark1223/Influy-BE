@@ -88,7 +88,7 @@ public class SearchServiceImpl implements SearchService {
         Page<Item> itemPage = null;
 
         if (sellerRepository.existsByIsPublicTrueAndKeywordMatch(query)
-                || itemRepository.existsByIsArchivedFalseAndNameContainingAndSeller_IsPublicTrue(query)) {
+                || itemRepository.existsByIsArchivedFalseAndNameContainingAndSeller_IsPublicTrueAndSearchAvailableTrue(query)) {
             itemPage = itemRepository.findByIsArchivedFalseAndSeller_IsPublicTrueAndKeywordMatch(query, pageable);
         }
 
