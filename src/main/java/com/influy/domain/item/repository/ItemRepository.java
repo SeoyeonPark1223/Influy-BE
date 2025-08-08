@@ -3,6 +3,8 @@ package com.influy.domain.item.repository;
 import com.influy.domain.item.dto.jpql.ItemJPQLResponse;
 import com.influy.domain.item.entity.Item;
 import java.util.Optional;
+
+import com.influy.domain.item.entity.ItemStatus;
 import com.influy.domain.sellerProfile.entity.SellerProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
           AND i.itemStatus != 'SOLD_OUT'
           AND i.seller.isPublic IS TRUE
           AND i.isArchived IS FALSE
+          AND i.archiveRecommended IS TRUE
     """)
     Page<Item> findAllByEndDateAndItemStatus(@Param("now") LocalDateTime now, @Param("threshold") LocalDateTime threshold, Pageable pageable);
 
@@ -41,6 +44,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
           AND i.itemStatus != 'SOLD_OUT'
           AND i.seller.isPublic IS TRUE
           AND i.isArchived IS FALSE
+          AND i.archiveRecommended IS TRUE
         GROUP BY i
         ORDER BY COUNT(l) DESC
     """)
@@ -53,11 +57,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
           AND ic.item.itemStatus != 'SOLD_OUT'
           AND ic.item.seller.isPublic IS TRUE
           AND ic.item.isArchived IS FALSE
+          AND ic.item.archiveRecommended IS TRUE
           ORDER BY ic.item.createdAt DESC
     """)
     Page<Item> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable, @Param("now") LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE AND i.isArchived IS FALSE ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
+    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE AND i.isArchived IS FALSE AND i.archiveRecommended IS TRUE ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
     Page<Item> findAllNow(Pageable pageable, @Param("now") LocalDateTime now);
 
     Optional<Item> findByIdAndSeller(Long itemId, SellerProfile seller);
@@ -78,7 +83,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         """)
     Page<ItemJPQLResponse.ItemWithQuestionStatus> getItemsWithQuestionStatus(@Param("sellerId") Long sellerId, @Param("now")LocalDateTime now, Pageable pageable);
 
-    List<Item> findTop3BySellerIdAndIsArchivedFalseAndSeller_IsPublicTrue(Long sellerId);
+    List<Item> findTop3BySellerIdAndIsArchivedFalseAndSeller_IsPublicTrueAndArchiveRecommendedTrueAndItemStatusNot(@Param("sellerId") Long seller_id, @Param("itemStatus")ItemStatus itemStatus);
 
     Boolean existsBySellerId(Long id);
 
@@ -143,11 +148,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     """, nativeQuery = true)
     List<String> findAllItemImagesBySellerId(@Param("sellerId") Long sellerId);
 
-    boolean existsByIsArchivedFalseAndNameContainingAndSeller_IsPublicTrue(String query);
+    boolean existsByIsArchivedFalseAndNameContainingAndSeller_IsPublicTrueAndSearchAvailableTrue(String query);
 
     @Query("""
     SELECT i FROM Item i
     WHERE i.isArchived IS FALSE
+      AND i.searchAvailable IS TRUE
       AND i.seller.isPublic IS TRUE
       AND (
             i.name LIKE %:keyword%
