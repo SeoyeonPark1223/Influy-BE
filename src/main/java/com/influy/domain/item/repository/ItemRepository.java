@@ -62,7 +62,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     """)
     Page<Item> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable, @Param("now") LocalDateTime now);
 
-    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE AND i.isArchived IS FALSE AND i.archiveRecommended IS TRUE ORDER BY CASE WHEN i.endDate IS NULL THEN 2 ELSE 1 END, i.endDate ASC")
+    @Query("SELECT i FROM Item i WHERE (i.endDate IS NULL OR i.endDate > :now) AND i.itemStatus != 'SOLD_OUT' AND i.seller.isPublic IS TRUE AND i.isArchived IS FALSE AND i.archiveRecommended IS TRUE ORDER BY i.createdAt DESC")
     Page<Item> findAllNow(Pageable pageable, @Param("now") LocalDateTime now);
 
     Optional<Item> findByIdAndSeller(Long itemId, SellerProfile seller);
