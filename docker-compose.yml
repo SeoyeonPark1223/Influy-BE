@@ -13,7 +13,8 @@ services:
       - "8080:8080"
     depends_on:
       - redis
-    env_file: .env
+    env_file:
+      - .env
 
   nginx:
     image: nginx
@@ -28,3 +29,34 @@ services:
     depends_on:
       - spring
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - /home/ubuntu/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - spring
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: always
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    restart: always
+
+volumes:
+  grafana-storage:

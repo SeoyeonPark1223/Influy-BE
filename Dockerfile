@@ -1,26 +1,21 @@
-# build stage
-FROM amazoncorretto:21 AS Builder
+# Build Stage
+FROM openjdk:21-jdk-slim AS builder
 
 WORKDIR /app
-
-COPY gradlew build.gradle settings.gradle /app/
-COPY gradle /app/gradle
-
-RUN chmod +x gradlew
-
-RUN ./gradlew dependencies --no-daemon
 
 COPY . .
 
-RUN ./gradlew clean build -x test --no-daemon
+RUN chmod +x ./gradlew
 
-# run stage
-FROM amazoncorretto:21
+RUN ./gradlew build -x test
+
+# Run Stage
+FROM openjdk:21-slim
 
 WORKDIR /app
 
-EXPOSE 8080
+COPY build/libs/*.jar app.jar
 
-COPY --from=builder /app/build/libs/*.jar app.jar
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-Duser.timezone=UTC", "-jar", "app.jar"]

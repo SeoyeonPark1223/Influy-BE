@@ -57,7 +57,7 @@ jobs:
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "
               sudo docker rm -f influy || true
               cd /home/ubuntu
-              sudo docker-compose pull spring
-              sudo docker-compose up -d spring
+              docker compose pull spring
+              docker compose up -d spring
           "
           rm -f private_key.pem

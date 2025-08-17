@@ -41,6 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
+        if (requestURI.startsWith("/grafana")) {
+            return true;
+        }
+
         if ("GET".equalsIgnoreCase(method)) {
             return Arrays.stream(SHOULD_NOT_FILTER_GET_LIST)
                     .anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
